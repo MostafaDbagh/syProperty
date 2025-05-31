@@ -124,16 +124,7 @@ export default function AddProperty() {
                   placeholder="Enter property full address"
                 />
               </fieldset>
-              <fieldset className="box-fieldset">
-                <label htmlFor="zip">
-                  Zip Code:<span>*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter property zip code"
-                />
-              </fieldset>
+           
               <fieldset className="box-fieldset">
                 <label htmlFor="country">
                   Country:<span>*</span>
@@ -167,7 +158,7 @@ export default function AddProperty() {
                 />
               </fieldset>
             </div>
-            <div className="box box-fieldset">
+            {/* <div className="box box-fieldset">
               <label htmlFor="location">
                 Location:<span>*</span>
               </label>
@@ -191,7 +182,7 @@ export default function AddProperty() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-            </div>
+            </div> */}
           </form>
         </div>
         <div className="widget-box-2 mb-20">
@@ -221,7 +212,7 @@ export default function AddProperty() {
                   addtionalParentClass=""
                 />
               </fieldset>
-              <div className="grid-layout-2 gap-30">
+              {/* <div className="grid-layout-2 gap-30">
                 <fieldset className="box-fieldset">
                   <label htmlFor="price">
                     Before Price Label:<span>*</span>
@@ -234,7 +225,7 @@ export default function AddProperty() {
                   </label>
                   <input type="text" className="form-control" />
                 </fieldset>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>
@@ -294,12 +285,12 @@ export default function AddProperty() {
               </fieldset>
             </div>
             <div className="box grid-layout-3 gap-30">
-              <fieldset className="box-fieldset">
+              {/* <fieldset className="box-fieldset">
                 <label htmlFor="rom">
                   Rooms:<span>*</span>
                 </label>
                 <input type="text" className="form-control" />
-              </fieldset>
+              </fieldset> */}
               <fieldset className="box-fieldset">
                 <label htmlFor="bedrooms">
                   Bedrooms:<span>*</span>
@@ -316,19 +307,19 @@ export default function AddProperty() {
             <div className="box grid-layout-3 gap-30">
               <fieldset className="box-fieldset">
                 <label htmlFor="garages">
-                  Garages:<span>*</span>
+                  Garages:
                 </label>
                 <input type="text" className="form-control" />
               </fieldset>
               <fieldset className="box-fieldset">
                 <label htmlFor="garages-size">
-                  Garages Size (SqFt):<span>*</span>
+                  Garages Size (SqFt):
                 </label>
                 <input type="text" className="form-control" />
               </fieldset>
               <fieldset className="box-fieldset">
                 <label htmlFor="year">
-                  Year Built:<span>*</span>
+                  Year Built:
                 </label>
                 <input type="text" className="form-control" />
               </fieldset>
@@ -447,7 +438,7 @@ export default function AddProperty() {
             </div>
           </div>
         </div>
-        <div className="widget-box-2 mb-20">
+        {/* <div className="widget-box-2 mb-20">
           <h3 className="title">Virtual Tour 360</h3>
           <div className="box-radio-check">
             <div className="text-btn mb-16">Virtual Tour Type:</div>
@@ -472,7 +463,7 @@ export default function AddProperty() {
               </fieldset>
             </form>
           </div>
-        </div>
+        </div> */}
         <div className="widget-box-2 mb-20">
           <h3 className="title">Videos</h3>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -488,7 +479,7 @@ export default function AddProperty() {
             </fieldset>
           </form>
         </div>
-        <div className="widget-box-2 mb-20">
+        {/* <div className="widget-box-2 mb-20">
           <h3 className="title">Floors</h3>
           <div className="box-radio-check mb-16">
             <div className="text-1 mb-12">Enable Floor Plan:</div>
@@ -592,7 +583,7 @@ export default function AddProperty() {
               <span className="icon icon-plus" />
             </a>
           </div>
-        </div>
+        </div> */}
         <div className="widget-box-2 mb-20">
           <h3 className="title">Agent Infomation</h3>
           <div className="box-radio-check">

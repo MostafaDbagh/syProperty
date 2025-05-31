@@ -1,50 +1,29 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import userRouter from './routes/user.route.js';
-import authRouter from './routes/auth.route.js';
-import listingRouter from './routes/listing.route.js';
-import cookieParser from 'cookie-parser';
-import path from 'path';
+const express = require('express');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const path = require('path');
+const db = require('./db/connect');
+
+const userRouter = require('./routes/user.route');
+const authRouter = require('./routes/auth.route');
+const listingRouter = require('./routes/listing.route');
+
 dotenv.config();
 
-
-const MONGO_URI='mongodb+srv://safi:35064612@cluster0-ags3s.mongodb.net/proProgrammer';
-
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("mongodb is connected"))
-  .catch((e) => console.log(e));
-
-  const __dirname = path.resolve();
-
 const app = express();
-
 app.use(express.json());
-
 app.use(cookieParser());
-
-app.listen(3000, () => {
-  console.log('Server is running on port 3000!');
-});
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
 
+// Optional: Serve frontend if you're deploying full-stack together
+// app.use(express.static(path.join(__dirname, '/proty-nextjs/dist')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'proty-nextjs', 'dist', 'index.html'));
+// });
 
-app.use(express.static(path.join(__dirname, '/client/dist')));
+const PORT = process.env.PORT || 5000;
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-})
-
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-  return res.status(statusCode).json({
-    success: false,
-    statusCode,
-    message,
-  });
-});
+app.listen(PORT, () => console.log('We are listening to the port ' + PORT));
