@@ -75,27 +75,23 @@ export const otherPages = [
       { href: "/agents-details/1", label: "Agents Details" },
     ],
   },
-  {
-    title: "Agencies",
-    className: "has-child",
-    submenu: [
-      { href: "/agency-grid", label: "Agencies Grid" },
-      { href: "/agency-list", label: "Agencies List" },
-      { href: "/agency-details/1", label: "Agencies Detail" },
-    ],
-  },
-  { href: "/home-loan-process", label: "Home Loan Process" },
+  // {
+  //   title: "Agencies",
+  //   className: "has-child",
+  //   submenu: [
+  //     { href: "/agency-grid", label: "Agencies Grid" },
+  //     { href: "/agency-list", label: "Agencies List" },
+  //     { href: "/agency-details/1", label: "Agencies Detail" },
+  //   ],
+  // },
   { href: "/career", label: "Career" },
   { href: "/faq", label: "Faq's" },
-  { href: "/compare", label: "Compare" },
-  { href: "/project-list", label: "Project List" },
-  { href: "/project-details/1", label: "Project Details" },
-  { href: "/404", label: "Page 404" },
+  // { href: "/project-list", label: "Project List" },
+  // { href: "/project-details/1", label: "Project Details" },
+  // { href: "/404", label: "Page 404" },
   { href: "/dashboard", label: "Dashboard" },
 ];
 
 export const blogMenu = [
-  { href: "/blog-list", label: "Blog List" },
   { href: "/blog-grid", label: "Blog Grid" },
-  { href: "/blog-details/1", label: "Blog Detail" },
 ];
