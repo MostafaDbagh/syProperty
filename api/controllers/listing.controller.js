@@ -50,7 +50,7 @@ const updateListing = async (req, res, next) => {
   }
 };
 
-const getListing = async (req, res, next) => {
+const getListingById = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
@@ -134,11 +134,27 @@ const getFilteredListings = async (req, res) => {
   }
 };
 
+const getListingsByAgent = async (req, res, next) => {
+  try {
+    const agentId = req.params.agentId;
+    if (!agentId) {
+      return next(errorHandler(400, 'Agent ID is required'));
+    }
+
+    const listings = await Listing.find({ agent: agentId, isDeleted: false })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(listings);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   createListing,
   deleteListing,
   updateListing,
-  getListing,
+  getListingById,
   getListings,
-  getFilteredListings
+  getFilteredListings,
+  getListingsByAgent
 };

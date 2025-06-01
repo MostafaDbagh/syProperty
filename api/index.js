@@ -7,6 +7,12 @@ const db = require('./db/connect');
 const userRouter = require('./routes/user.route');
 const authRouter = require('./routes/auth.route');
 const listingRouter = require('./routes/listing.route');
+const reviewRouter = require('./routes/review.route');
+const contactRoutes = require('./routes/contact.route')
+const favoriteRoutes = require('./routes/favorite.route');
+const agentRoutes = require('./routes/agent.routes');
+
+
 
 dotenv.config();
 
@@ -17,6 +23,13 @@ app.use(cookieParser());
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
+app.use('/api/review',reviewRouter)
+app.use('/api/contacts', contactRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/agents', agentRoutes);
+
+
+
 
 // Optional: Serve frontend if you're deploying full-stack together
 // app.use(express.static(path.join(__dirname, '/proty-nextjs/dist')));
