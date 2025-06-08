@@ -222,7 +222,7 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           My favorites (1)
         </Link>
-        <Link className="dropdown-item" href={`/my-save-search`}>
+        {/* <Link className="dropdown-item" href={`/my-save-search`}>
           <svg
             width={20}
             height={20}
@@ -253,7 +253,7 @@ export default function DashboardNav({ color = "" }) {
             />
           </svg>
           My save searches
-        </Link>
+        </Link> */}
         <Link className="dropdown-item" href={`/review`}>
           <svg
             width={20}
