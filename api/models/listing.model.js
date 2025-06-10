@@ -3,6 +3,7 @@ const listingSchema = new mongoose.Schema(
   {
     propertyId: { type: String, unique: true },       
     name: { type: String, required: true },
+       imageNames: { type: [String], required: true },
     description: { type: String, required: true },
     address: { type: String, required: true },
     country: { type: String },
@@ -28,12 +29,17 @@ const listingSchema = new mongoose.Schema(
     garageSize: { type: Number },
     yearBuilt: { type: Number },
     amenities: [{ type: String }],                  
-    imageUrls: { type: [String], required: true },
-    videoUrl: { type: String },                      
-    offer: { type: Boolean, required: false },
-    agent: { type: String, required: true },
-    isSold: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false },
+    images: [
+      {
+        publicId: { type: String, required: true },
+        url: { type: String, required: true },
+      }
+    ],
+        videoUrl: { type: String },                      
+        offer: { type: Boolean, required: false },
+        agent: { type: String, required: true },
+        isSold: { type: Boolean, default: false },
+        isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

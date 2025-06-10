@@ -1,11 +1,21 @@
 const Listing = require('../models/listing.model.js');
 const { errorHandler } = require('../utils/error.js');
+const cloudinary = require('../utils/cloudinary.js')
+
+
+
 
 const createListing = async (req, res, next) => {
   try {
-    const listing = await Listing.create(req.body);
-    return res.status(201).json(listing);
-  } catch (error) {
+    const listingData = {
+      ...req.body,
+      images: req.body.images,
+    };
+
+    const newListing = await Listing.create(listingData);
+    res.status(201).json(newListing);
+  }
+     catch (error) {
     next(error);
   }
 };
