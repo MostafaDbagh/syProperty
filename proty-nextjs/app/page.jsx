@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import Hero from "@/components/homes/home-1/Hero";
@@ -8,25 +8,41 @@ import Categories from "@/components/common/Categories";
 import Properties from "@/components/homes/home-1/Properties";
 import Cities from "@/components/homes/home-1/Cities";
 import Properties2 from "@/components/homes/home-1/Properties2";
+import { useSearchListings } from "@/apis/listing";
+import { cleanParams } from "@/utlis/cleanedParams";
 
 export default function Home() {
   const [searchParams, setSearchParams] = useState({
-    status: "", // sale or rent
-    keyword: "", // search keyword
-    priceMin: "", // min propertyPrice
-    priceMax: "", // max propertyPrice
-    sizeMin: "", // min size
-    sizeMax: "", // max size
-    state: "", // location state
-    bedrooms: "", // number of bedrooms
-    bathrooms: "", // number of bathrooms
+    status: "",
+    keyword: "",
+    priceMin: "",
+    priceMax: "",
+    sizeMin: "",
+    sizeMax: "",
+    state: "",
+    bedrooms: "",
+    bathrooms: "",
     amenities: [],
     propertyType: "",
-    furnished:""
+    furnished: ""
   });
 
   const [triggerSearch, setTriggerSearch] = useState(false);
   const [category, setCategory] = useState("");
+  const [params, setParams] = useState(null);
+
+  useEffect(() => {
+    if (triggerSearch || category) {
+      const cleaned = cleanParams(searchParams);
+      setParams(cleaned);
+    }
+  }, [searchParams, triggerSearch, category]);
+
+  const {
+    data: listings = [],
+    isLoading,
+    isError,
+  } = useSearchListings(params, !!params);
 
   const handleSearchChange = (newParams) =>
     setSearchParams((prev) => ({ ...prev, ...newParams }));
@@ -47,9 +63,9 @@ export default function Home() {
           setCategory={setCategory}
         />
         <Properties
-          searchParams={searchParams}
-          triggerSearch={triggerSearch}
-          category={category}
+          listings={listings}
+          isLoading={isLoading}
+          isError={isError}
         />
         <Cities />
         <Properties2 />

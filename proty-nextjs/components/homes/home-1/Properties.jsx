@@ -7,22 +7,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import {  useSearchListings } from "@/apis/listing";
 import { cleanParams } from "@/utlis/cleanedParams";
-export default function Properties({searchParams,triggerSearch,category}) {
-
-  const [params, setParams] = useState(null);
-  useEffect(() => {
- console.log(searchParams,'searchParmasssss')
-
-    if (triggerSearch || category) {
-      const cleanedParams = cleanParams(searchParams);
-      setParams(cleanedParams);
-    }
-  }, [triggerSearch, searchParams,category]);
-
-  const { data: listings, isLoading, isError } = useSearchListings(params, !!params);
+export default function Properties({ listings, isLoading, isError }) {
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Something went wrong!</p>;
+  
   return (
     <section className="section-listing tf-spacing-1">
       <div className="tf-container">
