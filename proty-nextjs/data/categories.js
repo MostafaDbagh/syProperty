@@ -5,6 +5,11 @@ export const categories = [
   { name: "Office", icon: "icon-office1", isActive: false },
   { name: "Townhouse", icon: "icon-townhouse", isActive: false },
   { name: "Commercial", icon: "icon-commercial", isActive: false },
+  {
+    icon: "icon-land",
+    name: "Land/Plot",
+    isActive: "false",
+  },
 ];
 
 export const categories2 = [

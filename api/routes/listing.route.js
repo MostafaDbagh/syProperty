@@ -6,7 +6,8 @@ const filterListings = require('../middleware/listing.js');
 const {uploadListingImages,uploadListingImagesMiddleware} = require('../utils/uploadListingImages.js');
 
 router.get('/search', filterListings, ListingController.getFilteredListings);
-router.post('/create',   uploadListingImages, uploadListingImagesMiddleware, ListingController.createListing);
+router.post('/create',   ListingController.createListing);
+// router.post('/create',   uploadListingImages, uploadListingImagesMiddleware, ListingController.createListing);
 router.delete('/delete/:id', verifyToken, ListingController.deleteListing);
 router.post('/update/:id', verifyToken, ListingController.updateListing);
 router.get('/:id', ListingController.getListingById);

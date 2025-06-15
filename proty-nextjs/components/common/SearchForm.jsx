@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
 import Slider from "rc-slider";
 
-export default function SearchForm({ parentClass = "wd-search-form" }) {
+export default function SearchForm({
+  parentClass = "wd-search-form",
+  searchParams,
+  onSearchChange,
+}) {
   const searchFormRef = useRef();
-  const [priceRange, setPriceRange] = useState([100, 700]);
-  const [sizeRange, setSizeRange] = useState([200, 820]);
+
   useEffect(() => {
     const searchFormToggler = document.querySelector(".searchFormToggler");
 
@@ -19,7 +22,6 @@ export default function SearchForm({ parentClass = "wd-search-form" }) {
       searchFormToggler.addEventListener("click", handleToggle);
     }
 
-    // Cleanup function to remove the event listener
     return () => {
       if (searchFormToggler) {
         searchFormToggler.removeEventListener("click", handleToggle);
@@ -27,58 +29,95 @@ export default function SearchForm({ parentClass = "wd-search-form" }) {
     };
   }, []);
 
+  const handleChange = (key, value) => {
+    if (onSearchChange) {
+      onSearchChange({ [key]: value });
+    }
+  };
+
+  const handleAmenityChange = (amenity) => {
+    const newAmenities = new Set(searchParams.amenities || []);
+    if (newAmenities.has(amenity)) {
+      newAmenities.delete(amenity);
+    } else {
+      newAmenities.add(amenity);
+    }
+    handleChange("amenities", Array.from(newAmenities));
+  };
+
   return (
     <div className={parentClass} ref={searchFormRef}>
       <div className="group-price">
         <div className="widget-price">
+          <label className="mb-2 title-price" htmlFor="priceRange">
+            Price range
+          </label>
           <div className="box-title-price">
-            <span className="title-price">Price range</span>
             <div className="caption-price">
               <span>from</span>{" "}
               <span className="value fw-6" id="slider-range-value1">
-                ${priceRange[0].toLocaleString()}
+                ${(searchParams.priceMin ?? 0).toLocaleString()}
               </span>{" "}
-              <span>to</span>
+              <span>to</span>{" "}
               <span className="value fw-6" id="slider-range-value2">
-                {" "}
-                ${priceRange[1].toLocaleString()}
+                ${(searchParams.priceMax ?? 1000000).toLocaleString()}
               </span>
             </div>
           </div>
           <Slider
+            id="priceRange"
             range
-            max={1000}
             min={0}
-            value={priceRange}
-            onChange={setPriceRange}
+            max={1000000}
+            value={[
+              searchParams.priceMin ? +searchParams.priceMin : 0,
+              searchParams.priceMax ? +searchParams.priceMax : 1000000,
+            ]}
+            onChange={([min, max]) => {
+              handleChange("priceMin", min);
+              handleChange("priceMax", max);
+            }}
           />
         </div>
         <div className="widget-price">
+          <label className="mb-2 title-price" htmlFor="sizeRange">
+            Size range
+          </label>
           <div className="box-title-price">
-            <span className="title-price">Size range</span>
             <div className="caption-price">
               <span>from</span>{" "}
               <span className="value fw-6" id="slider-range-value01">
-                {sizeRange[0]}
+                {searchParams.sizeMin ?? 0}
               </span>{" "}
               <span>to</span>{" "}
               <span className="value fw-6" id="slider-range-value02">
-                {sizeRange[1]}
+                {searchParams.sizeMax ?? 10000}
               </span>
             </div>
           </div>
           <Slider
+            id="sizeRange"
             range
-            max={1000}
             min={0}
-            value={sizeRange}
-            onChange={setSizeRange}
+            max={10000}
+            value={[
+              searchParams.sizeMin ? +searchParams.sizeMin : 0,
+              searchParams.sizeMax ? +searchParams.sizeMax : 0,
+            ]}
+            onChange={([min, max]) => {
+              handleChange("sizeMin", min);
+              handleChange("sizeMax", max);
+            }}
           />
         </div>
       </div>
-      <div className=" group-select">
+      <div className="group-select">
         <div className="box-select">
+          <label className="mb-2" htmlFor="provinceSelect">
+            Province / States
+          </label>
           <DropdownSelect
+            id="provinceSelect"
             options={[
               "Province / States",
               "California",
@@ -90,142 +129,97 @@ export default function SearchForm({ parentClass = "wd-search-form" }) {
               "Pennsylvania",
             ]}
             addtionalParentClass=""
+            value={searchParams.province || "Province / States"}
+            onChange={(value) => handleChange("state", value)}
           />
         </div>
         <div className="box-select">
+          <label className="mb-2" htmlFor="bedsSelect">
+            Beds
+          </label>
           <DropdownSelect
-            options={["Rooms", "1", "2", "3", "4", "5", "6", "7", "8"]}
-            addtionalParentClass=""
-          />
-        </div>
-        <div className="box-select">
-          <DropdownSelect
-            options={["Bath: Any", "1", "2", "3"]}
-            addtionalParentClass=""
-          />
-        </div>
-        <div className="box-select">
-          <DropdownSelect
+            id="bedsSelect"
             options={["Beds: Any", "1", "2", "3", "4", "5", "6"]}
             addtionalParentClass=""
+            value={searchParams.beds || "Beds: Any"}
+            onChange={(value) => handleChange("bedrooms", value)}
           />
         </div>
+
+        <div className="box-select">
+          <label className="mb-2" htmlFor="bathsSelect">
+            Baths
+          </label>
+          <DropdownSelect
+            id="bathsSelect"
+            options={["Bath: Any", "1", "2", "3"]}
+            addtionalParentClass=""
+            value={searchParams.baths || "Bath: Any"}
+            onChange={(value) => handleChange("bathrooms", value)}
+          />
+        </div>
+
+        <div className="box-select">
+  <label className="mb-2" htmlFor="furnishedSelect">
+    Furnishing
+  </label>
+  <DropdownSelect
+    id="furnishedSelect"
+    options={["Any", "Furnished", "Unfurnished"]}
+    addtionalParentClass=""
+    value={
+      searchParams.furnished === true
+        ? "Furnished"
+        : searchParams.furnished === false
+        ? "Unfurnished"
+        : "Any"
+    }
+    onChange={(value) => {
+      let furnishedValue;
+      if (value === "Furnished") furnishedValue = true;
+      else if (value === "Unfurnished") furnishedValue = false;
+      else furnishedValue = undefined; // "Any" clears the filter
+      handleChange("furnished", furnishedValue);
+    }}
+  />
+</div>
       </div>
       <div className="group-checkbox">
-        <div className=" title text-4 fw-6">Amenities:</div>
-        <div className="group-amenities ">
-          <fieldset className="checkbox-item style-1  ">
-            <label>
-              <span className="text-4">Bed linens</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4"> Carbon alarm</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Check-in lockbox </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Coffee maker </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1  ">
-            <label>
-              <span className="text-4"> Dishwasher</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4"> Fireplace</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Extra pillows </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">First aid kit </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1  ">
-            <label>
-              <span className="text-4">Hangers </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Iron</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4"> Microwave</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Fireplace</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1  ">
-            <label>
-              <span className="text-4"> Refrigerator</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Security cameras </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4"> Smoke alarm</span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
-          <fieldset className="checkbox-item style-1   mt-12">
-            <label>
-              <span className="text-4">Fireplace </span>
-              <input type="checkbox" />
-              <span className="btn-checkbox" />
-            </label>
-          </fieldset>
+        <div className="title text-4 fw-6 mb-2">Amenities:</div>
+        <div className="group-amenities">
+          {[
+            "Bed linens",
+            "Carbon alarm",
+            "Check-in lockbox",
+            "Coffee maker",
+            "Dishwasher",
+            "Fireplace",
+            "Extra pillows",
+            "First aid kit",
+            "Hangers",
+            "Iron",
+            "Microwave",
+            "Fireplace",
+            "Refrigerator",
+            "Security cameras",
+            "Smoke alarm",
+            "Fireplace",
+          ].map((amenity, idx) => (
+            <fieldset
+              className={`checkbox-item style-1${idx > 0 ? " mt-12" : ""}`}
+              key={amenity + idx}
+            >
+              <label>
+                <span className="text-4">{amenity}</span>
+                <input
+                  type="checkbox"
+                  checked={searchParams.amenities?.includes(amenity) || false}
+                  onChange={() => handleAmenityChange(amenity)}
+                />
+                <span className="btn-checkbox" />
+              </label>
+            </fieldset>
+          ))}
         </div>
       </div>
     </div>

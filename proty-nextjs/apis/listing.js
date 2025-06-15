@@ -1,45 +1,59 @@
-import { Axios } from "axios";
-
-
+// hooks/listingQueries.js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as api from '../services/listingApi';
 
 // Get all listings
-export const getAllListings = async () => {
-  const response = await Axios.get('listing');
-  return response.data;
-};
+export const useListings = () =>
+  useQuery({
+    queryKey: ['listings'],
+    queryFn: api.getAllListings,
+  });
 
-// Get listing by ID
-export const getListingById = async (id) => {
-  const response = await Axios.get(`listing/${id}`);
-  return response.data;
-};
+// Get single listing by ID
+export const useListingById = (id) =>
+  useQuery(['listing', id], () => api.getListingById(id), {
+    enabled: !!id,
+  });
 
 // Get listings by agent ID
-export const getListingsByAgent = async (agentId) => {
-  const response = await Axios.get(`listing/agent/${agentId}`);
-  return response.data;
+export const useListingsByAgent = (agentId) =>
+  useQuery(['agentListings', agentId], () => api.getListingsByAgent(agentId), {
+    enabled: !!agentId,
+  });
+
+// Search listings
+export const useSearchListings = (params, enabled = true) =>
+  useQuery({
+    queryKey: ['listings', params],
+    queryFn: () => api.searchListings(params),
+  });
+
+// Add listing
+export const useAddListing = () => {
+  const queryClient = useQueryClient();
+  return useMutation(api.addListing, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['listings']);
+    },
+  });
 };
 
-// Search listings with filters (assuming you pass search params)
-export const searchListings = async (params) => {
-  const response = await Axios.get(`listing/search`, { params });
-  return response.data;
+// Update listing
+export const useUpdateListing = () => {
+  const queryClient = useQueryClient();
+  return useMutation(({ id, data }) => api.updateListing(id, data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['listings']);
+    },
+  });
 };
 
-// Create a new listing
-export const addListing = async (data) => {
-  const response = await Axios.post('listing/add', data);
-  return response.data;
-};
-
-// Update listing (requires token)
-export const updateListing = async (id, data) => {
-  const response = await Axios.post(`listing/update/${id}`, data);
-  return response.data;
-};
-
-// Delete listing (requires token)
-export const deleteListing = async (id) => {
-  const response = await Axios.delete(`listing/delete/${id}`);
-  return response.data;
+// Delete listing
+export const useDeleteListing = () => {
+  const queryClient = useQueryClient();
+  return useMutation(api.deleteListing, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['listings']);
+    },
+  });
 };

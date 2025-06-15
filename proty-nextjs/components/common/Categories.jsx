@@ -1,13 +1,22 @@
 "use client";
-import { categories } from "@/data/categories";
+
 import React from "react";
+import { categories } from "@/data/categories";
 import { Swiper, SwiperSlide } from "swiper/react";
-import SplitTextAnimation from "./SplitTextAnimation";
 import { Pagination } from "swiper/modules";
+import SplitTextAnimation from "./SplitTextAnimation";
 
 export default function Categories({
   parentClass = "tf-spacing-1 section-categories pb-0",
+  searchParams,
+  onSearchChange,
+  setCategory
 }) {
+  const handleCategoryClick = (categoryName) => {
+    setCategory(categoryName);
+    onSearchChange({ propertyType: categoryName });
+  };
+
   return (
     <section className={parentClass}>
       <div className="tf-container">
@@ -20,6 +29,7 @@ export default function Categories({
             dream home
           </p>
         </div>
+
         <div className="wrap-categories-sw">
           <Swiper
             dir="ltr"
@@ -27,29 +37,20 @@ export default function Categories({
             spaceBetween={15}
             breakpoints={{
               0: { slidesPerView: 2 },
-              575: {
-                slidesPerView: 3,
-              },
-              768: {
-                slidesPerView: 4,
-                spaceBetween: 30,
-              },
-              992: {
-                slidesPerView: 6,
-                spaceBetween: 30,
-              },
+              575: { slidesPerView: 3 },
+              768: { slidesPerView: 4, spaceBetween: 30 },
+              992: { slidesPerView: 6, spaceBetween: 30 },
             }}
             modules={[Pagination]}
-            pagination={{
-              el: ".spd2",
-            }}
+            pagination={{ el: ".spd2" }}
           >
             {categories.map((category, index) => (
               <SwiperSlide className="swiper-slide" key={index}>
-                <a
-                  href="#"
+                <button
+                  type="button"
+                  onClick={() => handleCategoryClick(category.name)}
                   className={`categories-item ${
-                    category.isActive ? "active" : ""
+                    searchParams.propertyType === category.name ? "active" : ""
                   }`}
                 >
                   <div className="icon-box">
@@ -59,10 +60,9 @@ export default function Categories({
                     <h5>{category.name}</h5>
                     <p className="mt-4 text-1">234 Property</p>
                   </div>
-                </a>
+                </button>
               </SwiperSlide>
             ))}
-
             <div className="sw-pagination sw-pagination-layout text-center d-lg-none d-block mt-20 spd2" />
           </Swiper>
         </div>

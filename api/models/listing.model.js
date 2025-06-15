@@ -1,16 +1,12 @@
 const  mongoose = require('mongoose');
 const listingSchema = new mongoose.Schema(
   {
-    propertyId: { type: String, unique: true },       
-    name: { type: String, required: true },
-       imageNames: { type: [String], required: true },
-    description: { type: String, required: true },
-    address: { type: String, required: true },
-    country: { type: String },
-    state: { type: String },
-    neighborhood: { type: String },
-    price: { type: Number, required: true },
-    type: { type: String, required: true, enum: ['For Sale', 'For Rent'] },           
+    propertyId: { type: String, unique: true },  
+    propertyType: { type: String, required: true },           
+    propertyKeyword: { type: String, required: true },
+    propertyDesc: { type: String, required: true },
+    propertyPrice: { type: Number, required: true },
+    status: { type: String, required: true, enum: ['sale', 'rent'] },   
     rentType: {
       type: String,
       enum: ['monthly', 'yearly', 'weekly'],
@@ -18,28 +14,38 @@ const listingSchema = new mongoose.Schema(
         return this.type === 'rent';
       }
     },
-    status: { type: String },                         
-    label: { type: String },                          
+//////property specification//////
     bedrooms: { type: Number, required: true },
     bathrooms: { type: Number, required: true },
-    size: { type: Number },                      
+    size: { type: Number,required:true },                      
     landArea: { type: Number },                       
     furnished: { type: Boolean, required: true },
     garages: { type: Boolean, required: true },
     garageSize: { type: Number },
     yearBuilt: { type: Number },
-    amenities: [{ type: String }],                  
+    amenities: [{ type: String }],  
+//////property location//////////
+    address: { type: String, required: true },
+    country: { type: String,required:true  },
+    state: { type: String,required:true  },
+    neighborhood: { type: String,required:true },
+
+    agent: { type: String, required: true },
+    isSold: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
+    offer: { type: Boolean, required: false },
+
+    ////media -part
+    videoUrl: { type: String },                      
+    imageNames: { type: [String], required: false },         
     images: [
       {
-        publicId: { type: String, required: true },
-        url: { type: String, required: true },
+        publicId: { type: String, required: false },
+        url: { type: String, required: false },
       }
     ],
-        videoUrl: { type: String },                      
-        offer: { type: Boolean, required: false },
-        agent: { type: String, required: true },
-        isSold: { type: Boolean, default: false },
-        isDeleted: { type: Boolean, default: false },
+     
+      
   },
   { timestamps: true }
 );

@@ -9,7 +9,7 @@ const createListing = async (req, res, next) => {
   try {
     const listingData = {
       ...req.body,
-      images: req.body.images,
+      // images: req.body.images,
     };
 
     const newListing = await Listing.create(listingData);

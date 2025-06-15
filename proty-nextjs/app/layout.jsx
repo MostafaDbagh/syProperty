@@ -1,9 +1,14 @@
 "use client";
+
 import { useEffect } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/react-query"; 
+
 import "../public/main.scss";
-import "odometer/themes/odometer-theme-default.css"; // Import theme
+import "odometer/themes/odometer-theme-default.css";
 import "photoswipe/style.css";
 import "rc-slider/assets/index.css";
+
 import { usePathname } from "next/navigation";
 import BackToTop from "@/components/common/BackToTop";
 import MobileMenu from "@/components/headers/MobileMenu";
@@ -13,31 +18,25 @@ import Register from "@/components/modals/Register";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
+
   if (typeof window !== "undefined") {
-    import("bootstrap/dist/js/bootstrap.esm").then((module) => {
-      // Module is imported, you can access any exported functionality if
-    });
+    import("bootstrap/dist/js/bootstrap.esm").then(() => {});
   }
+
   useEffect(() => {
-    // Close any open modal
-    const bootstrap = require("bootstrap"); // dynamically import bootstrap
-    const modalElements = document.querySelectorAll(".modal.show");
-    modalElements.forEach((modal) => {
-      const modalInstance = bootstrap.Modal.getInstance(modal);
-      if (modalInstance) {
-        modalInstance.hide();
-      }
+    const bootstrap = require("bootstrap");
+    const modals = document.querySelectorAll(".modal.show");
+    modals.forEach((modal) => {
+      const instance = bootstrap.Modal.getInstance(modal);
+      if (instance) instance.hide();
     });
 
-    // Close any open offcanvas
-    const offcanvasElements = document.querySelectorAll(".offcanvas.show");
-    offcanvasElements.forEach((offcanvas) => {
-      const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
-      if (offcanvasInstance) {
-        offcanvasInstance.hide();
-      }
+    const offcanvas = document.querySelectorAll(".offcanvas.show");
+    offcanvas.forEach((item) => {
+      const instance = bootstrap.Offcanvas.getInstance(item);
+      if (instance) instance.hide();
     });
-  }, [pathname]); // Runs every time the route changes
+  }, [pathname]);
 
   useEffect(() => {
     const WOW = require("@/utlis/wow");
@@ -49,16 +48,15 @@ export default function RootLayout({ children }) {
     });
     wow.init();
   }, [pathname]);
+
   useEffect(() => {
     const handleSticky = () => {
       const navbar = document.querySelector(".header");
       if (navbar) {
         if (window.scrollY > 120) {
-          navbar.classList.add("fixed");
-          navbar.classList.add("header-sticky");
+          navbar.classList.add("fixed", "header-sticky");
         } else {
-          navbar.classList.remove("fixed");
-          navbar.classList.remove("header-sticky");
+          navbar.classList.remove("fixed", "header-sticky");
         }
         if (window.scrollY > 300) {
           navbar.classList.add("is-sticky");
@@ -69,16 +67,20 @@ export default function RootLayout({ children }) {
     };
 
     window.addEventListener("scroll", handleSticky);
+    return () => window.removeEventListener("scroll", handleSticky);
   }, []);
+
   return (
     <html lang="en">
       <body className="popup-loader">
-        {children}
-        <MobileMenu />
-        <BackToTop />
-        <SettingsHandler />
-        <Login />
-        <Register />
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <MobileMenu />
+          <BackToTop />
+          <SettingsHandler />
+          <Login />
+          <Register />
+        </QueryClientProvider>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 // services/reviewApi.js
-import { Axios } from './AxiosInstance'; // adjust path as needed
+import { Axios } from "axios";
 
 // Create a new review
 export const createReview = async (data) => {

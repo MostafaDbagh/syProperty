@@ -2,12 +2,22 @@
 import SearchForm from "@/components/common/SearchForm";
 import React, { useState } from "react";
 
-export default function Hero() {
-  // State to track the active item
+export default function Hero({
+  searchParams,
+  onSearchChange,
+  setTriggerSearch,
+}) {
   const [activeItem, setActiveItem] = useState("For sale");
 
-  // Array of items to render
-  const items = ["For sale", "For rent"];
+  const statusOptions = [
+    { label: "For sale", value: "sale" },
+    { label: "For rent", value: "rent" },
+  ];
+  const handleChange = (key, value) => {
+    if (onSearchChange) {
+      onSearchChange({ [key]: value });
+    }
+  };
 
   return (
     <div className="page-title home01">
@@ -30,15 +40,18 @@ export default function Hero() {
                       <i className="icon-CaretDown" />
                     </div>
                     <div className="dropdown-menu">
-                      {items.map((item) => (
+                      {statusOptions.map((item) => (
                         <div
-                          key={item}
+                          key={item.value}
                           className={`select-item ${
-                            activeItem === item ? "active" : ""
+                            activeItem === item.value ? "active" : ""
                           }`}
-                          onClick={() => setActiveItem(item)} // Set the active item on click
+                          onClick={() => {
+                            setActiveItem(item.label);
+                            handleChange("status", item.value);
+                          }}
                         >
-                          <span className="text-value-item">{item}</span>
+                          <span className="text-value-item">{item.label}</span>
                         </div>
                       ))}
                     </div>
@@ -48,6 +61,9 @@ export default function Hero() {
                       <input
                         type="text"
                         placeholder="Place, neighborhood, school or agent..."
+                        onChange={(e) =>
+                          onSearchChange({ keyword: e.target.value })
+                        }
                       />
                     </fieldset>
                   </form>
@@ -127,12 +143,19 @@ export default function Hero() {
                         </svg>
                       </div>
                     </div>
-                    <a href="#" className="tf-btn bg-color-primary pd-3">
+                    <a
+                      href="#"
+                      className="tf-btn bg-color-primary pd-3"
+                      onClick={() => setTriggerSearch(true)}
+                    >
                       Search <i className="icon-MagnifyingGlass fw-6" />
                     </a>
                   </div>
                 </div>
-                <SearchForm />
+                <SearchForm
+                  searchParams={searchParams}
+                  onSearchChange={onSearchChange}
+                />
               </div>
             </div>
           </div>
