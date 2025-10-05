@@ -1,59 +1,119 @@
-// hooks/listingQueries.js
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as api from '../services/listingApi';
+import Axios from '../axios';
 
-// Get all listings
-export const useListings = () =>
-  useQuery({
-    queryKey: ['listings'],
-    queryFn: api.getAllListings,
-  });
+// Listing API functions
+export const listingAPI = {
+  // Get all listings
+  getListings: async (params = {}) => {
+    try {
+      const response = await Axios.get('/listing', { params });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-// Get single listing by ID
-export const useListingById = (id) =>
-  useQuery(['listing', id], () => api.getListingById(id), {
-    enabled: !!id,
-  });
+  // Search/filter listings
+  searchListings: async (searchParams) => {
+    try {
+      const response = await Axios.get('/listing/search', { params: searchParams });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-// Get listings by agent ID
-export const useListingsByAgent = (agentId) =>
-  useQuery(['agentListings', agentId], () => api.getListingsByAgent(agentId), {
-    enabled: !!agentId,
-  });
+  // Create new listing
+  createListing: async (listingData) => {
+    try {
+      const formData = new FormData();
+      
+      // Add all listing data to FormData
+      Object.keys(listingData).forEach(key => {
+        if (key === 'images' && Array.isArray(listingData[key])) {
+          // Handle multiple image files
+          listingData[key].forEach((image, index) => {
+            formData.append('images', image);
+          });
+        } else if (key === 'imageNames' && Array.isArray(listingData[key])) {
+          // Handle image names
+          listingData[key].forEach((name, index) => {
+            formData.append('imageNames', name);
+          });
+        } else {
+          formData.append(key, listingData[key]);
+        }
+      });
 
-// Search listings
-export const useSearchListings = (params, enabled = true) =>
-  useQuery({
-    queryKey: ['listings', params],
-    queryFn: () => api.searchListings(params),
-  });
+      const response = await Axios.post('/listing/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-// Add listing
-export const useAddListing = () => {
-  const queryClient = useQueryClient();
-  return useMutation(api.addListing, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['listings']);
-    },
-  });
+  // Get listing by ID
+  getListingById: async (id) => {
+    try {
+      const response = await Axios.get(`/listing/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get listing images
+  getListingImages: async (id) => {
+    try {
+      const response = await Axios.get(`/listing/${id}/images`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Update listing
+  updateListing: async (id, listingData) => {
+    try {
+      const response = await Axios.post(`/listing/update/${id}`, listingData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Delete listing
+  deleteListing: async (id) => {
+    try {
+      const response = await Axios.delete(`/listing/delete/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get listings by agent
+  getListingsByAgent: async (agentId) => {
+    try {
+      const response = await Axios.get(`/listing/agent/${agentId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get state count statistics
+  getStateCount: async () => {
+    try {
+      const response = await Axios.get('/listing/stateCount');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  }
 };
 
-// Update listing
-export const useUpdateListing = () => {
-  const queryClient = useQueryClient();
-  return useMutation(({ id, data }) => api.updateListing(id, data), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['listings']);
-    },
-  });
-};
-
-// Delete listing
-export const useDeleteListing = () => {
-  const queryClient = useQueryClient();
-  return useMutation(api.deleteListing, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['listings']);
-    },
-  });
-};
+export default listingAPI;

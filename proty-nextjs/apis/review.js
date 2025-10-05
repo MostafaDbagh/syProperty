@@ -1,38 +1,66 @@
-// services/reviewApi.js
-import { Axios } from "axios";
+import Axios from '../axios';
 
-// Create a new review
-export const createReview = async (data) => {
-  const response = await Axios.post('review', data);
-  return response.data;
+// Review API functions
+export const reviewAPI = {
+  // Create a new review
+  createReview: async (reviewData) => {
+    try {
+      const response = await Axios.post('/review', reviewData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get all reviews
+  getReviews: async (params = {}) => {
+    try {
+      const response = await Axios.get('/review', { params });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get reviews by property ID
+  getReviewsByProperty: async (propertyId) => {
+    try {
+      const response = await Axios.get(`/review/property/${propertyId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get reviews by agent ID
+  getReviewsByAgent: async (agentId) => {
+    try {
+      const response = await Axios.get(`/review/agent/${agentId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Like a review
+  likeReview: async (reviewId) => {
+    try {
+      const response = await Axios.post('/review/like', { reviewId });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Dislike a review
+  dislikeReview: async (reviewId) => {
+    try {
+      const response = await Axios.post('/review/dislike', { reviewId });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  }
 };
 
-// Get all reviews
-export const getAllReviews = async () => {
-  const response = await Axios.get('review');
-  return response.data;
-};
-
-// Get reviews by property ID
-export const getReviewsByProperty = async (propertyId) => {
-  const response = await Axios.get(`review/property/${propertyId}`);
-  return response.data;
-};
-
-// Get reviews by agent ID
-export const getReviewsByAgent = async (agentId) => {
-  const response = await Axios.get(`review/agent/${agentId}`);
-  return response.data;
-};
-
-// Like a review (pass review ID in body)
-export const likeReview = async (data) => {
-  const response = await Axios.post('review/like', data);
-  return response.data;
-};
-
-// Dislike a review (pass review ID in body)
-export const dislikeReview = async (data) => {
-  const response = await Axios.post('review/dislike', data);
-  return response.data;
-};
+export default reviewAPI;

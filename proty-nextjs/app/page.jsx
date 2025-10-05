@@ -8,7 +8,7 @@ import Categories from "@/components/common/Categories";
 import Properties from "@/components/homes/home-1/Properties";
 import Cities from "@/components/homes/home-1/Cities";
 import Properties2 from "@/components/homes/home-1/Properties2";
-import { useSearchListings } from "@/apis/listing";
+import { useSearchListings } from "@/apis/hooks";
 import { cleanParams } from "@/utlis/cleanedParams";
 
 export default function Home() {
@@ -42,7 +42,7 @@ export default function Home() {
     data: listings = [],
     isLoading,
     isError,
-  } = useSearchListings(params, !!params);
+  } = useSearchListings(params);
 
   const handleSearchChange = (newParams) =>
     setSearchParams((prev) => ({ ...prev, ...newParams }));

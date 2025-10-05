@@ -1,26 +1,46 @@
-import { Axios } from "axios";
+import Axios from '../axios';
 
+// Contact API functions
+export const contactAPI = {
+  // Create a new contact
+  createContact: async (contactData) => {
+    try {
+      const response = await Axios.post('/contacts/contact', contactData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 
-export const createContact = async (data) => {
-    const response = await Axios.post('contact', data);
-    return response.data;
-  };
-  
-  // Get all contact messages
-  export const getContacts = async () => {
-    const response = await Axios.get('contact');
-    return response.data;
-  };
-  
-  // Get a specific contact message by ID
-  export const getContactById = async (id) => {
-    const response = await Axios.get(`contact/${id}`);
-    return response.data;
-  };
-  
-  // Delete a specific contact message by ID
-  export const deleteContactById = async (id) => {
-    const response = await Axios.delete(`contact/${id}`);
-    return response.data;
-  };
-  
+  // Get all contacts
+  getContacts: async (params = {}) => {
+    try {
+      const response = await Axios.get('/contacts', { params });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get contact by ID
+  getContact: async (id) => {
+    try {
+      const response = await Axios.get(`/contacts/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Delete contact
+  deleteContact: async (id) => {
+    try {
+      const response = await Axios.delete(`/contacts/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  }
+};
+
+export default contactAPI;

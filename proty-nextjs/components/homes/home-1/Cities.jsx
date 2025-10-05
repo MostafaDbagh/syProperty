@@ -1,8 +1,69 @@
 import React from "react";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
-import { locations3 } from "@/data/locations";
+import { useListings } from "@/apis/hooks";
+
 export default function Cities() {
+  const { data: listings = [] } = useListings();
+
+  // Create locations from API data
+  const locations = [
+    { 
+      id: 1, 
+      city: "New York", 
+      properties: `${listings.filter(p => p.state === 'New York').length} Properties`,
+      imageSrc: "/images/section/location-9.jpg",
+      alt: "New York",
+      width: 689,
+      height: 467
+    },
+    { 
+      id: 2, 
+      city: "California", 
+      properties: `${listings.filter(p => p.state === 'California').length} Properties`,
+      imageSrc: "/images/section/location-10.jpg",
+      alt: "California",
+      width: 689,
+      height: 467
+    },
+    { 
+      id: 3, 
+      city: "Texas", 
+      properties: `${listings.filter(p => p.state === 'Texas').length} Properties`,
+      imageSrc: "/images/section/location-11.jpg",
+      alt: "Texas",
+      width: 689,
+      height: 467
+    },
+    { 
+      id: 4, 
+      city: "Florida", 
+      properties: `${listings.filter(p => p.state === 'Florida').length} Properties`,
+      imageSrc: "/images/section/location-12.jpg",
+      alt: "Florida",
+      width: 689,
+      height: 467
+    },
+    { 
+      id: 5, 
+      city: "Illinois", 
+      properties: `${listings.filter(p => p.state === 'Illinois').length} Properties`,
+      imageSrc: "/images/section/location-13.jpg",
+      alt: "Illinois",
+      width: 689,
+      height: 467
+    },
+    { 
+      id: 6, 
+      city: "Washington", 
+      properties: `${listings.filter(p => p.state === 'Washington').length} Properties`,
+      imageSrc: "/images/section/location-14.jpg",
+      alt: "Washington",
+      width: 1395,
+      height: 467
+    }
+  ];
+
   return (
     <section className="section-neighborhoods ">
       <div className="tf-container full">
@@ -16,7 +77,7 @@ export default function Cities() {
             </p>
           </div>
           <div className="wrap-neighborhoods">
-            {locations3.map((location) => (
+            {locations.map((location) => (
               <div
                 key={location.id}
                 className={`box-location hover-img item-${location.id}`}

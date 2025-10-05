@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { categories } from "@/data/categories";
+import { useListings } from "@/apis/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import SplitTextAnimation from "./SplitTextAnimation";
@@ -12,6 +12,19 @@ export default function Categories({
   onSearchChange,
   setCategory
 }) {
+  const { data: listings = [] } = useListings();
+
+  // Create categories from API data
+  const categories = [
+    { name: "Apartment", icon: "icon-apartment1", count: listings.filter(p => p.propertyType === 'Apartment').length },
+    { name: "Villa", icon: "icon-villa", count: listings.filter(p => p.propertyType === 'Villa').length },
+    { name: "Studio", icon: "icon-studio", count: listings.filter(p => p.propertyType === 'Studio').length },
+    { name: "Office", icon: "icon-office1", count: listings.filter(p => p.propertyType === 'Office').length },
+    { name: "Townhouse", icon: "icon-townhouse", count: listings.filter(p => p.propertyType === 'Townhouse').length },
+    { name: "Commercial", icon: "icon-commercial", count: listings.filter(p => p.propertyType === 'Commercial').length },
+    { name: "Land/Plot", icon: "icon-land", count: listings.filter(p => p.propertyType === 'Land').length }
+  ];
+
   const handleCategoryClick = (categoryName) => {
     setCategory(categoryName);
     onSearchChange({ propertyType: categoryName });
@@ -58,7 +71,7 @@ export default function Categories({
                   </div>
                   <div className="content text-center">
                     <h5>{category.name}</h5>
-                    <p className="mt-4 text-1">234 Property</p>
+                    <p className="mt-4 text-1">{category.count} Property</p>
                   </div>
                 </button>
               </SwiperSlide>

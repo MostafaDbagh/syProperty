@@ -1,13 +1,54 @@
 import axios from 'axios'
 
 export const Axios = axios.create({
-  //  baseURL: 'https://toma-boutique-bc4536360c89.herokuapp.com/', 
-    baseURL: 'http://localhost:5000/api', 
+  baseURL: 'http://localhost:5500/api', 
+  timeout: 10000, // Request timeout in milliseconds
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
-    timeout: 5000, // Request timeout in milliseconds
-    headers: {
-      'Authorization': 'Bearer YourAccessToken', // Custom headers
-      'Content-Type': 'application/json', // Example content type
-    },
-  })
+// Request interceptor to add auth token
+Axios.interceptors.request.use(
+  (config) => {
+    // Get token from localStorage or cookies
+    const token = localStorage.getItem('token') || 
+                  document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('token='))
+                    ?.split('=')[1];
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle auth errors
+Axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      
+      // Redirect to login page
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+export default Axios;
 
