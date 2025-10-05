@@ -14,18 +14,34 @@ export default function SearchForm({
   useEffect(() => {
     const searchFormToggler = document.querySelector(".searchFormToggler");
 
-    const handleToggle = () => {
+    const handleToggle = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       searchFormRef.current.classList.toggle("show");
+    };
+
+    const handleClickOutside = (event) => {
+      if (searchFormRef.current && 
+          searchFormRef.current.classList.contains("show") &&
+          !searchFormRef.current.contains(event.target) &&
+          !searchFormToggler?.contains(event.target)) {
+        console.log("Closing SearchForm - clicked outside");
+        searchFormRef.current.classList.remove("show");
+      }
     };
 
     if (searchFormToggler) {
       searchFormToggler.addEventListener("click", handleToggle);
     }
 
+    // Use mousedown instead of click for better detection
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       if (searchFormToggler) {
         searchFormToggler.removeEventListener("click", handleToggle);
       }
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -47,10 +63,13 @@ export default function SearchForm({
 
   return (
     <div className={parentClass} ref={searchFormRef}>
+      <div className="search-form-header mb-32">
+        <h4 className="advanced-search-title">Advanced Search</h4>
+      </div>
       <div className="group-price">
         <div className="widget-price">
           <label className="mb-2 title-price" htmlFor="priceRange">
-            Price range
+            Price range 
           </label>
           <div className="box-title-price">
             <div className="caption-price">
