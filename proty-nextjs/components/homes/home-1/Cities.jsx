@@ -4,64 +4,82 @@ import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
 
 export default function Cities() {
-  const { data: searchResponse } = useSearchListings({});
+  const { data: searchResponse, isLoading, isError } = useSearchListings({});
   const listings = searchResponse?.data || [];
-  const locations = [
-    { 
-      id: 1, 
-      city: "New York", 
-      properties: `${listings.filter(p => p.state === 'New York').length} Properties`,
-      imageSrc: "/images/section/location-9.jpg",
-      alt: "New York",
-      width: 689,
-      height: 467
-    },
-    { 
-      id: 2, 
-      city: "California", 
-      properties: `${listings.filter(p => p.state === 'California').length} Properties`,
-      imageSrc: "/images/section/location-10.jpg",
-      alt: "California",
-      width: 689,
-      height: 467
-    },
-    { 
-      id: 3, 
-      city: "Texas", 
-      properties: `${listings.filter(p => p.state === 'Texas').length} Properties`,
-      imageSrc: "/images/section/location-11.jpg",
-      alt: "Texas",
-      width: 689,
-      height: 467
-    },
-    { 
-      id: 4, 
-      city: "Florida", 
-      properties: `${listings.filter(p => p.state === 'Florida').length} Properties`,
-      imageSrc: "/images/section/location-12.jpg",
-      alt: "Florida",
-      width: 689,
-      height: 467
-    },
-    { 
-      id: 5, 
-      city: "Illinois", 
-      properties: `${listings.filter(p => p.state === 'Illinois').length} Properties`,
-      imageSrc: "/images/section/location-13.jpg",
-      alt: "Illinois",
-      width: 689,
-      height: 467
-    },
-    { 
-      id: 6, 
-      city: "Washington", 
-      properties: `${listings.filter(p => p.state === 'Washington').length} Properties`,
-      imageSrc: "/images/section/location-14.jpg",
-      alt: "Washington",
-      width: 1395,
-      height: 467
+
+
+
+  // Dynamically create locations from API data
+  const stateCounts = listings.reduce((acc, listing) => {
+    const state = listing.state;
+    if (state) {
+      acc[state] = (acc[state] || 0) + 1;
     }
-  ];
+    return acc;
+  }, {});
+
+  // Convert state counts to locations array
+  const locations = Object.entries(stateCounts).map(([state, count], index) => ({
+    id: index + 1,
+    city: state,
+    properties: `${count} Properties`,
+    imageSrc: `/images/section/location-${(index % 6) + 9}.jpg`, // Cycle through images 9-14
+    alt: state,
+    width: index === 5 ? 1395 : 689, // Last item gets wider image
+    height: 467
+  }));
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <section className="section-neighborhoods">
+        <div className="tf-container full">
+          <div className="col-12">
+            <div className="heading-section text-center mb-48">
+              <h2 className="title split-text effect-right">
+                <SplitTextAnimation text="Explore The Neighborhoods" />
+              </h2>
+              <p className="text-1 split-text split-lines-transform">
+                Find your dream apartment with our listing
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3">Loading locations...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state if no locations
+  if (locations.length === 0) {
+    return (
+      <section className="section-neighborhoods">
+        <div className="tf-container full">
+          <div className="col-12">
+            <div className="heading-section text-center mb-48">
+              <h2 className="title split-text effect-right">
+                <SplitTextAnimation text="Explore The Neighborhoods" />
+              </h2>
+              <p className="text-1 split-text split-lines-transform">
+                Find your dream apartment with our listing
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="alert alert-info">
+                <h4>No Locations Available</h4>
+                <p>There are currently no properties available to show locations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-neighborhoods ">
@@ -69,7 +87,7 @@ export default function Cities() {
         <div className="col-12">
           <div className="heading-section text-center mb-48">
             <h2 className="title split-text effect-right">
-              <SplitTextAnimation text="Explore The Neighborhood fs" />
+                <SplitTextAnimation text="Explore The Neighborhoods" />
             </h2>
             <p className="text-1 split-text split-lines-transform">
               Find your dream apartment with our listing

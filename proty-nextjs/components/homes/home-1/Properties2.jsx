@@ -12,7 +12,10 @@ export default function Properties2() {
   const { data: searchResponse, isLoading, isError } = useSearchListings({});
   const listings = searchResponse?.data || [];
   
-  console.log('Listings from API:', listings);
+  console.log('Properties2 - searchResponse:', searchResponse);
+  console.log('Properties2 - listings:', listings);
+  console.log('Properties2 - isLoading:', isLoading);
+  console.log('Properties2 - isError:', isError);
   // Show loading state
   if (isLoading) {
     return (
