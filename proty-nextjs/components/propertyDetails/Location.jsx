@@ -4,7 +4,7 @@ export default function Location() {
   return (
     <>
       <div className="wg-title text-11 fw-6 text-color-heading">
-        Get Direction
+        Location
       </div>
       <iframe
         className="map"

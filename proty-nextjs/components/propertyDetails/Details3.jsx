@@ -5,12 +5,6 @@ import VideoReview from "./VideoReview";
 import ExtraInfo from "./ExtraInfo";
 import Features from "./Features";
 import Location from "./Location";
-import FloorPlan from "./FloorPlan";
-import Attachments from "./Attachments";
-import VirtualTour from "./VirtualTour";
-import LoanCalculator from "./LoanCalculator";
-import PropertyNearby from "./PropertyNearby";
-import Reviews from "./Reviews";
 import Sidebar from "./Sidebar";
 
 export default function Details3({ property }) {
@@ -31,27 +25,6 @@ export default function Details3({ property }) {
             </div>
             <div className="wg-property box-amenities spacing-3">
               <Features />
-            </div>
-            <div className="wg-property single-property-map spacing-9">
-              <Location />
-            </div>
-            <div className="wg-property single-property-floor spacing-4">
-              <FloorPlan />
-            </div>
-            <div className="wg-property box-attachments spacing-5">
-              <Attachments />
-            </div>
-            <div className="wg-property box-virtual-tour spacing-6">
-              <VirtualTour />
-            </div>
-            <div className="wg-property box-loan spacing-4">
-              <LoanCalculator />
-            </div>
-            <div className="wg-property single-property-nearby spacing-7">
-              <PropertyNearby />
-            </div>
-            <div className="wg-property mb-0 box-comment spacing-8">
-              <Reviews />
             </div>
           </div>
           <div className="col-xl-4 col-lg-5">

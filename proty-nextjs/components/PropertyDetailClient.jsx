@@ -5,9 +5,8 @@ import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import Breadcumb from "@/components/common/Breadcumb";
 import Cta from "@/components/common/Cta";
-import Details1 from "@/components/propertyDetails/Details1";
+import Details3 from "@/components/propertyDetails/Details3";
 import RelatedProperties from "@/components/propertyDetails/RelatedProperties";
-import Slider1 from "@/components/propertyDetails/sliders/Slider1";
 
 export default function PropertyDetailClient({ id }) {
   const { data: property, isLoading, isError, error } = useListing(id);
@@ -54,8 +53,7 @@ export default function PropertyDetailClient({ id }) {
         <Header1 />
         <Breadcumb pageName="Property Details" />
         <div className="main-content">
-          <Slider1 property={property} />
-          <Details1 property={property} />
+          <Details3 property={property} />
           <RelatedProperties />
           <Cta />
         </div>
