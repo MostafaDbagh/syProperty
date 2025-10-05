@@ -5,28 +5,30 @@ export default function PropertyOverview({ property }) {
     <>
       <div className="heading flex justify-between">
         <div className="title text-5 fw-6 text-color-heading">
-          {property.title}
+          {property?.propertyType || 'Property Title'}
         </div>
         <div className="price text-5 fw-6 text-color-heading">
-          $250,00{" "}
-          <span className="h5 lh-30 fw-4 text-color-default">/month</span>
+          ${property?.propertyPrice?.toLocaleString() || '0'}{" "}
+          <span className="h5 lh-30 fw-4 text-color-default">
+            /{property?.rentType || 'month'}
+          </span>
         </div>
       </div>
       <div className="info flex justify-between">
         <div className="feature">
           <p className="location text-1 flex items-center gap-10">
             <i className="icon-location" />
-            102 102 Ingraham St, Brooklyn, NY 11237
+            {property?.address || 'Property Location'}
           </p>
           <ul className="meta-list flex">
             <li className="text-1 flex">
-              <span>3</span>Bed
+              <span>{property?.bedrooms || '0'}</span>Bed
             </li>
             <li className="text-1 flex">
-              <span>3</span>Bath
+              <span>{property?.bathrooms || '0'}</span>Bath
             </li>
             <li className="text-1 flex">
-              <span>4,043</span>Sqft
+              <span>{property?.size || '0'}</span>Sqft
             </li>
           </ul>
         </div>
@@ -119,7 +121,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">ID:</div>
-              <div className="text-1 text-color-heading">2297</div>
+              <div className="text-1 text-color-heading">{property?.propertyId || 'N/A'}</div>
             </div>
           </div>
           <div className="box-icon">
@@ -128,7 +130,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Bathrooms:</div>
-              <div className="text-1 text-color-heading">2 Rooms</div>
+              <div className="text-1 text-color-heading">{property?.bathrooms || '0'} Rooms</div>
             </div>
           </div>
         </div>
@@ -139,7 +141,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Type:</div>
-              <div className="text-1 text-color-heading">Hourse</div>
+              <div className="text-1 text-color-heading">{property?.propertyType || 'House'}</div>
             </div>
           </div>
           <div className="box-icon">
@@ -148,7 +150,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Land Size:</div>
-              <div className="text-1 text-color-heading">2,000 SqFt</div>
+              <div className="text-1 text-color-heading">{property?.landArea || '0'} SqFt</div>
             </div>
           </div>
         </div>
@@ -159,7 +161,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Garages</div>
-              <div className="text-1 text-color-heading">1</div>
+              <div className="text-1 text-color-heading">{property?.garages ? 'Yes' : 'No'}</div>
             </div>
           </div>
           <div className="box-icon">
@@ -168,7 +170,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Year Built:</div>
-              <div className="text-1 text-color-heading">2023</div>
+              <div className="text-1 text-color-heading">{property?.yearBuilt || 'N/A'}</div>
             </div>
           </div>
         </div>
@@ -179,7 +181,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Bedrooms:</div>
-              <div className="text-1 text-color-heading">2 Rooms</div>
+              <div className="text-1 text-color-heading">{property?.bedrooms || '0'} Rooms</div>
             </div>
           </div>
           <div className="box-icon">
@@ -188,7 +190,7 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">Size:</div>
-              <div className="text-1 text-color-heading">900 SqFt</div>
+              <div className="text-1 text-color-heading">{property?.size || '0'} SqFt</div>
             </div>
           </div>
         </div>
