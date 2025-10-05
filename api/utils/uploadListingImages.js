@@ -25,16 +25,25 @@ async function uploadListingImagesMiddleware(req, res, next) {
     if (!req.files) return next();
 
     const uploadedImages = [];
+    const imageNames = [];
 
     for (const file of req.files) {
       const result = await uploadToCloudinary(file.buffer, 'listings');
+      
+      // Store both the cloudinary data and original filename
       uploadedImages.push({
         publicId: result.public_id,
         url: result.secure_url,
+        filename: file.originalname,
+        uploadedAt: new Date()
       });
+
+      // Store image names for easy retrieval
+      imageNames.push(file.originalname);
     }
 
     req.body.images = uploadedImages;
+    req.body.imageNames = imageNames;
     next();
   } catch (error) {
     next(error);

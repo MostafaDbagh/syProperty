@@ -37,11 +37,18 @@ const listingSchema = new mongoose.Schema(
 
     ////media -part
     videoUrl: { type: String },                      
-    imageNames: { type: [String], required: false },         
+    imageNames: { 
+      type: [String], 
+      required: false,
+      default: [],
+      maxlength: 7 // Maximum 7 images as per requirement
+    },         
     images: [
       {
         publicId: { type: String, required: false },
         url: { type: String, required: false },
+        filename: { type: String, required: false }, // Store original filename
+        uploadedAt: { type: Date, default: Date.now }
       }
     ],
      

@@ -23,7 +23,6 @@ const createAgent = async (req, res, next) => {
       } = req.body;
   
 
-      console.log(req.body,'fuck this shit ')
       const newAgent = new Agent({
         fullName,
         description,

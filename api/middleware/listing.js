@@ -1,6 +1,6 @@
 const Listing = require('../models/listing.model');
 
-const filterListings = async (req, res) => {
+const filterListings = async (req, res, next) => {
   try {
     const {
       status,
@@ -65,10 +65,9 @@ const filterListings = async (req, res) => {
       filters.amenities = { $all: amenitiesArray };
     }
 
-    // Query Listings
-    const listings = await Listing.find(filters);
-
-    res.status(200).json(listings);
+    // Store filters in request object for the controller to use
+    req.filter = filters;
+    next();
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server Error' });
