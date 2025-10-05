@@ -2,10 +2,10 @@ import Axios from '../axios';
 
 // Listing API functions
 export const listingAPI = {
-  // Get all listings
+  // Get all listings (using search endpoint)
   getListings: async (params = {}) => {
     try {
-      const response = await Axios.get('/listing', { params });
+      const response = await Axios.get('/listing/search', { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

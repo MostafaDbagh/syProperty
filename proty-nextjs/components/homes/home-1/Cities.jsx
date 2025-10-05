@@ -1,12 +1,11 @@
 import React from "react";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
-import { useListings } from "@/apis/hooks";
+import { useSearchListings } from "@/apis/hooks";
 
 export default function Cities() {
-  const { data: listings = [] } = useListings();
-
-  // Create locations from API data
+  const { data: searchResponse } = useSearchListings({});
+  const listings = searchResponse?.data || [];
   const locations = [
     { 
       id: 1, 
@@ -70,7 +69,7 @@ export default function Cities() {
         <div className="col-12">
           <div className="heading-section text-center mb-48">
             <h2 className="title split-text effect-right">
-              <SplitTextAnimation text="Explore The Neighborhoods" />
+              <SplitTextAnimation text="Explore The Neighborhood fs" />
             </h2>
             <p className="text-1 split-text split-lines-transform">
               Find your dream apartment with our listing

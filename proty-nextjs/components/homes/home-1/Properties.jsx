@@ -35,7 +35,7 @@ export default function Properties({ listings, isLoading, isError }) {
               data-space={15}
             >
            <div className="swiper-wrapper tf-layout-mobile-md md-col-2 lg-col-3">
-  {listings.map((listing, i) => (
+  {listings.data.map((listing, i) => (
     <div key={i} className="swiper-slide">
       <div className="box-house hover-img">
         <div className="image-wrap">

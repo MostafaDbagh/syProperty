@@ -39,21 +39,24 @@ export const useAuth = () => {
   };
 };
 
+
+
+
 // Listing hooks
 export const useListings = (params = {}) => {
   return useQuery({
-    queryKey: ['listing', params],
+    queryKey: ['listings', params],
     queryFn: () => listingAPI.getListings(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
 // Search listings hook
-export const useSearchListings = (searchParams) => {
+export const useSearchListings = (searchParams = {}) => {
   return useQuery({
     queryKey: ['listings', 'search', searchParams],
     queryFn: () => listingAPI.searchListings(searchParams),
-    enabled: !!searchParams && Object.keys(searchParams).length > 0,
+    enabled: true, // Always enabled, even with empty params
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };

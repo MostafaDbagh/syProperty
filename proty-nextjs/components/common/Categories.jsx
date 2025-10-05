@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useListings } from "@/apis/hooks";
+import { useSearchListings } from "@/apis/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import SplitTextAnimation from "./SplitTextAnimation";
@@ -12,7 +12,8 @@ export default function Categories({
   onSearchChange,
   setCategory
 }) {
-  const { data: listings = [] } = useListings();
+  const { data: searchResponse } = useSearchListings({});
+  const listings = searchResponse?.data || [];
 
   // Create categories from API data
   const categories = [

@@ -3,13 +3,16 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
-import { useListings } from "@/apis/hooks";
+import { useSearchListings } from "@/apis/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 
 export default function Properties2() {
-  const { data: listings = [], isLoading, isError } = useListings();
-{console.log(listings),'listingssssfuck'}
+  // Use search endpoint with empty params to get all listings
+  const { data: searchResponse, isLoading, isError } = useSearchListings({});
+  const listings = searchResponse?.data || [];
+  
+  console.log('Listings from API:', listings);
   // Show loading state
   if (isLoading) {
     return (
@@ -196,96 +199,6 @@ export default function Properties2() {
               </div>
               <div className="sw-pagination sw-pagination-mb text-center mt-20 d-lg-none d-block" />
             </div>
-            <Swiper
-              modules={[Pagination]}
-              pagination={{
-                clickable: true,
-                el: ".spd447",
-              }}
-              spaceBetween={15}
-              className="swiper style-pagination tf-sw-mobile sw-swiper-992"
-            >
-              {properties6.map((property) => (
-                <SwiperSlide className="swiper-slide" key={property.id}>
-                  <div className="box-house hover-img style-list">
-                    <div className="image-wrap">
-                      <Link href={`/property-detail/${property.id}`}>
-                        <Image
-                          className="lazyload"
-                          data-src={property.imageSrc}
-                          alt=""
-                          src={property.imageSrc}
-                          width={435}
-                          height={408}
-                        />
-                      </Link>
-                      <ul className="box-tag flex gap-8">
-                        <li className="flat-tag text-4 bg-main fw-6 text_white">
-                          For Sale
-                        </li>
-                      </ul>
-                      <div className="list-btn flex gap-8">
-                        <a href="#" className="btn-icon save hover-tooltip">
-                          <i className="icon-save" />
-                          <span className="tooltip">Add Favorite</span>
-                        </a>
-                        <a href="#" className="btn-icon find hover-tooltip">
-                          <i className="icon-find-plus" />
-                          <span className="tooltip">Quick View</span>
-                        </a>
-                      </div>
-                    </div>
-                    <div className="content">
-                      <h5 className="title">
-                        <Link href={`/property-detail/${property.id}`}>
-                          {property.title}
-                        </Link>
-                      </h5>
-                      <p className="location text-1 line-clamp-1">
-                        <i className="icon-location" /> {property.location}
-                      </p>
-                      <ul className="meta-list flex">
-                        <li className="meta-item">
-                          <div className="text-9 flex">
-                            <i className="icon-bed" />
-                            Beds<span>{property.beds}</span>
-                          </div>
-                          <div className="text-9 flex">
-                            <i className="icon-sqft" />
-                            Sqft<span>{property.sqft}</span>
-                          </div>
-                        </li>
-                        <li className="meta-item">
-                          <div className="text-9 flex">
-                            <i className="icon-bath" />
-                            Baths<span>{property.baths}</span>
-                          </div>
-                          <div className="text-9 flex">
-                            <i className="icon-garage" />
-                            Garage<span>{property.garage}</span>
-                          </div>
-                        </li>
-                      </ul>
-                      <div className="bot flex justify-between items-center">
-                        <h5 className="price">
-                          {property.price.toLocaleString()}
-                        </h5>
-                        <div className="wrap-btn flex">
-                          <Link
-                            href={`/property-detail/${property.id}`}
-                            className="tf-btn style-border pd-4"
-                          >
-                            Details
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-
-              <div className="sw-pagination sw-pagination-mb text-center mt-20 d-lg-none d-block spd447" />
-            </Swiper>
           </div>
         </div>
       </div>

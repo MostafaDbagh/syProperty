@@ -10,7 +10,6 @@ const {
   refundPointsOnListingDelete 
 } = require('../middleware/pointDeduction.js');
 
-router.get('/', ListingController.getListings);
 router.get('/search', filterListings, ListingController.getFilteredListings);
 router.post('/create', verifyToken, checkAndDeductPoints, uploadListingImages, uploadListingImagesMiddleware, ListingController.createListing, deductPointsAfterListing);
 router.get('/stateCount',ListingController.getEachStateListing)
