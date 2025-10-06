@@ -1,9 +1,52 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import ForgotPasswordFlow from "./ForgotPasswordFlow";
+
 export default function Login() {
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+  const handleForgotPasswordClick = () => {
+    // Close the Bootstrap login modal
+    const loginModal = document.getElementById('modalLogin');
+    if (loginModal) {
+      const bootstrapModal = window.bootstrap?.Modal?.getInstance(loginModal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+      // Also manually close modal and remove backdrop
+      loginModal.classList.remove('show');
+      loginModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      
+      // Remove backdrop
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('padding-right');
+    }
+    // Open forgot password modal after a small delay
+    setTimeout(() => {
+      setShowForgotPassword(true);
+    }, 100);
+  };
+
+  const handlePasswordResetSuccess = () => {
+    alert("Password reset successfully! You can now login with your new password.");
+    setShowForgotPassword(false);
+    // Optionally reopen login modal
+    const loginModal = document.getElementById('modalLogin');
+    if (loginModal && window.bootstrap?.Modal) {
+      const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
+      modal.show();
+    }
+  };
+
   return (
+    <>
     <div className="modal modal-account fade" id="modalLogin">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
@@ -77,7 +120,21 @@ export default function Login() {
                     />
                   </div>
                   <div className="text-forgot text-end">
-                    <a href="#">Forgot password</a>
+                    <button
+                      type="button"
+                      onClick={handleForgotPasswordClick}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'inherit',
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                        padding: 0,
+                      }}
+                      className="text-forgot-link"
+                    >
+                      Forgot password
+                    </button>
                   </div>
                 </fieldset>
               </div>
@@ -165,5 +222,20 @@ export default function Login() {
         </div>
       </div>
     </div>
+
+    <ForgotPasswordFlow
+      isOpen={showForgotPassword}
+      onClose={() => {
+        setShowForgotPassword(false);
+        // Reopen login modal when forgot password flow is closed
+        const loginModal = document.getElementById('modalLogin');
+        if (loginModal && window.bootstrap?.Modal) {
+          const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
+          modal.show();
+        }
+      }}
+      onSuccess={handlePasswordResetSuccess}
+    />
+    </>
   );
 }
