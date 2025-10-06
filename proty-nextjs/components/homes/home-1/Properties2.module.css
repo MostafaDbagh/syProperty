@@ -1,0 +1,204 @@
+/* Override default theme styles for horizontal card layout */
+.propertyCard {
+  display: flex !important;
+  flex-direction: row !important;
+  min-height: 220px;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.propertyCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.propertyCard:hover .image-wrap img {
+  transform: scale(1.05);
+}
+
+.propertyCard .image-wrap {
+  width: 40% !important;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  height: auto;
+}
+
+.propertyCard .image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 220px;
+  transition: transform 0.3s ease;
+}
+
+.propertyCard .content {
+  width: 60%;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Badge positioning */
+.propertyCard .box-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+}
+
+.propertyCard .box-tag .flat-tag {
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+}
+
+/* Action buttons */
+.propertyCard .list-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.propertyCard .btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.propertyCard .btn-icon:hover {
+  background: #F1913D;
+  color: white;
+}
+
+.propertyCard .btn-icon i {
+  font-size: 16px;
+}
+
+.propertyCard .title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.propertyCard .location {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 12px;
+}
+
+.propertyCard .meta-list {
+  gap: 12px !important;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.propertyCard .meta-list .meta-item {
+  display: flex;
+  gap: 12px;
+}
+
+.propertyCard .meta-list .text-9 {
+  font-size: 13px;
+  gap: 4px;
+  color: #666;
+}
+
+.propertyCard .meta-list .text-9 span {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.propertyCard .meta-list .text-9 i {
+  color: #F1913D;
+  font-size: 14px;
+}
+
+.propertyCard .bot {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.propertyCard .price {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #F1913D !important;
+  margin: 0;
+}
+
+.propertyCard .tf-btn {
+  padding: 8px 20px;
+  font-size: 13px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.propertyCard .tf-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive - Stack on mobile */
+@media (max-width: 768px) {
+  .propertyCard {
+    flex-direction: column !important;
+    min-height: auto;
+  }
+  
+  .propertyCard .image-wrap {
+    width: 100% !important;
+    height: 200px;
+  }
+  
+  .propertyCard .image-wrap img {
+    min-height: 200px;
+  }
+  
+  .propertyCard .content {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .propertyCard .list-btn {
+    right: 8px;
+    top: 8px;
+  }
+  
+  .propertyCard .box-tag {
+    left: 8px;
+    top: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .propertyCard .image-wrap {
+    height: 180px;
+  }
+  
+  .propertyCard .image-wrap img {
+    min-height: 180px;
+  }
+  
+  .propertyCard .meta-list .meta-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+

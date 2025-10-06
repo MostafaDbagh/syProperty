@@ -106,12 +106,12 @@ export default function RelatedProperties({ currentProperty }) {
                           width={400}
                           height={300}
                           className={styles.propertyImage}
-                        />
-                      </Link>
-                      
-                      {property.offer && (
-                        <span className={styles.offerBadge}>Special Offer</span>
-                      )}
+                          />
+                        </Link>
+                       
+                        {property.offer && (
+                          <span className={styles.offerBadge}>Special Offer</span>
+                        )}
                       
                       {property.status && (
                         <span className={`${styles.statusBadge} ${getBadgeClass()}`}>
@@ -134,13 +134,16 @@ export default function RelatedProperties({ currentProperty }) {
 
                       <div className={styles.metaInfo}>
                         <div className={styles.metaItem}>
-                          <span>{property.bedrooms || 0}</span> Beds
+                          Beds <span>{property.bedrooms || 0}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <span>{property.bathrooms || 0}</span> Baths
+                          Baths <span>{property.bathrooms || 0}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <span>{property.size || 0}</span> Sqft
+                          Sqft <span>{property.size || 0}</span>
+                        </div>
+                        <div className={styles.metaItem}>
+                          Garage <span>{property.garage || 'No'}</span>
                         </div>
                       </div>
 
@@ -149,7 +152,7 @@ export default function RelatedProperties({ currentProperty }) {
                           ${property.propertyPrice?.toLocaleString()}
                         </h4>
                         <Link href={`/property-detail/${property._id}`} className={styles.detailsBtn}>
-                          View Details
+                          Details
                         </Link>
                       </div>
                     </div>
