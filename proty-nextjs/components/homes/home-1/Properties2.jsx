@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import styles from "./Properties2.module.css";
 
 export default function Properties2() {
   // Use search endpoint with empty params to get all listings
@@ -142,14 +143,13 @@ export default function Properties2() {
               >
                 {listings.slice(0, 6).map((property) => (
                   <SwiperSlide key={property._id}>
-                    <div className="box-house hover-img style-list">
-                      <div className="image-wrap">
-                        <Link href={`/property-detail-v1/${property._id}`}>
+                    <div className={`box-house hover-img style-list ${styles.propertyCard}`}>
+                      <div className="image-wrap" style={{ minWidth: '36%' }}>
+                        <Link href={`/property-detail/${property._id}`}>
                           <Image
                             className="lazyload"
-                            data-src={property.images?.[0]?.url || "/images/section/property-1.jpg"}
-                            alt={property.propertyKeyword || "Property"}
-                            src={property.images?.[0]?.url || "/images/section/property-1.jpg"}
+                            alt={property.propertyKeyword || property.propertyType || "Property"}
+                            src={property.images?.[0] || "/images/section/property-1.jpg"}
                             width={435}
                             height={408}
                           />
@@ -172,7 +172,7 @@ export default function Properties2() {
                       </div>
                       <div className="content">
                         <h5 className="title">
-                          <Link href={`/property-detail-v1/${property._id}`}>
+                          <Link href={`/property-detail/${property._id}`}>
                             {property.propertyKeyword || property.propertyType || 'Property'}
                           </Link>
                         </h5>
@@ -202,12 +202,12 @@ export default function Properties2() {
                           </li>
                         </ul>
                         <div className="bot flex justify-between items-center">
-                          <h5 className="price">
+                          <h5 className="price" style={{ fontSize: '17px', fontWeight: '700', }}>
                             ${property.propertyPrice?.toLocaleString() || '0'}
                           </h5>
                           <div className="wrap-btn flex">
                             <Link
-                              href={`/property-detail-v1/${property._id}`}
+                              href={`/property-detail/${property._id}`}
                               className="tf-btn style-border pd-4"
                             >
                               Details
