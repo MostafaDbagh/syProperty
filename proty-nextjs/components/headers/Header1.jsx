@@ -1,9 +1,19 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import Link from "next/link";
 import Image from "next/image";
 import DashboardNav from "./DashboardNav";
+import { isAgent, isAuthenticated } from "@/utlis/authHelpers";
+
 export default function Header1({ parentClass = "header" }) {
+  const [canAddProperty, setCanAddProperty] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in and is an agent
+    setCanAddProperty(isAuthenticated() && isAgent());
+  }, []);
+
   return (
     <header id="header-main" className={parentClass}>
       <div className="header-inner">
@@ -49,14 +59,16 @@ export default function Header1({ parentClass = "header" }) {
                     <p>(603) 555-0123</p>
                   </div>
                   <DashboardNav />
-                  <div className="btn-add">
-                    <Link
-                      className="tf-btn style-border pd-23"
-                      href={`/add-property`}
-                    >
-                      Add property
-                    </Link>
-                  </div>
+                  {canAddProperty && (
+                    <div className="btn-add">
+                      <Link
+                        className="tf-btn style-border pd-23"
+                        href={`/add-property`}
+                      >
+                        Add property
+                      </Link>
+                    </div>
+                  )}
                   <div
                     className="mobile-button"
                     data-bs-toggle="offcanvas"

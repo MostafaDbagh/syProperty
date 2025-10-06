@@ -1,15 +1,68 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { isAuthenticated, isAgent, getUserDisplayName, logout } from "@/utlis/authHelpers";
 
 export default function DashboardNav({ color = "" }) {
   const [isDDOpen, setIsDDOpen] = useState(false);
+  const [userAuth, setUserAuth] = useState({
+    isLoggedIn: false,
+    isAgentUser: false,
+    displayName: "Guest"
+  });
+
+  useEffect(() => {
+    setUserAuth({
+      isLoggedIn: isAuthenticated(),
+      isAgentUser: isAgent(),
+      displayName: getUserDisplayName()
+    });
+  }, []);
+
+  const handleUserIconClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // If not logged in, open register modal instead of dropdown
+    if (!userAuth.isLoggedIn) {
+      console.log('Opening register modal for guest user');
+      const registerModal = document.querySelector('#modalRegister');
+      if (registerModal) {
+        if (window.bootstrap?.Modal) {
+          const modal = window.bootstrap.Modal.getOrCreateInstance(registerModal);
+          modal.show();
+        } else {
+          // Fallback if Bootstrap isn't loaded yet
+          registerModal.classList.add('show');
+          registerModal.style.display = 'block';
+          document.body.classList.add('modal-open');
+          
+          // Create backdrop
+          const backdrop = document.createElement('div');
+          backdrop.className = 'modal-backdrop fade show';
+          document.body.appendChild(backdrop);
+        }
+      } else {
+        console.error('Register modal not found');
+      }
+    } else {
+      // If logged in, toggle dropdown
+      setIsDDOpen((pre) => !pre);
+    }
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+  };
+
   return (
     <div
-      className={`box-user tf-action-btns ${isDDOpen ? "active" : ""} `}
-      onClick={() => setIsDDOpen((pre) => !pre)}
+      className={`box-user tf-action-btns ${isDDOpen && userAuth.isLoggedIn ? "active" : ""} `}
+      onClick={handleUserIconClick}
+      style={{ cursor: 'pointer' }}
     >
-      <div className="user ">
+      <div className="user " style={{ pointerEvents: 'none' }}>
         <svg
           width={24}
           height={24}
@@ -26,12 +79,14 @@ export default function DashboardNav({ color = "" }) {
           />
         </svg>
       </div>
-      <div className={`name ${color} `}>
-        Themesflat
-        <i className="icon-CaretDown" />
+      <div className={`name ${color} `} style={{ pointerEvents: 'none' }}>
+        {userAuth.displayName}
+        {userAuth.isLoggedIn && <i className="icon-CaretDown" />}
       </div>
-      <div className=" menu-user">
-        <Link className="dropdown-item" href={`/dashboard`}>
+      <div className="menu-user" style={{ display: userAuth.isLoggedIn ? 'block' : 'none' }}>
+        {/* Dashboard - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/dashboard`}>
           <svg
             width={20}
             height={20}
@@ -70,7 +125,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           Dashboards
         </Link>
-        <Link className="dropdown-item" href={`/my-profile`}>
+        )}
+
+        {/* My Profile - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/my-profile`}>
           <svg
             width={20}
             height={20}
@@ -158,7 +217,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           My profile
         </Link>
-        <Link className="dropdown-item" href={`/my-package`}>
+        )}
+
+        {/* My Package - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/my-package`}>
           <svg
             width={20}
             height={20}
@@ -190,7 +253,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           My package
         </Link>
-        <Link className="dropdown-item" href={`/my-favorites`}>
+        )}
+
+        {/* My Favorites - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/my-favorites`}>
           <svg
             width={20}
             height={20}
@@ -222,7 +289,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           My favorites (1)
         </Link>
-        {/* <Link className="dropdown-item" href={`/my-save-search`}>
+        )}
+
+        {/* My Save Searches - Commented out
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+        <Link className="dropdown-item" href={`/my-save-search`}>
           <svg
             width={20}
             height={20}
@@ -253,8 +324,13 @@ export default function DashboardNav({ color = "" }) {
             />
           </svg>
           My save searches
-        </Link> */}
-        <Link className="dropdown-item" href={`/review`}>
+        </Link>
+        )}
+        */}
+
+        {/* Reviews - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/review`}>
           <svg
             width={20}
             height={20}
@@ -286,7 +362,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           Reviews
         </Link>
-        <Link className="dropdown-item" href={`/my-property`}>
+        )}
+
+        {/* My Properties - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item" href={`/my-property`}>
           <svg
             width={20}
             height={20}
@@ -332,7 +412,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           My properties
         </Link>
-        <Link className="dropdown-item " href={`/add-property`}>
+        )}
+
+        {/* Add Property - Only for logged in agents */}
+        {userAuth.isLoggedIn && userAuth.isAgentUser && (
+          <Link className="dropdown-item " href={`/add-property`}>
           <svg
             width={20}
             height={20}
@@ -364,7 +448,11 @@ export default function DashboardNav({ color = "" }) {
           </svg>
           Add property
         </Link>
-        <div className="dropdown-item ">
+        )}
+
+        {/* Login/Register - Only for non-logged in users */}
+        {!userAuth.isLoggedIn && (
+          <div className="dropdown-item ">
           <svg
             width={20}
             height={20}
@@ -390,7 +478,11 @@ export default function DashboardNav({ color = "" }) {
             </a>
           </div>
         </div>
-        <Link className="dropdown-item" href={`/`}>
+        )}
+
+        {/* Logout - Only for logged in users */}
+        {userAuth.isLoggedIn && (
+          <button className="dropdown-item" onClick={handleLogout} style={{ cursor: 'pointer', textAlign: 'left' }}>
           <svg
             width={20}
             height={20}
@@ -421,7 +513,8 @@ export default function DashboardNav({ color = "" }) {
             />
           </svg>
           Logout
-        </Link>
+        </button>
+        )}
       </div>
     </div>
   );

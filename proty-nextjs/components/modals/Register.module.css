@@ -1,0 +1,70 @@
+.roleSelect {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1f2937;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23A3ABB0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.roleSelect:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.roleSelect:focus {
+  outline: none;
+  border-color: #F1913D;
+  box-shadow: 0 0 0 3px rgba(241, 145, 61, 0.1);
+  background-color: #ffffff;
+}
+
+.roleSelect option {
+  padding: 12px;
+  font-size: 15px;
+  color: #1f2937;
+  background-color: #ffffff;
+}
+
+.roleSelect option:hover {
+  background-color: #f9fafb;
+}
+
+.errorSpan {
+  display: block;
+  font-size: 13px;
+  color: #dc2626;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.roleOption {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.roleIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roleDescription {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+

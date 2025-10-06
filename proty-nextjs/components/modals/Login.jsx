@@ -45,10 +45,71 @@ export default function Login() {
     }
   };
 
+  const closeLoginModal = () => {
+    const loginModal = document.getElementById('modalLogin');
+    if (loginModal) {
+      const bootstrapModal = window.bootstrap?.Modal?.getInstance(loginModal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+      // Manual cleanup
+      loginModal.classList.remove('show');
+      loginModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('padding-right');
+    }
+  };
+
+  const handleSwitchToRegister = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('Switching from Login to Register...');
+    closeLoginModal();
+    
+    // Open register modal after a delay
+    setTimeout(() => {
+      const registerModal = document.getElementById('modalRegister');
+      console.log('Register modal element:', registerModal);
+      console.log('Bootstrap available:', !!window.bootstrap);
+      
+      if (registerModal) {
+        if (window.bootstrap?.Modal) {
+          const modal = window.bootstrap.Modal.getOrCreateInstance(registerModal);
+          console.log('Opening register modal...');
+          modal.show();
+        } else {
+          // Fallback if Bootstrap isn't ready
+          console.log('Using fallback method...');
+          registerModal.classList.add('show');
+          registerModal.style.display = 'block';
+          document.body.classList.add('modal-open');
+          
+          const backdrop = document.createElement('div');
+          backdrop.className = 'modal-backdrop fade show';
+          document.body.appendChild(backdrop);
+        }
+      } else {
+        console.error('Register modal not found!');
+      }
+    }, 300);
+  };
+
   return (
     <>
-    <div className="modal modal-account fade" id="modalLogin">
-      <div className="modal-dialog modal-dialog-centered">
+    <div 
+      className="modal modal-account fade" 
+      id="modalLogin"
+      tabIndex="-1"
+      aria-labelledby="modalLoginLabel"
+      aria-hidden="true"
+    >
+      <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="flat-account">
             <div className="banner-account">
@@ -65,6 +126,8 @@ export default function Login() {
                 <span
                   className="close-modal icon-close"
                   data-bs-dismiss="modal"
+                  onClick={closeLoginModal}
+                  style={{ cursor: 'pointer' }}
                 />
               </div>
               <div className="box">
@@ -146,11 +209,12 @@ export default function Login() {
                   Login
                 </Link>
                 <div className="text text-center">
-                  Don’t you have an account?
+                  Don't you have an account?
                   <a
-                    href="#modalRegister"
-                    data-bs-toggle="modal"
+                    href="#"
+                    onClick={handleSwitchToRegister}
                     className="text-color-primary"
+                    style={{ cursor: 'pointer', marginLeft: '5px' }}
                   >
                     Register
                   </a>
