@@ -6,7 +6,7 @@ import Slider from "rc-slider";
 
 export default function SearchForm({
   parentClass = "wd-search-form",
-  searchParams,
+  searchParams = {},
   onSearchChange,
 }) {
   const searchFormRef = useRef();
