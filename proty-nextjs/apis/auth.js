@@ -6,6 +6,17 @@ export const authAPI = {
   signup: async (userData) => {
     try {
       const response = await Axios.post('/auth/signup', userData);
+      
+      // Store token and user data if returned
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        document.cookie = `token=${response.data.token}; path=/; max-age=86400`; // 24 hours
+      }
+      
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -21,6 +32,11 @@ export const authAPI = {
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         document.cookie = `token=${response.data.token}; path=/; max-age=86400`; // 24 hours
+      }
+      
+      // Store user data (will be synced with Redux in component)
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       
       return response.data;

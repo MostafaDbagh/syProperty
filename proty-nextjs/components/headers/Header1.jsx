@@ -1,19 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Nav from "./Nav";
 import Link from "next/link";
 import Image from "next/image";
 import DashboardNav from "./DashboardNav";
 import { PhoneIcon } from "@/components/icons";
-import { isAgent, isAuthenticated } from "@/utlis/authHelpers";
+import { useAuthState } from "@/store/hooks/useAuth";
 
 export default function Header1({ parentClass = "header" }) {
-  const [canAddProperty, setCanAddProperty] = useState(false);
+  // Use Redux for auth state
+  const { isAuthenticated: isLoggedIn, isAgent, changeRole } = useAuthState();
 
-  useEffect(() => {
-    // Check if user is logged in and is an agent
-    setCanAddProperty(isAuthenticated() && isAgent());
-  }, []);
+  console.log('🔍 Header1 Redux State:', { isLoggedIn, isAgent });
+
+  const makeAgent = () => {
+    changeRole('agent');
+  };
 
   return (
     <header id="header-main" className={parentClass}>
@@ -26,7 +28,7 @@ export default function Header1({ parentClass = "header" }) {
                   <Link href={`/`} className="site-logo">
                     <img
                       className="logo_header"
-                      alt=""
+                      alt="Property Listing Logo - Home"
                       data-light="/images/logo/logo@2x.png"
                       data-dark="/images/logo/logo-2@2x.png"
                       src="/images/logo/logo@2x.png"
@@ -46,7 +48,12 @@ export default function Header1({ parentClass = "header" }) {
                     <p>(603) 555-0123</p>
                   </div>
                   <DashboardNav />
-                  {canAddProperty && (
+                  
+                  {/* Debug - Always show for testing */}
+                  {console.log('Rendering buttons - isLoggedIn:', isLoggedIn, 'isAgent:', isAgent)}
+                  
+                  {/* Add Property Button - Only for Agents */}
+                  {isLoggedIn && isAgent && (
                     <div className="btn-add">
                       <Link
                         className="tf-btn style-border pd-23"
@@ -54,6 +61,24 @@ export default function Header1({ parentClass = "header" }) {
                       >
                         Add property
                       </Link>
+                    </div>
+                  )}
+                  
+                  {/* Make Me Agent Button - Only for Logged in Users (not agents) */}
+                  {isLoggedIn && !isAgent && (
+                    <div className="btn-add">
+                      <button
+                        className="tf-btn pd-23"
+                        onClick={makeAgent}
+                        style={{
+                          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        🎯 Make Me Agent
+                      </button>
                     </div>
                   )}
                   <div
