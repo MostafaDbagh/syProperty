@@ -5,17 +5,21 @@ import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function Properties2() {
   // Use search endpoint with empty params to get all listings
-  const { data: searchResponse, isLoading, isError } = useSearchListings({});
+  const { data: searchResponse, isLoading, isError, error } = useSearchListings({});
   const listings = searchResponse?.data || [];
   
-  console.log('Properties2 - searchResponse:', searchResponse);
-  console.log('Properties2 - listings:', listings);
-  console.log('Properties2 - isLoading:', isLoading);
-  console.log('Properties2 - isError:', isError);
+  console.log('🏠 Properties2 Debug:');
+  console.log('- searchResponse:', searchResponse);
+  console.log('- listings count:', listings?.length || 0);
+  console.log('- isLoading:', isLoading);
+  console.log('- isError:', isError);
+  console.log('- error:', error);
   // Show loading state
   if (isLoading) {
     return (
@@ -25,10 +29,10 @@ export default function Properties2() {
             <div className="col-12">
               <div className="heading-section text-center mb-48">
                 <h2 className="title split-text effect-right">
-                  <SplitTextAnimation text="Open Houses Listings" />
+                  <SplitTextAnimation text="Holiday Homes Listings" />
                 </h2>
                 <p className="text-1 split-text split-lines-transform">
-                  Thousands of luxury home enthusiasts just like you visit our website.
+                  Discover your perfect holiday retreat from our curated collection of vacation homes and rental properties.
                 </p>
               </div>
               <div className="text-center">
@@ -53,10 +57,10 @@ export default function Properties2() {
             <div className="col-12">
               <div className="heading-section text-center mb-48">
                 <h2 className="title split-text effect-right">
-                  <SplitTextAnimation text="Open Houses Listings" />
+                  <SplitTextAnimation text="Holiday Homes Listings" />
                 </h2>
                 <p className="text-1 split-text split-lines-transform">
-                  Thousands of luxury home enthusiasts just like you visit our website.
+                  Discover your perfect holiday retreat from our curated collection of vacation homes and rental properties.
                 </p>
               </div>
               <div className="text-center">
@@ -81,10 +85,10 @@ export default function Properties2() {
             <div className="col-12">
               <div className="heading-section text-center mb-48">
                 <h2 className="title split-text effect-right">
-                  <SplitTextAnimation text="Open Houses Listings" />
+                  <SplitTextAnimation text="Holiday Homes Listings" />
                 </h2>
                 <p className="text-1 split-text split-lines-transform">
-                  Thousands of luxury home enthusiasts just like you visit our website.
+                  Discover your perfect holiday retreat from our curated collection of vacation homes and rental properties.
                 </p>
               </div>
               <div className="text-center">
@@ -107,22 +111,37 @@ export default function Properties2() {
           <div className="col-12">
             <div className="heading-section text-center mb-48">
               <h2 className="title split-text effect-right">
-                <SplitTextAnimation text="Open Houses Listings" />
+                <SplitTextAnimation text="Holiday Homes Listings" />
               </h2>
               <p className="text-1 split-text split-lines-transform">
-                Thousands of luxury home enthusiasts just like you visit our
-                website.
+                Discover your perfect holiday retreat from our curated collection of vacation homes and rental properties.
               </p>
             </div>
-            <div
-              className="swiper style-pagination tf-sw-mobile sw-swiper-992"
-              data-screen={992}
-              data-preview={1}
-              data-space={15}
-            >
-              <div className="swiper-wrapper tf-layout-mobile-lg lg-col-2 ">
+            
+            <div className="wrap-properties-sw">
+              <Swiper
+                dir="ltr"
+                className="swiper style-pagination sw-properties"
+                slidesPerView={1}
+                spaceBetween={15}
+                loop={true}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }}
+                modules={[Pagination, Autoplay]}
+                pagination={{ el: ".spd-properties", clickable: true }}
+                breakpoints={{
+                  0: { slidesPerView: 1, spaceBetween: 15 },
+                  576: { slidesPerView: 1, spaceBetween: 15 },
+                  768: { slidesPerView: 2, spaceBetween: 20 },
+                  992: { slidesPerView: 2, spaceBetween: 30 },
+                  1200: { slidesPerView: 3, spaceBetween: 30 },
+                }}
+              >
                 {listings.slice(0, 6).map((property) => (
-                  <div className="swiper-slide" key={property._id}>
+                  <SwiperSlide key={property._id}>
                     <div className="box-house hover-img style-list">
                       <div className="image-wrap">
                         <Link href={`/property-detail-v1/${property._id}`}>
@@ -197,10 +216,12 @@ export default function Properties2() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </SwiperSlide>
                 ))}
-              </div>
-              <div className="sw-pagination sw-pagination-mb text-center mt-20 d-lg-none d-block" />
+              </Swiper>
+              
+              {/* Pagination dots */}
+              <div className="sw-pagination sw-pagination-mb text-center mt-20 spd-properties" />
             </div>
           </div>
         </div>

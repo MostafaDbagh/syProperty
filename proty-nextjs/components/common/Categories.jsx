@@ -3,7 +3,7 @@
 import React from "react";
 import { useSearchListings } from "@/apis/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import SplitTextAnimation from "./SplitTextAnimation";
 
 export default function Categories({
@@ -49,14 +49,27 @@ export default function Categories({
             dir="ltr"
             className="swiper sw-layout style-pagination"
             spaceBetween={15}
-            breakpoints={{
-              0: { slidesPerView: 2 },
-              575: { slidesPerView: 3 },
-              768: { slidesPerView: 4, spaceBetween: 30 },
-              992: { slidesPerView: 6, spaceBetween: 30 },
+            slidesPerView="auto"
+            loop={true}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             }}
-            modules={[Pagination]}
-            pagination={{ el: ".spd2" }}
+            breakpoints={{
+              0: { slidesPerView: 2, spaceBetween: 15 },
+              575: { slidesPerView: 3, spaceBetween: 20 },
+              768: { slidesPerView: 4, spaceBetween: 25 },
+              992: { slidesPerView: 5, spaceBetween: 30 },
+              1200: { slidesPerView: 6, spaceBetween: 30 },
+              1400: { slidesPerView: 7, spaceBetween: 30 },
+            }}
+            modules={[Autoplay, Pagination]}
+            pagination={{ 
+              el: ".spd2", 
+              clickable: true,
+              dynamicBullets: false,
+            }}
           >
             {categories.map((category, index) => (
               <SwiperSlide className="swiper-slide" key={index}>
@@ -77,8 +90,27 @@ export default function Categories({
                 </button>
               </SwiperSlide>
             ))}
-            <div className="sw-pagination sw-pagination-layout text-center d-lg-none d-block mt-20 spd2" />
           </Swiper>
+          
+          {/* Pagination dots for mobile and tablet */}
+          <div 
+            className="spd2" 
+            style={{ 
+              marginTop: '20px',
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '8px',
+            }} 
+          />
+          
+          <style jsx>{`
+            @media (min-width: 992px) {
+              .spd2 {
+                display: none !important;
+              }
+            }
+          `}</style>
         </div>
       </div>
     </section>
