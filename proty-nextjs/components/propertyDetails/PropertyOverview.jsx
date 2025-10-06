@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { getStatusBadge } from "@/utlis/propertyHelpers";
+import ContactAgentModal from "./ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
 
 export default function PropertyOverview({ property }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const statusBadge = getStatusBadge(property?.status);
   
   // Get CSS class for badge based on status
@@ -210,9 +213,19 @@ export default function PropertyOverview({ property }) {
           </div>
         </div>
       </div>
-      <a href="#" className="tf-btn bg-color-primary pd-21 fw-6">
+      <button 
+        onClick={() => setIsModalOpen(true)} 
+        className="tf-btn bg-color-primary pd-21 fw-6"
+        style={{ border: 'none', cursor: 'pointer', width: '100%' }}
+      >
         Ask a question
-      </a>
+      </button>
+
+      <ContactAgentModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        property={property}
+      />
     </>
   );
 }
