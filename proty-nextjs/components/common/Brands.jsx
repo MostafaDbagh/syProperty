@@ -22,7 +22,6 @@ export default function Brands({
                   />
                 </p>
               </div>
-              fuck or sucl
               <BrandSlider parentClass="infiniteslide wrap-partners mb-40" />
               <BrandSlider parentClass="infiniteslide wrap-partners partner-slider-reverse" />
             </div>
