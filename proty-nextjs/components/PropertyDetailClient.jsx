@@ -54,7 +54,7 @@ export default function PropertyDetailClient({ id }) {
         <Breadcumb pageName="Property Details" />
         <div className="main-content">
           <Details3 property={property} />
-          <RelatedProperties />
+          <RelatedProperties currentProperty={property} />
           <Cta />
         </div>
         <Footer1 />

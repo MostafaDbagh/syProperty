@@ -1,11 +1,26 @@
 import React from "react";
+import { getStatusBadge } from "@/utlis/propertyHelpers";
+import styles from "./PropertyOverview.module.css";
 
 export default function PropertyOverview({ property }) {
+  const statusBadge = getStatusBadge(property?.status);
+  
+  // Get CSS class for badge based on status
+  const getBadgeClass = () => {
+    const status = property?.status?.toLowerCase();
+    if (status === 'rent') return styles.forRent;
+    if (status === 'sale') return styles.forSale;
+    return styles.default;
+  };
+
   return (
     <>
       <div className="heading flex justify-between">
-        <div className="title text-5 fw-6 text-color-heading">
-          {property?.propertyType || 'Property Title'}
+        <div className={`title text-5 fw-6 text-color-heading ${styles.titleWrapper}`}>
+          <span>{property?.propertyType || 'Property Title'}</span>
+          <span className={`${styles.statusBadge} ${getBadgeClass()}`}>
+            {statusBadge.text}
+          </span>
         </div>
         <div className="price text-5 fw-6 text-color-heading">
           ${property?.propertyPrice?.toLocaleString() || '0'}{" "}

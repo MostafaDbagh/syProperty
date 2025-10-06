@@ -3,21 +3,33 @@ import Image from "next/image";
 import { useState } from "react";
 import { Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Gallery, Item } from "react-photoswipe-gallery";
 
-const images = [
+// Fallback images if property has no images
+const fallbackImages = [
   {
     src: "/images/section/property-details-v2-1.jpg",
-    alt: "",
+    alt: "Property Image",
   },
-  { src: "/images/section/property-details-v3-1.jpg", alt: "" },
-  { src: "/images/section/property-details-v3-2.jpg", alt: "" },
-  { src: "/images/section/property-details-v3-3.jpg", alt: "" },
-  { src: "/images/section/property-details-v3-4.jpg", alt: "" },
-  { src: "/images/section/property-details-v3-5.jpg", alt: "" },
+  { src: "/images/section/property-details-v3-1.jpg", alt: "Property Image" },
+  { src: "/images/section/property-details-v3-2.jpg", alt: "Property Image" },
+  { src: "/images/section/property-details-v3-3.jpg", alt: "Property Image" },
+  { src: "/images/section/property-details-v3-4.jpg", alt: "Property Image" },
+  { src: "/images/section/property-details-v3-5.jpg", alt: "Property Image" },
 ];
-import { Gallery, Item } from "react-photoswipe-gallery";
-export default function Slider3() {
+
+export default function Slider3({ property }) {
   const [swiperRef, setSwiperRef] = useState(null);
+  
+  // Get images from property or use fallback
+  const propertyImages = property?.images && property.images.length > 0
+    ? property.images.map((img, idx) => ({
+        src: img,
+        alt: `${property.propertyType || 'Property'} - Image ${idx + 1}`,
+      }))
+    : fallbackImages;
+  
+  const images = propertyImages;
   return (
     <div className="single-property-gallery style-1">
       <div className="position-relative">

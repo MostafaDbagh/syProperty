@@ -13,18 +13,20 @@ export default function Details3({ property }) {
       <div className="tf-container">
         <div className="row">
           <div className="col-xl-8 col-lg-7">
-            <Slider3 />
+            <Slider3 property={property} />
             <div className="wg-property box-overview">
               <PropertyOverview property={property} />
             </div>
-            <div className="wg-property video spacing-2">
-              <VideoReview />
-            </div>
+            {property?.videoUrl && (
+              <div className="wg-property video spacing-2">
+                <VideoReview property={property} />
+              </div>
+            )}
             <div className="wg-property box-property-detail spacing-1">
-              <ExtraInfo />
+              <ExtraInfo property={property} />
             </div>
             <div className="wg-property box-amenities spacing-3">
-              <Features />
+              <Features property={property} />
             </div>
           </div>
           <div className="col-xl-4 col-lg-5">
