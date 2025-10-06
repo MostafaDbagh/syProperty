@@ -86,7 +86,7 @@ export default function SearchForm({
           <Slider
             id="priceRange"
             range
-            min={0}
+            min={3000}
             max={1000000}
             value={[
               searchParams.priceMin ? +searchParams.priceMin : 0,
