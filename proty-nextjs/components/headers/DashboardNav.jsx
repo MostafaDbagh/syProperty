@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuthState } from "@/store/hooks/useAuth";
 import { 
   UserAvatarIcon, 
@@ -16,6 +16,7 @@ import {
 
 export default function DashboardNav({ color = "" }) {
   const [isDDOpen, setIsDDOpen] = useState(false);
+  const dropdownRef = useRef(null);
   
   // Use Redux for auth state
   const { 
@@ -27,6 +28,23 @@ export default function DashboardNav({ color = "" }) {
   } = useAuthState();
 
   console.log('🔍 DashboardNav Redux State:', { isLoggedIn, isAgentUser, displayName });
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDDOpen(false);
+      }
+    };
+
+    if (isDDOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDDOpen]);
 
   const handleUserIconClick = (e) => {
     e.preventDefault();
@@ -71,6 +89,7 @@ export default function DashboardNav({ color = "" }) {
 
   return (
     <div
+      ref={dropdownRef}
       className={`box-user tf-action-btns ${isDDOpen && isLoggedIn ? "active" : ""} `}
       onClick={handleUserIconClick}
       style={{ cursor: 'pointer' }}

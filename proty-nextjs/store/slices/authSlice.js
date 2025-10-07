@@ -8,7 +8,7 @@ const initialState = {
     role: 'user',
   },
   token: 'test-token-123',
-  isAuthenticated: false,
+  isAuthenticated: true,
   isAgent: false,
 };
 
