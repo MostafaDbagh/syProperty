@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuthState } from "@/store/hooks/useAuth";
+import { authAPI } from "@/apis/auth";
 import { 
   UserAvatarIcon, 
   DashboardIcon, 
@@ -27,7 +28,6 @@ export default function DashboardNav({ color = "" }) {
     changeRole 
   } = useAuthState();
 
-  console.log('🔍 DashboardNav Redux State:', { isLoggedIn, isAgentUser, displayName });
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -52,7 +52,6 @@ export default function DashboardNav({ color = "" }) {
     
     // If not logged in, open register modal instead of dropdown
     if (!isLoggedIn) {
-      console.log('Opening register modal for guest user');
       const registerModal = document.querySelector('#modalRegister');
       if (registerModal) {
         if (window.bootstrap?.Modal) {
@@ -78,9 +77,18 @@ export default function DashboardNav({ color = "" }) {
     }
   };
 
-  const handleLogout = (e) => {
+  const handleLogout = async (e) => {
     e.preventDefault();
-    logoutUser();
+    try {
+      await authAPI.signout();
+      setIsDDOpen(false);
+      alert('Logged out successfully!');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still close dropdown and show message even if API call fails
+      setIsDDOpen(false);
+      alert('Logged out successfully!');
+    }
   };
 
   const makeAgent = () => {

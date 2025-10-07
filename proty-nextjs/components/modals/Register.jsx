@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { UserIcon, EmailIcon, LockIcon } from "@/components/icons";
+import { authAPI } from "@/apis/auth";
+import OTPVerification from "./OTPVerification";
 import styles from "./Register.module.css";
 
 export default function Register() {
@@ -16,6 +18,11 @@ export default function Register() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [pendingUserData, setPendingUserData] = useState(null);
+
 
   const closeModal = useCallback(() => {
     const registerModal = document.getElementById('modalRegister');
@@ -83,6 +90,11 @@ export default function Register() {
       ...prev,
       [name]: ""
     }));
+    
+    // Clear general error when user starts typing
+    if (error) {
+      setError('');
+    }
   };
 
   const validateField = (fieldName) => {
@@ -118,10 +130,45 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement registration API call
-    console.log("Registration data:", formData);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Generate unique username and email for testing to avoid duplicate key errors
+      const timestamp = Date.now();
+      const uniqueUsername = `${formData.username}_${timestamp}`;
+      const uniqueEmail = `${formData.email.split('@')[0]}_${timestamp}@${formData.email.split('@')[1]}`;
+      
+      // Create user data with unique identifiers
+      const userDataForRegistration = {
+        ...formData,
+        username: uniqueUsername,
+        email: uniqueEmail
+      };
+      
+      // Static OTP sending - always sends 123456
+      
+      // Static OTP - always 123456
+      alert(`OTP sent to ${userDataForRegistration.email}. Use code: 123456`);
+      
+      // Store user data for later registration
+      setPendingUserData(userDataForRegistration);
+      
+      // Close registration modal first
+      closeModal();
+      
+      // Show OTP modal after a short delay
+      setTimeout(() => {
+        setShowOTPModal(true);
+      }, 300);
+      
+    } catch (error) {
+      setError(error.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isFormValid = () => {
@@ -138,23 +185,18 @@ export default function Register() {
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('Switching from Register to Login...');
     closeModal();
     
     // Open login modal after a delay
     setTimeout(() => {
       const loginModal = document.getElementById('modalLogin');
-      console.log('Login modal element:', loginModal);
-      console.log('Bootstrap available:', !!window.bootstrap);
       
       if (loginModal) {
         if (window.bootstrap?.Modal) {
           const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
-          console.log('Opening login modal...');
           modal.show();
         } else {
           // Fallback if Bootstrap isn't ready
-          console.log('Using fallback method...');
           loginModal.classList.add('show');
           loginModal.style.display = 'block';
           document.body.classList.add('modal-open');
@@ -164,19 +206,43 @@ export default function Register() {
           document.body.appendChild(backdrop);
         }
       } else {
-        console.error('Login modal not found!');
       }
     }, 300);
   };
 
+  const handleOTPSuccess = (result) => {
+    
+    // Close register modal
+    closeModal();
+    
+    // Reset form
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "user"
+    });
+    
+    // Reset OTP modal state
+    setShowOTPModal(false);
+    setPendingUserData(null);
+  };
+
+  const handleOTPClose = () => {
+    setShowOTPModal(false);
+    // Don't reset pendingUserData here - keep it for success modal
+  };
+
   return (
-    <div 
-      className="modal modal-account fade" 
-      id="modalRegister"
-      tabIndex="-1"
-      aria-labelledby="modalRegisterLabel"
-      aria-hidden="true"
-    >
+    <>
+      <div 
+        className="modal modal-account fade" 
+        id="modalRegister"
+        tabIndex="-1"
+        aria-labelledby="modalRegisterLabel"
+        aria-hidden="true"
+      >
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="flat-account">
@@ -325,19 +391,24 @@ export default function Register() {
                     </span>
                   )}
                 </fieldset>
+                {error && (
+                  <div className="alert alert-danger mt-3" role="alert">
+                    {error}
+                  </div>
+                )}
               </div>
               <div className="box box-btn">
                 <button
                   type="submit"
                   className="tf-btn bg-color-primary w-full"
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || isLoading}
                   style={{
-                    opacity: isFormValid() ? 1 : 0.6,
-                    cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                    opacity: (isFormValid() && !isLoading) ? 1 : 0.6,
+                    cursor: (isFormValid() && !isLoading) ? 'pointer' : 'not-allowed',
                     border: 'none'
                   }}
                 >
-                  Sign Up
+                  {isLoading ? 'Sending OTP...' : 'Sign Up'}
                 </button>
                 <div className="text text-center">
                   Already have an account?
@@ -356,5 +427,15 @@ export default function Register() {
         </div>
       </div>
     </div>
+    
+      {/* OTP Verification Modal */}
+      <OTPVerification
+        isOpen={showOTPModal}
+        onClose={handleOTPClose}
+        onSuccess={handleOTPSuccess}
+        userData={pendingUserData}
+        email={pendingUserData?.email}
+      />
+    </>
   );
 }

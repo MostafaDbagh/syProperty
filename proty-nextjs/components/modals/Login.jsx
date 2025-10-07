@@ -4,9 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { UserIcon, LockIcon } from "@/components/icons";
 import ForgotPasswordFlow from "./ForgotPasswordFlow";
+import { authAPI } from "@/apis/auth";
 
 export default function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleForgotPasswordClick = () => {
     // Close the Bootstrap login modal
@@ -101,6 +108,42 @@ export default function Login() {
     }, 300);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await authAPI.signin(formData);
+      console.log('Login successful:', result);
+      
+      // Close the modal
+      closeLoginModal();
+      
+      // Show success message
+      alert('Login successful! Welcome back!');
+      
+      // Reset form
+      setFormData({ email: '', password: '' });
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
     <div 
@@ -121,7 +164,7 @@ export default function Login() {
                 src="/images/section/banner-login.jpg"
               />
             </div>
-            <form className="form-account" onSubmit={(e) => e.preventDefault()}>
+            <form className="form-account" onSubmit={handleSubmit}>
               <div className="title-box">
                 <h4>Login</h4>
                 <span
@@ -133,14 +176,18 @@ export default function Login() {
               </div>
               <div className="box">
                 <fieldset className="box-fieldset">
-                  <label htmlFor="nameAccount">Account</label>
+                  <label htmlFor="nameAccount">Email</label>
                   <div className="ip-field">
                     <UserIcon className="icon" />
                     <input
-                      type="text"
+                      type="email"
+                      name="email"
                       className="form-control"
                       id="nameAccount"
-                      placeholder="Your name"
+                      placeholder="Your email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
                 </fieldset>
@@ -149,10 +196,14 @@ export default function Login() {
                   <div className="ip-field">
                     <LockIcon className="icon" />
                     <input
-                      type="text"
+                      type="password"
+                      name="password"
                       className="form-control"
                       id="pass"
                       placeholder="Your password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
                   <div className="text-forgot text-end">
@@ -173,14 +224,20 @@ export default function Login() {
                     </button>
                   </div>
                 </fieldset>
+                {error && (
+                  <div className="alert alert-danger mt-3" role="alert">
+                    {error}
+                  </div>
+                )}
               </div>
               <div className="box box-btn">
-                <Link
-                  href={`/dashboard`}
+                <button
+                  type="submit"
                   className="tf-btn bg-color-primary w-100"
+                  disabled={isLoading}
                 >
-                  Login
-                </Link>
+                  {isLoading ? 'Logging in...' : 'Login'}
+                </button>
                 <div className="text text-center">
                   Don't you have an account?
                   <a

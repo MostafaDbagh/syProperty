@@ -1,4 +1,6 @@
 import Axios from '../axios';
+import { store } from '../store/store';
+import { setCredentials, logout } from '../store/slices/authSlice';
 
 // Authentication API functions
 export const authAPI = {
@@ -15,6 +17,12 @@ export const authAPI = {
       
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        // Dispatch Redux action to update auth state
+        store.dispatch(setCredentials({
+          user: response.data.user,
+          token: response.data.token
+        }));
       }
       
       return response.data;
@@ -34,9 +42,15 @@ export const authAPI = {
         document.cookie = `token=${response.data.token}; path=/; max-age=86400`; // 24 hours
       }
       
-      // Store user data (will be synced with Redux in component)
+      // Store user data and dispatch Redux action
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        // Dispatch Redux action to update auth state
+        store.dispatch(setCredentials({
+          user: response.data.user,
+          token: response.data.token
+        }));
       }
       
       return response.data;
@@ -69,13 +83,22 @@ export const authAPI = {
       
       // Clear token from localStorage and cookies
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      
+      // Dispatch Redux action to clear auth state
+      store.dispatch(logout());
       
       return response.data;
     } catch (error) {
-      // Even if the request fails, clear local storage
+      // Even if the request fails, clear local storage and Redux state
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      
+      // Dispatch Redux action to clear auth state
+      store.dispatch(logout());
+      
       throw error.response?.data || error.message;
     }
   },
@@ -97,6 +120,32 @@ export const authAPI = {
              .split('; ')
              .find(row => row.startsWith('token='))
              ?.split('=')[1];
+  },
+
+  // Initialize Redux state from localStorage
+  initializeAuthState: () => {
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        store.dispatch(setCredentials({
+          user: user,
+          token: token
+        }));
+        return true;
+      } catch (error) {
+        console.error('Error parsing user data from localStorage:', error);
+        // Clear corrupted data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        store.dispatch(logout());
+        return false;
+      }
+    }
+    
+    return false;
   }
 };
 
