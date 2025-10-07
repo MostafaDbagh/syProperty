@@ -52,7 +52,12 @@ const signin = async (req, res, next) => {
     res
       .cookie('access_token', token, { httpOnly: true })
       .status(200)
-      .json(rest);
+      .json({
+        success: true,
+        message: 'Login successful',
+        token: token,
+        user: rest
+      });
   } catch (error) {
     next(error);
   }
@@ -67,7 +72,12 @@ const google = async (req, res, next) => {
       res
         .cookie('access_token', token, { httpOnly: true })
         .status(200)
-        .json(rest);
+        .json({
+          success: true,
+          message: 'Google login successful',
+          token: token,
+          user: rest
+        });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -87,7 +97,12 @@ const google = async (req, res, next) => {
       res
         .cookie('access_token', token, { httpOnly: true })
         .status(200)
-        .json(rest);
+        .json({
+          success: true,
+          message: 'Google signup and login successful',
+          token: token,
+          user: rest
+        });
     }
   } catch (error) {
     next(error);

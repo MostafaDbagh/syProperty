@@ -129,7 +129,6 @@ export default function Login() {
 
     try {
       const result = await authAPI.signin(formData);
-      console.log('Login successful:', result);
       
       // Close the modal
       closeLoginModal();
@@ -138,7 +137,6 @@ export default function Login() {
       setFormData({ email: '', password: '' });
       
     } catch (error) {
-      console.error('Login error:', error);
       setError(error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);

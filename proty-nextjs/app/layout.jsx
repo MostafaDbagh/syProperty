@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query"; 
 import ReduxProvider from "@/store/ReduxProvider";
+import { GlobalModalProvider } from "@/components/contexts/GlobalModalContext";
 
 import "../public/main.scss";
 import "odometer/themes/odometer-theme-default.css";
@@ -75,14 +76,16 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="popup-loader">
         <ReduxProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-            <MobileMenu />
-            <BackToTop />
-            <SettingsHandler />
-            <Login />
-            <Register />
-          </QueryClientProvider>
+          <GlobalModalProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+              <MobileMenu />
+              <BackToTop />
+              <SettingsHandler />
+              <Login />
+              <Register />
+            </QueryClientProvider>
+          </GlobalModalProvider>
         </ReduxProvider>
       </body>
     </html>

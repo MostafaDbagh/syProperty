@@ -2,24 +2,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { authAPI } from "@/apis/auth";
-import RegistrationSuccessModal from "./RegistrationSuccessModal";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 import styles from "./OTPVerification.module.css";
 
 export default function OTPVerification({ 
   isOpen, 
   onClose, 
   onSuccess, 
-  userData, 
-  email 
+  userData,
+  email
 }) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const inputRefs = useRef([]);
+  const { showSuccessModal, showWarningModal } = useGlobalModal();
 
   // Auto-focus first input when modal opens
   useEffect(() => {
@@ -116,18 +116,22 @@ export default function OTPVerification({
         const result = await authAPI.signup(userData);
         
         if (result.success) {
-          // Show success modal
-          setShowSuccessModal(true);
+          // Show global success modal
+          showSuccessModal(
+            "Registration Successful!",
+            "Your account has been created successfully. You can now login with your credentials.",
+            userData?.email
+          );
           // Close the OTP verification modal immediately
           onClose();
           // Don't call onSuccess immediately - let the success modal handle the flow
         } else {
-          // Handle specific error messages from backend
-          if (result.message) {
-            setError(result.message);
-          } else {
-            setError('Registration failed. Please try again.');
-          }
+          // Show global warning modal for signup failure
+          showWarningModal(
+            "Registration Failed",
+            result.message || "Registration failed. Please try again.",
+            userData?.email
+          );
         }
       } else {
         setError('Invalid OTP. Please try again.');
@@ -180,41 +184,7 @@ export default function OTPVerification({
     setError('');
     setResendCooldown(0);
     setOtpVerified(false);
-    setShowSuccessModal(false);
     onClose();
-  };
-
-  const handleSuccessModalClose = () => {
-    setShowSuccessModal(false);
-    // Call onSuccess callback when success modal is closed
-    onSuccess({ success: true });
-  };
-
-  const handleLoginClick = () => {
-    // Close the success modal first
-    setShowSuccessModal(false);
-    // Call onSuccess callback when login button is clicked
-    onSuccess({ success: true });
-    
-    // Open the login modal after a short delay
-    setTimeout(() => {
-      const loginModal = document.getElementById('modalLogin');
-      if (loginModal && window.bootstrap?.Modal) {
-        const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
-        modal.show();
-      } else {
-        // Fallback: manually show login modal
-        if (loginModal) {
-          loginModal.classList.add('show');
-          loginModal.style.display = 'block';
-          document.body.classList.add('modal-open');
-          
-          const backdrop = document.createElement('div');
-          backdrop.className = 'modal-backdrop fade show';
-          document.body.appendChild(backdrop);
-        }
-      }
-    }, 100);
   };
 
   if (!isOpen) return null;
@@ -333,15 +303,5 @@ export default function OTPVerification({
   if (typeof window === 'undefined') return null;
   
   
-  return (
-    <>
-      {createPortal(modalContent, document.body)}
-             <RegistrationSuccessModal
-               isOpen={showSuccessModal}
-               onClose={handleSuccessModalClose}
-               userEmail={userData?.email}
-               onLoginClick={handleLoginClick}
-             />
-    </>
-  );
+  return createPortal(modalContent, document.body);
 }
