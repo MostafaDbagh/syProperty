@@ -9,8 +9,33 @@ const signup = async (req, res, next) => {
   const newUser = new User({ username, email, password: hashedPassword, role });
   try {
     await newUser.save();
-    res.status(201).json('User created successfully!');
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully!',
+      user: newUser
+    });
   } catch (error) {
+    // Handle duplicate key errors specifically
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      const value = error.keyValue[field];
+      return res.status(400).json({
+        success: false,
+        message: `${field} '${value}' already exists. Please use a different ${field}.`,
+        error: 'DUPLICATE_KEY_ERROR'
+      });
+    }
+    // Handle other validation errors
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors,
+        error: 'VALIDATION_ERROR'
+      });
+    }
+    // Handle other errors
     next(error);
   }
 };
@@ -78,9 +103,120 @@ const signOut = async (req, res, next) => {
   }
 };
 
+// OTP Functions
+const sendOTP = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required',
+        error: 'MISSING_EMAIL'
+      });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // In a real application, you would send this OTP via email/SMS
+    // For now, we'll just log it and return success
+    console.log(`OTP for ${email}: ${otp}`);
+    
+    // Store OTP in memory (in production, use Redis or database)
+    if (!global.otpStore) {
+      global.otpStore = new Map();
+    }
+    global.otpStore.set(email, {
+      otp: otp,
+      timestamp: Date.now(),
+      attempts: 0
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'OTP sent successfully',
+      // For testing purposes, include OTP in response
+      otp: otp
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyOTP = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+    
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and OTP are required',
+        error: 'MISSING_PARAMETERS'
+      });
+    }
+
+    // Check if OTP exists in store
+    if (!global.otpStore || !global.otpStore.has(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'OTP not found or expired',
+        error: 'OTP_NOT_FOUND'
+      });
+    }
+
+    const otpData = global.otpStore.get(email);
+    
+    // Check if OTP is expired (5 minutes)
+    const now = Date.now();
+    const otpAge = now - otpData.timestamp;
+    if (otpAge > 5 * 60 * 1000) { // 5 minutes
+      global.otpStore.delete(email);
+      return res.status(400).json({
+        success: false,
+        message: 'OTP has expired',
+        error: 'OTP_EXPIRED'
+      });
+    }
+
+    // Check attempts (max 3 attempts)
+    if (otpData.attempts >= 3) {
+      global.otpStore.delete(email);
+      return res.status(400).json({
+        success: false,
+        message: 'Too many attempts. Please request a new OTP',
+        error: 'TOO_MANY_ATTEMPTS'
+      });
+    }
+
+    // Verify OTP
+    if (otpData.otp !== otp) {
+      otpData.attempts++;
+      global.otpStore.set(email, otpData);
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid OTP',
+        error: 'INVALID_OTP'
+      });
+    }
+
+    // OTP is valid, remove it from store
+    global.otpStore.delete(email);
+
+    res.status(200).json({
+      success: true,
+      message: 'OTP verified successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
   google,
   signOut,
+  sendOTP,
+  verifyOTP,
 };

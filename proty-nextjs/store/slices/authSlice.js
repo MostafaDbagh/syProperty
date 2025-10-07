@@ -15,7 +15,7 @@ const authSlice = createSlice({
       const { user, token } = action.payload;
       state.user = user;
       state.token = token;
-      state.isAuthenticated = true;
+      state.isAuthenticated = !!token; // Only authenticated if there's a token
       state.isAgent = user?.role === 'agent';
     },
     updateUserRole: (state, action) => {

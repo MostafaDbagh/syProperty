@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { authAPI } from "@/apis/auth";
+import RegistrationSuccessModal from "./RegistrationSuccessModal";
 import styles from "./OTPVerification.module.css";
 
 export default function OTPVerification({ 
@@ -16,6 +17,8 @@ export default function OTPVerification({
   const [error, setError] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const inputRefs = useRef([]);
 
   // Auto-focus first input when modal opens
@@ -37,6 +40,14 @@ export default function OTPVerification({
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
+
+  // Auto-verify OTP when all 6 digits are filled
+  useEffect(() => {
+    const otpString = otp.join('');
+    if (otpString.length === 6 && !otpVerified && !isLoading) {
+      handleVerifyOTP();
+    }
+  }, [otp, otpVerified, isLoading]);
 
   const handleOTPChange = (index, value) => {
     // Only allow single digit
@@ -83,7 +94,7 @@ export default function OTPVerification({
   };
 
   const handleVerifyOTP = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     const otpString = otp.join('');
     if (otpString.length !== 6) {
@@ -95,28 +106,36 @@ export default function OTPVerification({
     setError('');
 
     try {
-      // Static OTP verification - always accepts 123456
+      // Verify OTP API call
+      const verifyResult = await authAPI.verifyOTP(email, otpString);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Static verification - only 123456 is valid
-      if (otpString === '123456') {
+      if (verifyResult.success) {
+        setOtpVerified(true);
         
         // Call the actual signup API
         const result = await authAPI.signup(userData);
         
-        // Call success callback
-        onSuccess(result);
-        
+        if (result.success) {
+          // Show success modal
+          setShowSuccessModal(true);
+          // Close the OTP verification modal immediately
+          onClose();
+          // Don't call onSuccess immediately - let the success modal handle the flow
+        } else {
+          // Handle specific error messages from backend
+          if (result.message) {
+            setError(result.message);
+          } else {
+            setError('Registration failed. Please try again.');
+          }
+        }
       } else {
-        setError('Invalid OTP. Please use code: 123456');
+        setError('Invalid OTP. Please try again.');
         // Clear OTP and focus first input
         setOtp(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
       }
     } catch (error) {
-      
       // More specific error handling
       if (error.message) {
         setError(error.message);
@@ -125,8 +144,12 @@ export default function OTPVerification({
       } else if (typeof error === 'string') {
         setError(error);
       } else {
-        setError('Registration failed. Please try again.');
+        setError('OTP verification failed. Please try again.');
       }
+      
+      // Clear OTP and focus first input
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
     } finally {
       setIsLoading(false);
     }
@@ -139,13 +162,8 @@ export default function OTPVerification({
     setError('');
 
     try {
-      // Static OTP sending - always sends 123456
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Static OTP - always 123456
-      alert(`OTP sent to ${email}. Use code: 123456`);
+      // Send OTP API call
+      await authAPI.sendOTP(email);
       
       // Set cooldown timer (30 seconds)
       setResendCooldown(30);
@@ -161,7 +179,42 @@ export default function OTPVerification({
     setOtp(['', '', '', '', '', '']);
     setError('');
     setResendCooldown(0);
+    setOtpVerified(false);
+    setShowSuccessModal(false);
     onClose();
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    // Call onSuccess callback when success modal is closed
+    onSuccess({ success: true });
+  };
+
+  const handleLoginClick = () => {
+    // Close the success modal first
+    setShowSuccessModal(false);
+    // Call onSuccess callback when login button is clicked
+    onSuccess({ success: true });
+    
+    // Open the login modal after a short delay
+    setTimeout(() => {
+      const loginModal = document.getElementById('modalLogin');
+      if (loginModal && window.bootstrap?.Modal) {
+        const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
+        modal.show();
+      } else {
+        // Fallback: manually show login modal
+        if (loginModal) {
+          loginModal.classList.add('show');
+          loginModal.style.display = 'block';
+          document.body.classList.add('modal-open');
+          
+          const backdrop = document.createElement('div');
+          backdrop.className = 'modal-backdrop fade show';
+          document.body.appendChild(backdrop);
+        }
+      }
+    }, 100);
   };
 
   if (!isOpen) return null;
@@ -248,7 +301,7 @@ export default function OTPVerification({
                     border: 'none'
                   }}
                 >
-                  {isLoading ? 'Verifying...' : 'Verify & Complete Registration'}
+                  {isLoading ? 'Verifying...' : otpVerified ? 'Completing Registration...' : 'Verify & Complete Registration'}
                 </button>
               </div>
 
@@ -268,13 +321,6 @@ export default function OTPVerification({
                      'Resend Code'}
                   </button>
                 </div>
-
-                {/* Testing Hint */}
-                <div className={styles.testingHint}>
-                  <small className={styles.testingText}>
-                    For testing: Use code <strong className={styles.testingCode}>123456</strong>
-                  </small>
-                </div>
               </div>
             </form>
           </div>
@@ -287,5 +333,15 @@ export default function OTPVerification({
   if (typeof window === 'undefined') return null;
   
   
-  return createPortal(modalContent, document.body);
+  return (
+    <>
+      {createPortal(modalContent, document.body)}
+             <RegistrationSuccessModal
+               isOpen={showSuccessModal}
+               onClose={handleSuccessModalClose}
+               userEmail={userData?.email}
+               onLoginClick={handleLoginClick}
+             />
+    </>
+  );
 }

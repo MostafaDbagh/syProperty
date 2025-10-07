@@ -5,16 +5,12 @@ import { createPortal } from "react-dom";
 export default function RegistrationSuccessModal({ 
   isOpen, 
   onClose, 
-  userEmail 
+  userEmail,
+  onLoginClick 
 }) {
-  console.log('🎉 RegistrationSuccessModal render - isOpen:', isOpen, 'userEmail:', userEmail);
-  
   if (!isOpen) {
-    console.log('❌ RegistrationSuccessModal not rendering because isOpen is false');
     return null;
   }
-
-  console.log('✅ RegistrationSuccessModal rendering modal content');
 
   const modalContent = (
     <div 
@@ -109,7 +105,7 @@ export default function RegistrationSuccessModal({
               {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                 <button
-                  onClick={onClose}
+                  onClick={onLoginClick}
                   className="tf-btn bg-color-primary"
                   style={{
                     padding: '12px 24px',
@@ -118,7 +114,26 @@ export default function RegistrationSuccessModal({
                     fontSize: '16px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    minWidth: '120px'
+                    minWidth: '120px',
+                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                    color: 'white'
+                  }}
+                >
+                  🔑 Login Now
+                </button>
+                <button
+                  onClick={onClose}
+                  className="tf-btn style-border"
+                  style={{
+                    padding: '12px 24px',
+                    border: '2px solid var(--Line)',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    minWidth: '120px',
+                    backgroundColor: 'transparent',
+                    color: 'var(--Text)'
                   }}
                 >
                   Continue

@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { UserIcon, LockIcon } from "@/components/icons";
+import { UserIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import ForgotPasswordFlow from "./ForgotPasswordFlow";
 import { authAPI } from "@/apis/auth";
 
 export default function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -43,7 +44,6 @@ export default function Login() {
   };
 
   const handlePasswordResetSuccess = () => {
-    alert("Password reset successfully! You can now login with your new password.");
     setShowForgotPassword(false);
     // Optionally reopen login modal
     const loginModal = document.getElementById('modalLogin');
@@ -118,6 +118,10 @@ export default function Login() {
     if (error) setError('');
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -129,9 +133,6 @@ export default function Login() {
       
       // Close the modal
       closeLoginModal();
-      
-      // Show success message
-      alert('Login successful! Welcome back!');
       
       // Reset form
       setFormData({ email: '', password: '' });
@@ -193,10 +194,10 @@ export default function Login() {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label htmlFor="pass">Password</label>
-                  <div className="ip-field">
+                  <div className="ip-field" style={{ position: 'relative' }}>
                     <LockIcon className="icon" />
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       className="form-control"
                       id="pass"
@@ -205,6 +206,32 @@ export default function Login() {
                       onChange={handleInputChange}
                       required
                     />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={togglePasswordVisibility}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#666',
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10
+                      }}
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon width={20} height={20} />
+                      ) : (
+                        <EyeIcon width={20} height={20} />
+                      )}
+                    </button>
                   </div>
                   <div className="text-forgot text-end">
                     <button

@@ -82,12 +82,10 @@ export default function DashboardNav({ color = "" }) {
     try {
       await authAPI.signout();
       setIsDDOpen(false);
-      alert('Logged out successfully!');
     } catch (error) {
       console.error('Logout error:', error);
-      // Still close dropdown and show message even if API call fails
+      // Still close dropdown even if API call fails
       setIsDDOpen(false);
-      alert('Logged out successfully!');
     }
   };
 

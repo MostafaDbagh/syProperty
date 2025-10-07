@@ -9,21 +9,8 @@ export const authAPI = {
     try {
       const response = await Axios.post('/auth/signup', userData);
       
-      // Store token and user data if returned
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        document.cookie = `token=${response.data.token}; path=/; max-age=86400`; // 24 hours
-      }
-      
-      if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        // Dispatch Redux action to update auth state
-        store.dispatch(setCredentials({
-          user: response.data.user,
-          token: response.data.token
-        }));
-      }
+      // Don't store anything in localStorage after signup
+      // User needs to login to get authenticated
       
       return response.data;
     } catch (error) {
@@ -136,7 +123,6 @@ export const authAPI = {
         }));
         return true;
       } catch (error) {
-        console.error('Error parsing user data from localStorage:', error);
         // Clear corrupted data
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -145,7 +131,27 @@ export const authAPI = {
       }
     }
     
+    // No token or user data - not authenticated
     return false;
+  },
+
+  // OTP APIs
+  sendOTP: async (email) => {
+    try {
+      const response = await Axios.post('/auth/send-otp', { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  verifyOTP: async (email, otp) => {
+    try {
+      const response = await Axios.post('/auth/verify-otp', { email, otp });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
   }
 };
 

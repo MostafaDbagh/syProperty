@@ -11,8 +11,6 @@ export default function Header1({ parentClass = "header" }) {
   // Use Redux for auth state
   const { isAuthenticated: isLoggedIn, isAgent, changeRole } = useAuthState();
 
-  console.log('🔍 Header1 Redux State:', { isLoggedIn, isAgent });
-
   const makeAgent = () => {
     changeRole('agent');
   };
@@ -48,9 +46,6 @@ export default function Header1({ parentClass = "header" }) {
                     <p>(603) 555-0123</p>
                   </div>
                   <DashboardNav />
-                  
-                  {/* Debug - Always show for testing */}
-                  {console.log('Rendering buttons - isLoggedIn:', isLoggedIn, 'isAgent:', isAgent)}
                   
                   {/* Add Property Button - Only for Agents */}
                   {isLoggedIn && isAgent && (

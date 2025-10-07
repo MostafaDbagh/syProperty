@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { UserIcon, EmailIcon, LockIcon } from "@/components/icons";
+import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
 import OTPVerification from "./OTPVerification";
 import styles from "./Register.module.css";
@@ -97,6 +97,14 @@ export default function Register() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   const validateField = (fieldName) => {
     let error = "";
     
@@ -136,22 +144,13 @@ export default function Register() {
     setError('');
 
     try {
-      // Generate unique username and email for testing to avoid duplicate key errors
-      const timestamp = Date.now();
-      const uniqueUsername = `${formData.username}_${timestamp}`;
-      const uniqueEmail = `${formData.email.split('@')[0]}_${timestamp}@${formData.email.split('@')[1]}`;
-      
-      // Create user data with unique identifiers
+      // Use the original form data without any modifications
       const userDataForRegistration = {
-        ...formData,
-        username: uniqueUsername,
-        email: uniqueEmail
+        ...formData
       };
       
-      // Static OTP sending - always sends 123456
-      
-      // Static OTP - always 123456
-      alert(`OTP sent to ${userDataForRegistration.email}. Use code: 123456`);
+      // Send OTP API call
+      await authAPI.sendOTP(userDataForRegistration.email);
       
       // Store user data for later registration
       setPendingUserData(userDataForRegistration);
@@ -349,7 +348,7 @@ export default function Register() {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label htmlFor="pass2">Password</label>
-                  <div className="ip-field">
+                  <div className="ip-field" style={{ position: 'relative' }}>
                     <LockIcon className="icon" />
                     <input
                       type={showPassword ? "text" : "password"}
@@ -362,6 +361,32 @@ export default function Register() {
                       placeholder="Your password"
                       required
                     />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={togglePasswordVisibility}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#666',
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10
+                      }}
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon width={20} height={20} />
+                      ) : (
+                        <EyeIcon width={20} height={20} />
+                      )}
+                    </button>
                   </div>
                   {fieldErrors.password && (
                     <span className={styles.errorSpan}>
@@ -371,7 +396,7 @@ export default function Register() {
                 </fieldset>
                 <fieldset className="box-fieldset">
                   <label htmlFor="confirm">Confirm password</label>
-                  <div className="ip-field">
+                  <div className="ip-field" style={{ position: 'relative' }}>
                     <LockIcon className="icon" />
                     <input
                       type={showConfirmPassword ? "text" : "password"}
@@ -384,6 +409,32 @@ export default function Register() {
                       placeholder="Confirm password"
                       required
                     />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={toggleConfirmPasswordVisibility}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#666',
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10
+                      }}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOffIcon width={20} height={20} />
+                      ) : (
+                        <EyeIcon width={20} height={20} />
+                      )}
+                    </button>
                   </div>
                   {fieldErrors.confirmPassword && (
                     <span className={styles.errorSpan}>

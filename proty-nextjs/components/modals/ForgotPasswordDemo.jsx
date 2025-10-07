@@ -16,7 +16,6 @@ export default function ForgotPasswordDemo() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleSuccess = () => {
-    alert("Password reset successfully! You can now login with your new password.");
     // Optionally redirect to login or show login modal
   };
 

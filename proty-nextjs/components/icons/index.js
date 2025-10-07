@@ -4,6 +4,7 @@ export { default as UserAvatarIcon } from './UserAvatarIcon';
 export { default as EmailIcon } from './EmailIcon';
 export { default as LockIcon } from './LockIcon';
 export { default as PhoneIcon } from './PhoneIcon';
+export { EyeIcon, EyeOffIcon } from './EyeIcon';
 
 // Dashboard Icons
 export { default as DashboardIcon } from './DashboardIcon';
@@ -21,5 +22,5 @@ export { default as CompareIcon } from './CompareIcon';
 export { default as PrintIcon } from './PrintIcon';
 export { default as ShareIcon } from './ShareIcon';
 
-// Usage: import { UserIcon, EmailIcon, DashboardIcon, HeartOutlineIcon } from '@/components/icons';
+// Usage: import { UserIcon, EmailIcon, DashboardIcon, HeartOutlineIcon, EyeIcon, EyeOffIcon } from '@/components/icons';
 
