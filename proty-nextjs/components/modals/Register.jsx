@@ -149,8 +149,8 @@ export default function Register() {
         ...formData
       };
       
-      // Send OTP API call
-      await authAPI.sendOTP(userDataForRegistration.email);
+      // Send OTP API call for signup
+      await authAPI.sendOTP(userDataForRegistration.email, 'signup');
       
       // Store user data for later registration
       setPendingUserData(userDataForRegistration);
@@ -486,6 +486,7 @@ export default function Register() {
         onSuccess={handleOTPSuccess}
         userData={pendingUserData}
         email={pendingUserData?.email}
+        type="signup"
       />
     </>
   );

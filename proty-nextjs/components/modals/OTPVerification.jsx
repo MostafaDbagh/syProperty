@@ -10,7 +10,8 @@ export default function OTPVerification({
   onClose, 
   onSuccess, 
   userData,
-  email
+  email,
+  type = 'signup'
 }) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,12 +22,20 @@ export default function OTPVerification({
   const inputRefs = useRef([]);
   const { showSuccessModal, showWarningModal } = useGlobalModal();
 
-  // Auto-focus first input when modal opens
+  // Clear OTP and auto-focus first input when modal opens
   useEffect(() => {
-    if (isOpen && inputRefs.current[0]) {
-      setTimeout(() => {
-        inputRefs.current[0].focus();
-      }, 100);
+    if (isOpen) {
+      // Clear OTP boxes when modal opens
+      setOtp(['', '', '', '', '', '']);
+      setError('');
+      setOtpVerified(false);
+      
+      // Focus first input
+      if (inputRefs.current[0]) {
+        setTimeout(() => {
+          inputRefs.current[0].focus();
+        }, 100);
+      }
     }
   }, [isOpen]);
 
@@ -107,31 +116,37 @@ export default function OTPVerification({
 
     try {
       // Verify OTP API call
-      const verifyResult = await authAPI.verifyOTP(email, otpString);
+      const verifyResult = await authAPI.verifyOTP(email, otpString, type);
       
       if (verifyResult.success) {
         setOtpVerified(true);
         
-        // Call the actual signup API
-        const result = await authAPI.signup(userData);
-        
-        if (result.success) {
-          // Show global success modal
-          showSuccessModal(
-            "Registration Successful!",
-            "Your account has been created successfully. You can now login with your credentials.",
-            userData?.email
-          );
-          // Close the OTP verification modal immediately
-          onClose();
-          // Don't call onSuccess immediately - let the success modal handle the flow
-        } else {
-          // Show global warning modal for signup failure
-          showWarningModal(
-            "Registration Failed",
-            result.message || "Registration failed. Please try again.",
-            userData?.email
-          );
+        if (type === 'signup') {
+          // Call the actual signup API
+          const result = await authAPI.signup(userData);
+          
+          if (result.success) {
+            // Show global success modal
+            showSuccessModal(
+              "Registration Successful!",
+              "Your account has been created successfully. You can now login with your credentials.",
+              userData?.email
+            );
+            // Close the OTP verification modal immediately
+            onClose();
+            // Don't call onSuccess immediately - let the success modal handle the flow
+          } else {
+            // Show global warning modal for signup failure
+            showWarningModal(
+              "Registration Failed",
+              result.message || "Registration failed. Please try again.",
+              userData?.email
+            );
+          }
+        } else if (type === 'forgot_password') {
+          // For forgot password, just call onSuccess with OTP code, don't close modal
+          console.log("🔄 Forgot password OTP verified, calling onSuccess");
+          onSuccess(otpString);
         }
       } else {
         setError('Invalid OTP. Please try again.');
@@ -167,7 +182,7 @@ export default function OTPVerification({
 
     try {
       // Send OTP API call
-      await authAPI.sendOTP(email);
+      await authAPI.sendOTP(email, type);
       
       // Set cooldown timer (30 seconds)
       setResendCooldown(30);
@@ -202,8 +217,12 @@ export default function OTPVerification({
         <div className="modal-content">
           <div className="flat-account">
             <form className="form-account" onSubmit={handleVerifyOTP}>
-              <div className="title-box">
-                <h4>Verify Your Email</h4>
+              <div className={`title-box ${type === 'forgot_password' ? styles.titleCenter : ''}`}>
+                <h4>
+                  {type === 'forgot_password' 
+                    ? 'Email Verification for Reset Password' 
+                    : 'Verify Your Email'}
+                </h4>
                 <span
                   className="close-modal icon-close"
                   onClick={handleClose}
@@ -217,7 +236,9 @@ export default function OTPVerification({
                 📧
               </div>
               <p className={styles.mainMessage}>
-                We've sent a 6-digit code to
+                {type === 'forgot_password' 
+                  ? 'We\'ve sent a password reset code to'
+                  : 'We\'ve sent a 6-digit code to'}
               </p>
               <p className={styles.emailAddress}>
                 {email}
@@ -271,7 +292,10 @@ export default function OTPVerification({
                     border: 'none'
                   }}
                 >
-                  {isLoading ? 'Verifying...' : otpVerified ? 'Completing Registration...' : 'Verify & Complete Registration'}
+                  {type === 'forgot_password' 
+                    ? (isLoading ? 'Verifying...' : 'Verify & Reset Password')
+                    : (isLoading ? 'Verifying...' : otpVerified ? 'Completing Registration...' : 'Verify & Complete Registration')
+                  }
                 </button>
               </div>
 

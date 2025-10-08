@@ -5,6 +5,7 @@ export { default as EmailIcon } from './EmailIcon';
 export { default as LockIcon } from './LockIcon';
 export { default as PhoneIcon } from './PhoneIcon';
 export { EyeIcon, EyeOffIcon } from './EyeIcon';
+export { default as CheckCircleIcon } from './CheckCircleIcon';
 
 // Dashboard Icons
 export { default as DashboardIcon } from './DashboardIcon';

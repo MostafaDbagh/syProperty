@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import styles from "./NewPassword.module.css";
 
 export default function NewPassword({ isOpen, onClose, onSubmit }) {
@@ -74,8 +75,13 @@ export default function NewPassword({ isOpen, onClose, onSubmit }) {
     try {
       await onSubmit(formData.password);
       setFormData({ password: "", confirmPassword: "" });
+      setError(""); // Clear any errors on success
     } catch (err) {
-      setError(err.message || "Failed to reset password. Please try again.");
+      // Only show local error if it's a validation error
+      // API errors will be handled by the parent component with error modal
+      const errorMsg = err.message || "Failed to reset password. Please try again.";
+      console.log("NewPassword error:", errorMsg);
+      // Don't set local error as the parent will show error modal
     } finally {
       setIsSubmitting(false);
     }
@@ -138,7 +144,7 @@ export default function NewPassword({ isOpen, onClose, onSubmit }) {
                 className={styles.togglePassword}
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <i className={showPassword ? "icon-eye-off" : "icon-eye"} />
+                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
             {fieldErrors.password ? (
@@ -169,7 +175,7 @@ export default function NewPassword({ isOpen, onClose, onSubmit }) {
                 className={styles.togglePassword}
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                <i className={showConfirmPassword ? "icon-eye-off" : "icon-eye"} />
+                {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
             {fieldErrors.confirmPassword && (

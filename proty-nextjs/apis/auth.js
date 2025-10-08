@@ -136,18 +136,30 @@ export const authAPI = {
   },
 
   // OTP APIs
-  sendOTP: async (email) => {
+  sendOTP: async (email, type = 'signup') => {
     try {
-      const response = await Axios.post('/auth/send-otp', { email });
+      const response = await Axios.post('/auth/send-otp', { email, type });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
   },
 
-  verifyOTP: async (email, otp) => {
+  verifyOTP: async (email, otp, type = 'signup') => {
     try {
-      const response = await Axios.post('/auth/verify-otp', { email, otp });
+      const response = await Axios.post('/auth/verify-otp', { email, otp, type });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  resetPassword: async (email, newPassword) => {
+    try {
+      const response = await Axios.post('/auth/reset-password', { 
+        email, 
+        newPassword 
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
