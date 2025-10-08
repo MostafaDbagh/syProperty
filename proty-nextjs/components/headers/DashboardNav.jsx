@@ -29,8 +29,8 @@ export default function DashboardNav({ color = "" }) {
     changeRole 
   } = useAuthState();
 
-  // Use GlobalModal context for Register modal
-  const { showRegisterModal } = useGlobalModal();
+  // Use GlobalModal context for modals
+  const { showRegisterModal, showLoginModal } = useGlobalModal();
 
 
   // Close dropdown when clicking outside
@@ -160,7 +160,7 @@ export default function DashboardNav({ color = "" }) {
           <div className="dropdown-item ">
             <UserAvatarIcon stroke="#A8ABAE" />
             <div className="d-flex wrap-login">
-              <a href="#modalLogin" data-bs-toggle="modal">
+              <a href="#" onClick={(e) => { e.preventDefault(); showLoginModal(); }}>
                 login
               </a>
               <span>/</span>

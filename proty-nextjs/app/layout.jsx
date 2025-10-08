@@ -15,7 +15,6 @@ import { usePathname } from "next/navigation";
 import BackToTop from "@/components/common/BackToTop";
 import MobileMenu from "@/components/headers/MobileMenu";
 import SettingsHandler from "@/components/common/SettingsHandler";
-import Login from "@/components/modals/Login";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -81,7 +80,6 @@ export default function RootLayout({ children }) {
               <MobileMenu />
               <BackToTop />
               <SettingsHandler />
-              <Login />
             </QueryClientProvider>
           </GlobalModalProvider>
         </ReduxProvider>

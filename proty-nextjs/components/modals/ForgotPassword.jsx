@@ -54,6 +54,8 @@ export default function ForgotPassword({ isOpen, onClose, onSubmit }) {
     onClose();
   };
 
+  console.log('📧 ForgotPassword render - isOpen:', isOpen);
+
   if (!isOpen) return null;
 
   const handleOverlayClick = (e) => {

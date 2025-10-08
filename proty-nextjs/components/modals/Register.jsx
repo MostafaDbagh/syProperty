@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 import OTPVerification from "./OTPVerification";
 import styles from "./Register.module.css";
 
@@ -21,6 +22,8 @@ export default function Register({ isOpen, onClose }) {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [pendingUserData, setPendingUserData] = useState(null);
 
+  // Use GlobalModal context for Login modal
+  const { showLoginModal } = useGlobalModal();
 
   const closeModal = useCallback(() => {
     // Reset form when closing
@@ -156,27 +159,10 @@ export default function Register({ isOpen, onClose }) {
     e.preventDefault();
     e.stopPropagation();
     
+    // Close register modal and open login modal
     closeModal();
-    
-    // Open login modal after a delay
     setTimeout(() => {
-      const loginModal = document.getElementById('modalLogin');
-      
-      if (loginModal) {
-        if (window.bootstrap?.Modal) {
-          const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
-          modal.show();
-        } else {
-          // Fallback if Bootstrap isn't ready
-          loginModal.classList.add('show');
-          loginModal.style.display = 'block';
-          document.body.classList.add('modal-open');
-          
-          const backdrop = document.createElement('div');
-          backdrop.className = 'modal-backdrop fade show';
-          document.body.appendChild(backdrop);
-        }
-      }
+      showLoginModal();
     }, 300);
   };
 

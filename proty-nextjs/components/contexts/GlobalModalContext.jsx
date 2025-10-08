@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useState } from 'react';
 import GlobalStatusModal from '../modals/GlobalStatusModal';
 import Register from '../modals/Register';
+import Login from '../modals/Login';
+import ForgotPasswordFlow from '../modals/ForgotPasswordFlow';
 
 const GlobalModalContext = createContext();
 
@@ -23,6 +25,14 @@ export const GlobalModalProvider = ({ children }) => {
   });
   
   const [registerModalState, setRegisterModalState] = useState({
+    isOpen: false
+  });
+  
+  const [loginModalState, setLoginModalState] = useState({
+    isOpen: false
+  });
+  
+  const [forgotPasswordModalState, setForgotPasswordModalState] = useState({
     isOpen: false
   });
 
@@ -65,6 +75,30 @@ export const GlobalModalProvider = ({ children }) => {
     });
   };
 
+  const showLoginModal = () => {
+    setLoginModalState({
+      isOpen: true
+    });
+  };
+
+  const closeLoginModal = () => {
+    setLoginModalState({
+      isOpen: false
+    });
+  };
+
+  const showForgotPasswordModal = () => {
+    setForgotPasswordModalState({
+      isOpen: true
+    });
+  };
+
+  const closeForgotPasswordModal = () => {
+    setForgotPasswordModalState({
+      isOpen: false
+    });
+  };
+
   const value = {
     showSuccessModal,
     showWarningModal,
@@ -72,7 +106,13 @@ export const GlobalModalProvider = ({ children }) => {
     modalState,
     showRegisterModal,
     closeRegisterModal,
-    registerModalState
+    registerModalState,
+    showLoginModal,
+    closeLoginModal,
+    loginModalState,
+    showForgotPasswordModal,
+    closeForgotPasswordModal,
+    forgotPasswordModalState
   };
 
   return (
@@ -89,6 +129,18 @@ export const GlobalModalProvider = ({ children }) => {
       <Register
         isOpen={registerModalState.isOpen}
         onClose={closeRegisterModal}
+      />
+      <Login
+        isOpen={loginModalState.isOpen}
+        onClose={closeLoginModal}
+      />
+      <ForgotPasswordFlow
+        isOpen={forgotPasswordModalState.isOpen}
+        onClose={closeForgotPasswordModal}
+        onSuccess={() => {
+          closeForgotPasswordModal();
+          showLoginModal();
+        }}
       />
     </GlobalModalContext.Provider>
   );
