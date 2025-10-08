@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState } from 'react';
 import GlobalStatusModal from '../modals/GlobalStatusModal';
+import Register from '../modals/Register';
 
 const GlobalModalContext = createContext();
 
@@ -19,6 +20,10 @@ export const GlobalModalProvider = ({ children }) => {
     title: '',
     message: '',
     userEmail: ''
+  });
+  
+  const [registerModalState, setRegisterModalState] = useState({
+    isOpen: false
   });
 
   const showSuccessModal = (title, message, userEmail = '') => {
@@ -48,11 +53,26 @@ export const GlobalModalProvider = ({ children }) => {
     }));
   };
 
+  const showRegisterModal = () => {
+    setRegisterModalState({
+      isOpen: true
+    });
+  };
+
+  const closeRegisterModal = () => {
+    setRegisterModalState({
+      isOpen: false
+    });
+  };
+
   const value = {
     showSuccessModal,
     showWarningModal,
     closeModal,
-    modalState
+    modalState,
+    showRegisterModal,
+    closeRegisterModal,
+    registerModalState
   };
 
   return (
@@ -65,6 +85,10 @@ export const GlobalModalProvider = ({ children }) => {
         title={modalState.title}
         message={modalState.message}
         userEmail={modalState.userEmail}
+      />
+      <Register
+        isOpen={registerModalState.isOpen}
+        onClose={closeRegisterModal}
       />
     </GlobalModalContext.Provider>
   );

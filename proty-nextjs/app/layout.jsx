@@ -16,7 +16,6 @@ import BackToTop from "@/components/common/BackToTop";
 import MobileMenu from "@/components/headers/MobileMenu";
 import SettingsHandler from "@/components/common/SettingsHandler";
 import Login from "@/components/modals/Login";
-import Register from "@/components/modals/Register";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -83,7 +82,6 @@ export default function RootLayout({ children }) {
               <BackToTop />
               <SettingsHandler />
               <Login />
-              <Register />
             </QueryClientProvider>
           </GlobalModalProvider>
         </ReduxProvider>

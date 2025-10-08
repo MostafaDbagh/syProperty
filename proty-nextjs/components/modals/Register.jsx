@@ -1,13 +1,11 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
 import OTPVerification from "./OTPVerification";
 import styles from "./Register.module.css";
 
-export default function Register() {
+export default function Register({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -25,59 +23,33 @@ export default function Register() {
 
 
   const closeModal = useCallback(() => {
-    const registerModal = document.getElementById('modalRegister');
-    if (registerModal) {
-      const bootstrapModal = window.bootstrap?.Modal?.getInstance(registerModal);
-      if (bootstrapModal) {
-        bootstrapModal.hide();
-      }
-      // Manual cleanup
-      registerModal.classList.remove('show');
-      registerModal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-      document.body.style.removeProperty('overflow');
-      document.body.style.removeProperty('padding-right');
-    }
-  }, []);
+    // Reset form when closing
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "user"
+    });
+    setFieldErrors({});
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setError('');
+    onClose();
+  }, [onClose]);
 
-  // Initialize Bootstrap modal event listeners
+  // Prevent body scroll when modal is open
   useEffect(() => {
-    const registerModal = document.getElementById('modalRegister');
-    if (registerModal) {
-      // Reset form when modal is hidden
-      const handleHidden = () => {
-        setFormData({
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          role: "user"
-        });
-        setFieldErrors({});
-        setShowPassword(false);
-        setShowConfirmPassword(false);
-      };
-      
-      // Handle click outside to close
-      const handleBackdropClick = (e) => {
-        if (e.target === registerModal) {
-          closeModal();
-        }
-      };
-      
-      registerModal.addEventListener('hidden.bs.modal', handleHidden);
-      registerModal.addEventListener('click', handleBackdropClick);
-      
-      return () => {
-        registerModal.removeEventListener('hidden.bs.modal', handleHidden);
-        registerModal.removeEventListener('click', handleBackdropClick);
-      };
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  }, [closeModal]);
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -204,7 +176,6 @@ export default function Register() {
           backdrop.className = 'modal-backdrop fade show';
           document.body.appendChild(backdrop);
         }
-      } else {
       }
     }, 300);
   };
@@ -233,251 +204,204 @@ export default function Register() {
     // Don't reset pendingUserData here - keep it for success modal
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+
+  if (!isOpen) return null;
+
   return (
     <>
-      <div 
-        className="modal modal-account fade" 
-        id="modalRegister"
-        tabIndex="-1"
-        aria-labelledby="modalRegisterLabel"
-        aria-hidden="true"
-      >
-      <div className="modal-dialog modal-dialog-centered" role="document">
-        <div className="modal-content">
-          <div className="flat-account">
-            <div className="banner-account">
-              <Image
-                alt="banner"
-                width={380}
-                height={858}
-                src="/images/section/banner-register.jpg"
-              />
+      {/* Clean Modern Register Modal */}
+      <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+        <div className={styles.modalContent}>
+          <button 
+            className={styles.closeButton} 
+            onClick={closeModal} 
+            aria-label="Close modal"
+          >
+            <i className="icon-close" />
+          </button>
+
+          <div className={styles.modalHeader}>
+            <div className={styles.iconWrapper}>
+              <i className="icon-user-plus" />
             </div>
-            <form className="form-account" onSubmit={handleSubmit}>
-              <div className="title-box">
-                <h4>Register</h4>
-                <span
-                  className="close-modal icon-close"
-                  data-bs-dismiss="modal"
-                  onClick={closeModal}
-                  style={{ cursor: 'pointer' }}
+            <h2 className={styles.modalTitle}>Create Account</h2>
+            <p className={styles.modalSubtitle}>
+              Join our community and start your property journey today.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.formGroup}>
+              <label htmlFor="username" className={styles.label}>Username</label>
+              <div className={styles.inputWithIcon}>
+                <UserIcon className={styles.inputIcon} />
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  onBlur={() => validateField("username")}
+                  placeholder="Enter your username"
+                  className={styles.formInput}
+                  required
                 />
               </div>
-              <div className="box">
-                <fieldset className="box-fieldset">
-                  <label htmlFor="username">User name</label>
-                  <div className="ip-field">
-                    <UserIcon className="icon" />
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="username"
-                      name="username"
-                      value={formData.username}
-                      onChange={handleChange}
-                      onBlur={() => validateField("username")}
-                      placeholder="User name"
-                      required
-                    />
-                  </div>
-                  {fieldErrors.username && (
-                    <span className={styles.errorSpan}>
-                      {fieldErrors.username}
-                    </span>
-                  )}
-                </fieldset>
-                <fieldset className="box-fieldset">
-                  <label htmlFor="email">Email address</label>
-                  <div className="ip-field">
-                    <EmailIcon className="icon" />
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      onBlur={() => validateField("email")}
-                      placeholder="Email address"
-                      required
-                    />
-                  </div>
-                  {fieldErrors.email && (
-                    <span className={styles.errorSpan}>
-                      {fieldErrors.email}
-                    </span>
-                  )}
-                </fieldset>
-                
-                <fieldset className="box-fieldset">
-                  <label htmlFor="role">Register as</label>
-                  <div className="ip-field">
-                    <svg
-                      className="icon"
-                      width={18}
-                      height={18}
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M9 9C10.6569 9 12 7.65685 12 6C12 4.34315 10.6569 3 9 3C7.34315 3 6 4.34315 6 6C6 7.65685 7.34315 9 9 9Z"
-                        stroke="#A3ABB0"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M3 15C3 13.4087 3.63214 11.8826 4.75736 10.7574C5.88258 9.63214 7.40870 9 9 9C10.5913 9 12.1174 9.63214 13.2426 10.7574C14.3679 11.8826 15 13.4087 15 15"
-                        stroke="#A3ABB0"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <select
-                      className={`form-control ${styles.roleSelect}`}
-                      id="role"
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="user">👤 Regular User - Browse and favorite properties</option>
-                      <option value="agent">🏢 Property Agent - List and manage properties</option>
-                    </select>
-                  </div>
-                </fieldset>
-                <fieldset className="box-fieldset">
-                  <label htmlFor="pass2">Password</label>
-                  <div className="ip-field" style={{ position: 'relative' }}>
-                    <LockIcon className="icon" />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="form-control"
-                      id="pass2"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      onBlur={() => validateField("password")}
-                      placeholder="Your password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle"
-                      onClick={togglePasswordVisibility}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#666',
-                        position: 'absolute',
-                        right: '12px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        zIndex: 10
-                      }}
-                    >
-                      {showPassword ? (
-                        <EyeOffIcon width={20} height={20} />
-                      ) : (
-                        <EyeIcon width={20} height={20} />
-                      )}
-                    </button>
-                  </div>
-                  {fieldErrors.password && (
-                    <span className={styles.errorSpan}>
-                      {fieldErrors.password}
-                    </span>
-                  )}
-                </fieldset>
-                <fieldset className="box-fieldset">
-                  <label htmlFor="confirm">Confirm password</label>
-                  <div className="ip-field" style={{ position: 'relative' }}>
-                    <LockIcon className="icon" />
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      className="form-control"
-                      id="confirm"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      onBlur={() => validateField("confirmPassword")}
-                      placeholder="Confirm password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle"
-                      onClick={toggleConfirmPasswordVisibility}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#666',
-                        position: 'absolute',
-                        right: '12px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        zIndex: 10
-                      }}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOffIcon width={20} height={20} />
-                      ) : (
-                        <EyeIcon width={20} height={20} />
-                      )}
-                    </button>
-                  </div>
-                  {fieldErrors.confirmPassword && (
-                    <span className={styles.errorSpan}>
-                      {fieldErrors.confirmPassword}
-                    </span>
-                  )}
-                </fieldset>
-                {error && (
-                  <div className="alert alert-danger mt-3" role="alert">
-                    {error}
-                  </div>
-                )}
+              {fieldErrors.username && (
+                <span className={styles.errorSpan}>
+                  {fieldErrors.username}
+                </span>
+              )}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="email" className={styles.label}>Email Address</label>
+              <div className={styles.inputWithIcon}>
+                <EmailIcon className={styles.inputIcon} />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onBlur={() => validateField("email")}
+                  placeholder="Enter your email"
+                  className={styles.formInput}
+                  required
+                />
               </div>
-              <div className="box box-btn">
+              {fieldErrors.email && (
+                <span className={styles.errorSpan}>
+                  {fieldErrors.email}
+                </span>
+              )}
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label htmlFor="role" className={styles.label}>Register as</label>
+              <select
+                className={styles.roleSelect}
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+              >
+                <option value="user">👤 Regular User - Browse and favorite properties</option>
+                <option value="agent">🏢 Property Agent - List and manage properties</option>
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="pass2" className={styles.label}>Password</label>
+              <div className={styles.inputWithIcon}>
+                <LockIcon className={styles.inputIcon} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="pass2"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={() => validateField("password")}
+                  placeholder="Enter your password"
+                  className={styles.formInput}
+                  required
+                />
                 <button
-                  type="submit"
-                  className="tf-btn bg-color-primary w-full"
-                  disabled={!isFormValid() || isLoading}
-                  style={{
-                    opacity: (isFormValid() && !isLoading) ? 1 : 0.6,
-                    cursor: (isFormValid() && !isLoading) ? 'pointer' : 'not-allowed',
-                    border: 'none'
-                  }}
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={togglePasswordVisibility}
                 >
-                  {isLoading ? 'Sending OTP...' : 'Sign Up'}
+                  {showPassword ? (
+                    <EyeOffIcon width={20} height={20} />
+                  ) : (
+                    <EyeIcon width={20} height={20} />
+                  )}
                 </button>
-                <div className="text text-center">
-                  Already have an account?
-                  <a
-                    href="#"
-                    onClick={handleSwitchToLogin}
-                    className="text-color-primary"
-                    style={{ cursor: 'pointer', marginLeft: '5px' }}
-                  >
-                    Sign In
-                  </a>
-                </div>
               </div>
-            </form>
-          </div>
+              {fieldErrors.password && (
+                <span className={styles.errorSpan}>
+                  {fieldErrors.password}
+                </span>
+              )}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="confirm" className={styles.label}>Confirm Password</label>
+              <div className={styles.inputWithIcon}>
+                <LockIcon className={styles.inputIcon} />
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirm"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={() => validateField("confirmPassword")}
+                  placeholder="Confirm your password"
+                  className={styles.formInput}
+                  required
+                />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOffIcon width={20} height={20} />
+                  ) : (
+                    <EyeIcon width={20} height={20} />
+                  )}
+                </button>
+              </div>
+              {fieldErrors.confirmPassword && (
+                <span className={styles.errorSpan}>
+                  {fieldErrors.confirmPassword}
+                </span>
+              )}
+            </div>
+
+            {error && (
+              <div className={styles.errorMessage}>
+                <i className="icon-alert-circle" />
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={!isFormValid() || isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className={styles.spinner} />
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <i className="icon-user-plus" />
+                  Create Account
+                </>
+              )}
+            </button>
+
+            <div className={styles.signInLink}>
+              Already have an account?{" "}
+              <a
+                href="#"
+                onClick={handleSwitchToLogin}
+              >
+                Sign In
+              </a>
+            </div>
+          </form>
         </div>
       </div>
-    </div>
     
       {/* OTP Verification Modal */}
       <OTPVerification

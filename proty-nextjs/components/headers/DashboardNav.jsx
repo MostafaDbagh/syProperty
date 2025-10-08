@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuthState } from "@/store/hooks/useAuth";
 import { authAPI } from "@/apis/auth";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 import { 
   UserAvatarIcon, 
   DashboardIcon, 
@@ -28,6 +29,9 @@ export default function DashboardNav({ color = "" }) {
     changeRole 
   } = useAuthState();
 
+  // Use GlobalModal context for Register modal
+  const { showRegisterModal } = useGlobalModal();
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -52,25 +56,7 @@ export default function DashboardNav({ color = "" }) {
     
     // If not logged in, open register modal instead of dropdown
     if (!isLoggedIn) {
-      const registerModal = document.querySelector('#modalRegister');
-      if (registerModal) {
-        if (window.bootstrap?.Modal) {
-          const modal = window.bootstrap.Modal.getOrCreateInstance(registerModal);
-          modal.show();
-        } else {
-          // Fallback if Bootstrap isn't loaded yet
-          registerModal.classList.add('show');
-          registerModal.style.display = 'block';
-          document.body.classList.add('modal-open');
-          
-          // Create backdrop
-          const backdrop = document.createElement('div');
-          backdrop.className = 'modal-backdrop fade show';
-          document.body.appendChild(backdrop);
-        }
-      } else {
-        console.error('Register modal not found');
-      }
+      showRegisterModal();
     } else {
       // If logged in, toggle dropdown
       setIsDDOpen((pre) => !pre);
@@ -178,7 +164,7 @@ export default function DashboardNav({ color = "" }) {
                 login
               </a>
               <span>/</span>
-              <a href="#modalRegister" data-bs-toggle="modal">
+              <a href="#" onClick={(e) => { e.preventDefault(); showRegisterModal(); }}>
                 register{" "}
               </a>
             </div>
