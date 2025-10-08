@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
-import OTPVerification from "./OTPVerification";
 import styles from "./Register.module.css";
 
 export default function Register({ isOpen, onClose }) {
@@ -19,11 +18,9 @@ export default function Register({ isOpen, onClose }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showOTPModal, setShowOTPModal] = useState(false);
-  const [pendingUserData, setPendingUserData] = useState(null);
 
-  // Use GlobalModal context for Login modal
-  const { showLoginModal } = useGlobalModal();
+  // Use GlobalModal context for other modals
+  const { showLoginModal, showOTPModal } = useGlobalModal();
 
   const closeModal = useCallback(() => {
     // Reset form when closing
@@ -127,15 +124,12 @@ export default function Register({ isOpen, onClose }) {
       // Send OTP API call for signup
       await authAPI.sendOTP(userDataForRegistration.email, 'signup');
       
-      // Store user data for later registration
-      setPendingUserData(userDataForRegistration);
-      
       // Close registration modal first
       closeModal();
       
-      // Show OTP modal after a short delay
+      // Show OTP modal after a short delay using GlobalModalContext
       setTimeout(() => {
-        setShowOTPModal(true);
+        showOTPModal(userDataForRegistration, formData.email, 'signup');
       }, 300);
       
     } catch (error) {
@@ -166,29 +160,6 @@ export default function Register({ isOpen, onClose }) {
     }, 300);
   };
 
-  const handleOTPSuccess = (result) => {
-    
-    // Close register modal
-    closeModal();
-    
-    // Reset form
-    setFormData({
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "user"
-    });
-    
-    // Reset OTP modal state
-    setShowOTPModal(false);
-    setPendingUserData(null);
-  };
-
-  const handleOTPClose = () => {
-    setShowOTPModal(false);
-    // Don't reset pendingUserData here - keep it for success modal
-  };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -388,16 +359,6 @@ export default function Register({ isOpen, onClose }) {
           </form>
         </div>
       </div>
-    
-      {/* OTP Verification Modal */}
-      <OTPVerification
-        isOpen={showOTPModal}
-        onClose={handleOTPClose}
-        onSuccess={handleOTPSuccess}
-        userData={pendingUserData}
-        email={pendingUserData?.email}
-        type="signup"
-      />
     </>
   );
 }

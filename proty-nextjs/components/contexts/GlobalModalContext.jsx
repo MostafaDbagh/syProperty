@@ -4,6 +4,7 @@ import GlobalStatusModal from '../modals/GlobalStatusModal';
 import Register from '../modals/Register';
 import Login from '../modals/Login';
 import ForgotPasswordFlow from '../modals/ForgotPasswordFlow';
+import OTPVerification from '../modals/OTPVerification';
 
 const GlobalModalContext = createContext();
 
@@ -34,6 +35,13 @@ export const GlobalModalProvider = ({ children }) => {
   
   const [forgotPasswordModalState, setForgotPasswordModalState] = useState({
     isOpen: false
+  });
+  
+  const [otpModalState, setOtpModalState] = useState({
+    isOpen: false,
+    userData: null,
+    email: '',
+    type: 'signup'
   });
 
   const showSuccessModal = (title, message, userEmail = '') => {
@@ -99,6 +107,24 @@ export const GlobalModalProvider = ({ children }) => {
     });
   };
 
+  const showOTPModal = (userData, email, type = 'signup') => {
+    setOtpModalState({
+      isOpen: true,
+      userData,
+      email,
+      type
+    });
+  };
+
+  const closeOTPModal = () => {
+    setOtpModalState({
+      isOpen: false,
+      userData: null,
+      email: '',
+      type: 'signup'
+    });
+  };
+
   const value = {
     showSuccessModal,
     showWarningModal,
@@ -112,7 +138,10 @@ export const GlobalModalProvider = ({ children }) => {
     loginModalState,
     showForgotPasswordModal,
     closeForgotPasswordModal,
-    forgotPasswordModalState
+    forgotPasswordModalState,
+    showOTPModal,
+    closeOTPModal,
+    otpModalState
   };
 
   return (
@@ -141,6 +170,18 @@ export const GlobalModalProvider = ({ children }) => {
           closeForgotPasswordModal();
           showLoginModal();
         }}
+      />
+      <OTPVerification
+        isOpen={otpModalState.isOpen}
+        onClose={closeOTPModal}
+        onSuccess={(result) => {
+          closeOTPModal();
+          // Show success modal or redirect as needed
+          showSuccessModal('Registration Successful!', 'Your account has been created successfully. You can now log in.');
+        }}
+        userData={otpModalState.userData}
+        email={otpModalState.email}
+        type={otpModalState.type}
       />
     </GlobalModalContext.Provider>
   );
