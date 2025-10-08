@@ -311,6 +311,53 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+const makeAgent = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    
+    // Find user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if user is already an agent
+    if (user.role === 'agent') {
+      return res.status(400).json({
+        success: false,
+        message: 'User is already an agent'
+      });
+    }
+
+    // Update user role to agent
+    const updatedUser = await User.findByIdAndUpdate(
+      userId, 
+      { role: 'agent' }, 
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'User role updated to agent successfully',
+      user: {
+        _id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        avatar: updatedUser.avatar,
+        pointsBalance: updatedUser.pointsBalance,
+        packageType: updatedUser.packageType,
+        packageExpiry: updatedUser.packageExpiry
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -319,4 +366,5 @@ module.exports = {
   sendOTP,
   verifyOTP,
   resetPassword,
+  makeAgent,
 };

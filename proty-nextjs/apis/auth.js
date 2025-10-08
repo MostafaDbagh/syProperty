@@ -164,6 +164,28 @@ export const authAPI = {
     } catch (error) {
       throw error.response?.data || error.message;
     }
+  },
+
+  // Make user an agent
+  makeAgent: async (userId) => {
+    try {
+      const response = await Axios.put(`/auth/make-agent/${userId}`);
+      
+      // Update user data in localStorage and Redux state
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        // Dispatch Redux action to update auth state
+        store.dispatch(setCredentials({
+          user: response.data.user,
+          token: authAPI.getToken() // Keep existing token
+        }));
+      }
+      
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
   }
 };
 

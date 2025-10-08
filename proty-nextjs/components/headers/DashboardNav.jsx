@@ -30,7 +30,7 @@ export default function DashboardNav({ color = "" }) {
   } = useAuthState();
 
   // Use GlobalModal context for modals
-  const { showRegisterModal, showLoginModal } = useGlobalModal();
+  const { showRegisterModal, showLoginModal, showSuccessModal } = useGlobalModal();
 
 
   // Close dropdown when clicking outside
@@ -75,8 +75,24 @@ export default function DashboardNav({ color = "" }) {
     }
   };
 
-  const makeAgent = () => {
-    changeRole('agent');
+  const handleMakeAgent = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user._id) {
+        const result = await authAPI.makeAgent(user._id);
+        setIsDDOpen(false); // Close dropdown after successful role change
+        
+        // Show success modal
+        showSuccessModal(
+          'Congratulations! 🎉', 
+          'You are now a Property Agent! You can now list and manage properties.',
+          user.email
+        );
+      }
+    } catch (error) {
+      console.error('Failed to make user agent:', error);
+      // You could show an error modal here if needed
+    }
   };
 
   return (
@@ -137,6 +153,18 @@ export default function DashboardNav({ color = "" }) {
             <ReviewIcon />
             Reviews
           </Link>
+        )}
+
+        {/* Make me Agent - Only for regular users (not agents) */}
+        {isLoggedIn && !isAgentUser && (
+          <button 
+            className="dropdown-item" 
+            onClick={handleMakeAgent}
+            style={{ cursor: 'pointer', textAlign: 'left' }}
+          >
+            <AddPropertyIcon />
+            Make me Agent
+          </button>
         )}
 
         {/* My Properties - Only for logged in agents */}
