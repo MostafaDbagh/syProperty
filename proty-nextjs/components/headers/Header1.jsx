@@ -9,10 +9,28 @@ import { useAuthState } from "@/store/hooks/useAuth";
 
 export default function Header1({ parentClass = "header" }) {
   // Use Redux for auth state
-  const { isAuthenticated: isLoggedIn, isAgent, changeRole } = useAuthState();
+  const { isAuthenticated: isLoggedIn, isAgent } = useAuthState();
+  const { showSuccessModal } = useGlobalModal();
 
-  const makeAgent = () => {
-    changeRole('agent');
+  const makeAgent = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user._id) {
+        const result = await authAPI.makeAgent(user._id);
+        
+        // Show success modal
+        showSuccessModal(
+          'Congratulations! 🎉', 
+          'You are now a Property Agent! You can now list and manage properties.',
+          user.email
+        );
+      }
+    } catch (error) {
+      // Handle error silently or show error modal
+    }
   };
 
   return (

@@ -69,13 +69,15 @@ export default function DashboardNav({ color = "" }) {
       await authAPI.signout();
       setIsDDOpen(false);
     } catch (error) {
-      console.error('Logout error:', error);
       // Still close dropdown even if API call fails
       setIsDDOpen(false);
     }
   };
 
-  const handleMakeAgent = async () => {
+  const handleMakeAgent = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       if (user && user._id) {
@@ -90,7 +92,6 @@ export default function DashboardNav({ color = "" }) {
         );
       }
     } catch (error) {
-      console.error('Failed to make user agent:', error);
       // You could show an error modal here if needed
     }
   };
@@ -114,6 +115,7 @@ export default function DashboardNav({ color = "" }) {
         style={{ 
           display: isLoggedIn ? 'block' : 'none'
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Dashboard - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
@@ -158,9 +160,10 @@ export default function DashboardNav({ color = "" }) {
         {/* Make me Agent - Only for regular users (not agents) */}
         {isLoggedIn && !isAgentUser && (
           <button 
+            type="button"
             className="dropdown-item" 
             onClick={handleMakeAgent}
-            style={{ cursor: 'pointer', textAlign: 'left' }}
+            style={{ cursor: 'pointer', textAlign: 'left', background: 'transparent', border: 'none', width: '100%', padding: '10px 20px' }}
           >
             <AddPropertyIcon />
             Make me Agent
@@ -201,7 +204,12 @@ export default function DashboardNav({ color = "" }) {
 
         {/* Logout - Only for logged in users */}
         {isLoggedIn && (
-          <button className="dropdown-item" onClick={handleLogout} style={{ cursor: 'pointer', textAlign: 'left' }}>
+          <button 
+            type="button" 
+            className="dropdown-item" 
+            onClick={handleLogout} 
+            style={{ cursor: 'pointer', textAlign: 'left', background: 'transparent', border: 'none', width: '100%', padding: '10px 20px' }}
+          >
             <LogoutIcon />
             Logout
           </button>
