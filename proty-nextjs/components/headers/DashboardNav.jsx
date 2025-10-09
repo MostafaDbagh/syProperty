@@ -100,22 +100,18 @@ export default function DashboardNav({ color = "" }) {
   return (
     <div
       ref={dropdownRef}
-      className={`box-user tf-action-btns ${isDDOpen && isLoggedIn ? "active" : ""} `}
+      className={`box-user tf-action-btns dashboard-nav-user ${isDDOpen && isLoggedIn ? "active" : ""} `}
       onClick={handleUserIconClick}
-      style={{ cursor: 'pointer' }}
     >
-      <div className="user " style={{ pointerEvents: 'none' }}>
+      <div className="user dashboard-nav-user-inner">
         <UserAvatarIcon />
       </div>
-      <div className={`name ${color} `} style={{ pointerEvents: 'none' }}>
+      <div className={`name ${color} dashboard-nav-name`}>
         {displayName}
         {isLoggedIn && <i className="icon-CaretDown" />}
       </div>
       <div 
-        className="menu-user" 
-        style={{ 
-          display: isLoggedIn ? 'block' : 'none'
-        }}
+        className={`menu-user ${isLoggedIn ? 'dashboard-nav-menu' : 'dashboard-nav-menu-hidden'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Dashboard - Only for logged in agents */}
@@ -162,9 +158,8 @@ export default function DashboardNav({ color = "" }) {
         {isLoggedIn && !isAgentUser && (
           <button 
             type="button"
-            className="dropdown-item" 
+            className="dropdown-item dashboard-nav-button" 
             onClick={handleMakeAgent}
-            style={{ cursor: 'pointer', textAlign: 'left', background: 'transparent', border: 'none', width: '100%', padding: '10px 20px' }}
           >
             <AddPropertyIcon />
             Make me Agent
@@ -207,9 +202,8 @@ export default function DashboardNav({ color = "" }) {
         {isLoggedIn && (
           <button 
             type="button" 
-            className="dropdown-item" 
+            className="dropdown-item dashboard-nav-button" 
             onClick={handleLogout} 
-            style={{ cursor: 'pointer', textAlign: 'left', background: 'transparent', border: 'none', width: '100%', padding: '10px 20px' }}
           >
             <LogoutIcon />
             Logout

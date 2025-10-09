@@ -177,28 +177,28 @@ export default function Favorites() {
           <h3 className="title">
             My Favorites
             {favoritesCount > 0 && (
-              <span style={{ fontSize: '14px', fontWeight: 'normal', marginLeft: '10px', color: '#666' }}>
+              <span className="favorites-title-count">
                 ({favoritesCount} total {favoritesCount === 1 ? 'property' : 'properties'})
               </span>
             )}
           </h3>
 
           {isLoading && (
-            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div className="favorites-loading">
               <p>Loading favorites...</p>
             </div>
           )}
 
           {isError && (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#dc3545' }}>
+            <div className="favorites-error">
               <p>Failed to load favorites. Please try again later.</p>
             </div>
           )}
 
           {!isLoading && !isError && favorites.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div className="favorites-empty">
               <p>You haven't added any properties to your favorites yet.</p>
-              <Link href="/property-list" style={{ color: '#ff6b35', marginTop: '10px', display: 'inline-block' }}>
+              <Link href="/property-list" className="favorites-browse-link">
                 Browse Properties
               </Link>
             </div>
@@ -252,23 +252,11 @@ export default function Favorites() {
                           </td>
                           <td>
                             <span 
-                              className="btn-status"
-                              style={{
-                                padding: '8px 16px',
-                                borderRadius: '8px',
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                display: 'inline-block',
-                                minWidth: '80px',
-                                textAlign: 'center',
-                                height: '40px',
-                                lineHeight: '24px',
-                                backgroundColor: 
-                                  property.isSold || property.approvalStatus === 'closed' ? '#dc3545' :
-                                  property.approvalStatus === 'pending' ? '#ffc107' :
-                                  property.status === 'rent' ? '#17a2b8' : '#28a745',
-                                color: '#fff'
-                              }}
+                              className={`btn-status property-status-badge ${
+                                property.isSold || property.approvalStatus === 'closed' ? 'status-closed' :
+                                property.approvalStatus === 'pending' ? 'status-pending' :
+                                property.status === 'rent' ? 'status-rent' : 'status-sale'
+                              }`}
                             >
                               {getStatusDisplay(property)}
                             </span>
@@ -278,21 +266,7 @@ export default function Favorites() {
                               <li>
                                 <button
                                   onClick={() => handleDeleteFavorite(favorite)}
-                                  className="remove-file item"
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '5px',
-                                    cursor: 'pointer',
-                                    color: '#A3ABB0',
-                                    fontSize: '14px',
-                                    padding: '8px 12px',
-                                    transition: 'color 0.2s ease'
-                                  }}
-                                  onMouseEnter={(e) => e.target.style.color = '#dc3545'}
-                                  onMouseLeave={(e) => e.target.style.color = '#A3ABB0'}
+                                  className="remove-file item favorites-delete-button"
                                 >
                                   <svg
                                     width={16}
@@ -322,67 +296,28 @@ export default function Favorites() {
 
               {/* Pagination */}
               {pagination.totalPages > 1 && (
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginTop: '30px',
-                  paddingTop: '20px',
-                  borderTop: '1px solid #e5e5e5'
-                }}>
+                <div className="favorites-pagination">
                   {/* Previous Button */}
                   <button
                     onClick={handlePrevPage}
                     disabled={!pagination.hasPreviousPage}
-                    style={{
-                      padding: '8px 16px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '6px',
-                      background: pagination.hasPreviousPage ? '#fff' : '#f5f5f5',
-                      color: pagination.hasPreviousPage ? '#333' : '#999',
-                      cursor: pagination.hasPreviousPage ? 'pointer' : 'not-allowed',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className="favorites-pagination-button"
                   >
                     « Previous
                   </button>
 
                   {/* Page Numbers */}
-                  <div style={{ display: 'flex', gap: '5px' }}>
+                  <div className="favorites-pagination-numbers">
                     {getPageNumbers().map((page, index) => (
                       page === '...' ? (
-                        <span key={`ellipsis-${index}`} style={{ padding: '8px 12px', color: '#999' }}>
+                        <span key={`ellipsis-${index}`} className="favorites-pagination-ellipsis">
                           ...
                         </span>
                       ) : (
                         <button
                           key={page}
                           onClick={() => handlePageClick(page)}
-                          style={{
-                            padding: '8px 12px',
-                            border: '1px solid #e5e5e5',
-                            borderRadius: '6px',
-                            background: currentPage === page ? '#ff6b35' : '#fff',
-                            color: currentPage === page ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: currentPage === page ? '600' : '400',
-                            minWidth: '40px',
-                            transition: 'all 0.2s ease'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (currentPage !== page) {
-                              e.target.style.backgroundColor = '#f5f5f5';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (currentPage !== page) {
-                              e.target.style.backgroundColor = '#fff';
-                            }
-                          }}
+                          className={`favorites-pagination-number ${currentPage === page ? 'favorites-pagination-number-active' : ''}`}
                         >
                           {page}
                         </button>
@@ -394,17 +329,7 @@ export default function Favorites() {
                   <button
                     onClick={handleNextPage}
                     disabled={!pagination.hasNextPage}
-                    style={{
-                      padding: '8px 16px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '6px',
-                      background: pagination.hasNextPage ? '#fff' : '#f5f5f5',
-                      color: pagination.hasNextPage ? '#333' : '#999',
-                      cursor: pagination.hasNextPage ? 'pointer' : 'not-allowed',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className="favorites-pagination-button"
                   >
                     Next »
                   </button>

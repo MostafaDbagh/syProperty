@@ -92,22 +92,11 @@ export default function FavoriteButton({
     <button
       onClick={handleToggleFavorite}
       disabled={isLoading || isCheckingAuth}
-      className={className || "btn-icon save hover-tooltip"}
-      style={{
-        position: 'relative',
-        cursor: isLoading ? 'wait' : 'pointer',
-        opacity: isLoading ? 0.6 : 1,
-        transition: 'all 0.3s ease'
-      }}
+      className={`${className || "btn-icon save hover-tooltip"} favorite-button`}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
     >
       <i 
-        className={iconClassName} 
-        style={{
-          color: isFavorited ? '#ff6b35' : 'inherit',
-          fontSize: '18px',
-          transition: 'color 0.3s ease'
-        }}
+        className={`${iconClassName} favorite-icon ${isFavorited ? 'favorite-icon-favorited' : ''}`}
       />
       {showLabel && (
         <span className="tooltip">
@@ -117,37 +106,10 @@ export default function FavoriteButton({
       
       {/* Loading indicator */}
       {isLoading && (
-        <span 
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            borderRadius: '4px'
-          }}
-        >
-          <span style={{
-            width: '12px',
-            height: '12px',
-            border: '2px solid #ff6b35',
-            borderTopColor: 'transparent',
-            borderRadius: '50%',
-            animation: 'spin 0.6s linear infinite'
-          }} />
+        <span className="favorite-loading-overlay">
+          <span className="favorite-loading-spinner" />
         </span>
       )}
-      
-      <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </button>
   );
 }

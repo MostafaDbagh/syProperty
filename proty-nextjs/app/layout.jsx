@@ -8,6 +8,7 @@ import { GlobalModalProvider } from "@/components/contexts/GlobalModalContext";
 import { FavoritesProvider } from "@/components/contexts/FavoritesContext";
 
 import "../public/main.scss";
+import "../public/css/components.css";
 import "odometer/themes/odometer-theme-default.css";
 import "photoswipe/style.css";
 import "rc-slider/assets/index.css";
