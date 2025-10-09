@@ -1,11 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import DropdownSelect from "../common/DropdownSelect";
 import { useCreateListing } from "@/apis/hooks";
-import { toast } from "react-hot-toast";
+import Toast from "../common/Toast";
+import { useRouter } from "next/navigation";
 
 export default function AddProperty() {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [toast, setToast] = useState(null);
+  
   const [formData, setFormData] = useState({
     propertyType: "",
     propertyKeyword: "",
@@ -25,10 +30,11 @@ export default function AddProperty() {
     country: "",
     state: "",
     neighborhood: "",
-    agent: "agent007",
+    agent: "",
+    agentId: "",
     amenities: [],
     videoUrl: "",
-    propertyId: `PROP${Date.now()}`
+    propertyId: `PROP_${Date.now()}`
   });
 
   const [images, setImages] = useState([]);
@@ -37,6 +43,30 @@ export default function AddProperty() {
   const [errors, setErrors] = useState({});
 
   const createListingMutation = useCreateListing();
+
+  // Load user data on mount
+  useEffect(() => {
+    const loadUser = () => {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        setToast({ type: "error", message: "Please login to add property" });
+        setTimeout(() => router.push("/login"), 2000);
+        return;
+      }
+
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      
+      // Set agent info in form data
+      setFormData(prev => ({
+        ...prev,
+        agent: userData.email,
+        agentId: userData._id
+      }));
+    };
+
+    loadUser();
+  }, [router]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -67,7 +97,25 @@ export default function AddProperty() {
     const files = Array.from(e.target.files);
     
     if (files.length + images.length > 10) {
-      toast.error("Maximum 10 images allowed");
+      setToast({ type: "error", message: "Maximum 10 images allowed" });
+      return;
+    }
+
+    // Validate file types
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    
+    if (invalidFiles.length > 0) {
+      setToast({ type: "error", message: "Only JPEG, PNG, and WebP images are allowed" });
+      return;
+    }
+
+    // Validate file sizes (max 5MB per image)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const oversizedFiles = files.filter(file => file.size > maxSize);
+    
+    if (oversizedFiles.length > 0) {
+      setToast({ type: "error", message: "Each image must be less than 5MB" });
       return;
     }
 
@@ -77,6 +125,8 @@ export default function AddProperty() {
     // Create preview URLs
     const newPreviews = files.map(file => URL.createObjectURL(file));
     setImagePreview(prev => [...prev, ...newPreviews]);
+    
+    setToast({ type: "success", message: `${files.length} image(s) added successfully` });
   };
 
   const removeImage = (index) => {
@@ -99,17 +149,36 @@ export default function AddProperty() {
   const validateForm = () => {
     const newErrors = {};
     
+    // Required fields
     if (!formData.propertyType) newErrors.propertyType = "Property type is required";
-    if (!formData.propertyPrice || isNaN(formData.propertyPrice)) newErrors.propertyPrice = "Valid price is required";
-    if (!formData.status) newErrors.status = "Property status is required";
+    if (!formData.propertyKeyword) newErrors.propertyKeyword = "Property keyword/title is required";
+    if (!formData.propertyDesc) newErrors.propertyDesc = "Property description is required";
+    if (!formData.propertyPrice || isNaN(formData.propertyPrice) || parseFloat(formData.propertyPrice) <= 0) {
+      newErrors.propertyPrice = "Valid price is required";
+    }
+    if (!formData.status) newErrors.status = "Property status (sale/rent) is required";
     if (!formData.address) newErrors.address = "Address is required";
     if (!formData.country) newErrors.country = "Country is required";
     if (!formData.state) newErrors.state = "State is required";
     if (!formData.neighborhood) newErrors.neighborhood = "Neighborhood is required";
-    if (!formData.bedrooms || isNaN(formData.bedrooms)) newErrors.bedrooms = "Valid number of bedrooms is required";
-    if (!formData.bathrooms || isNaN(formData.bathrooms)) newErrors.bathrooms = "Valid number of bathrooms is required";
-    if (!formData.size || isNaN(formData.size)) newErrors.size = "Valid size is required";
-    if (!formData.landArea || isNaN(formData.landArea)) newErrors.landArea = "Valid land area is required";
+    
+    // Numeric validations
+    if (!formData.bedrooms || isNaN(formData.bedrooms) || parseInt(formData.bedrooms) < 0) {
+      newErrors.bedrooms = "Valid number of bedrooms is required";
+    }
+    if (!formData.bathrooms || isNaN(formData.bathrooms) || parseInt(formData.bathrooms) < 0) {
+      newErrors.bathrooms = "Valid number of bathrooms is required";
+    }
+    if (!formData.size || isNaN(formData.size) || parseInt(formData.size) <= 0) {
+      newErrors.size = "Valid size is required";
+    }
+    if (formData.yearBuilt && (isNaN(formData.yearBuilt) || parseInt(formData.yearBuilt) < 1800 || parseInt(formData.yearBuilt) > new Date().getFullYear() + 5)) {
+      newErrors.yearBuilt = "Valid year is required";
+    }
+    
+    // User/Agent validation
+    if (!formData.agent) newErrors.agent = "Agent email is required";
+    if (!formData.agentId) newErrors.agentId = "Agent ID is required";
     if (!formData.propertyId) newErrors.propertyId = "Property ID is required";
 
     setErrors(newErrors);
@@ -120,7 +189,21 @@ export default function AddProperty() {
     e.preventDefault();
     
     if (!validateForm()) {
-      toast.error("Please fix the errors in the form");
+      setToast({ type: "error", message: "Please fix the errors in the form" });
+      // Scroll to first error
+      const firstError = Object.keys(errors)[0];
+      const element = document.querySelector(`[name="${firstError}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      }
+      return;
+    }
+
+    // Check if user is logged in
+    if (!user) {
+      setToast({ type: "error", message: "Please login to add property" });
+      setTimeout(() => router.push("/login"), 2000);
       return;
     }
 
@@ -133,16 +216,26 @@ export default function AddProperty() {
         bedrooms: parseInt(formData.bedrooms),
         bathrooms: parseInt(formData.bathrooms),
         size: parseInt(formData.size),
-        landArea: parseInt(formData.landArea),
-        yearBuilt: formData.yearBuilt ? parseInt(formData.yearBuilt) : null,
-        garageSize: formData.garageSize ? parseInt(formData.garageSize) : null,
+        landArea: formData.landArea ? parseInt(formData.landArea) : parseInt(formData.size),
+        yearBuilt: formData.yearBuilt ? parseInt(formData.yearBuilt) : new Date().getFullYear(),
+        garageSize: formData.garages && formData.garageSize ? parseInt(formData.garageSize) : 0,
+        approvalStatus: "pending",
+        isSold: false,
+        isDeleted: false,
         images: images,
         imageNames: images.map(img => img.name)
       };
 
-      await createListingMutation.mutateAsync(submitData);
+      console.log("Submitting property data:", submitData);
       
-      toast.success("Property created successfully!");
+      const result = await createListingMutation.mutateAsync(submitData);
+      
+      console.log("Property created successfully:", result);
+      
+      setToast({ 
+        type: "success", 
+        message: "Property created successfully! Redirecting to properties..." 
+      });
       
       // Reset form
       setFormData({
@@ -164,18 +257,42 @@ export default function AddProperty() {
         country: "",
         state: "",
         neighborhood: "",
-        agent: "agent007",
+        agent: user?.email || "",
+        agentId: user?._id || "",
         amenities: [],
         videoUrl: "",
-        propertyId: `PROP${Date.now()}`
+        propertyId: `PROP_${Date.now()}`
       });
       setImages([]);
       setImagePreview([]);
       setErrors({});
       
+      // Redirect to my properties page after 2 seconds
+      setTimeout(() => router.push("/my-property"), 2000);
+      
     } catch (error) {
       console.error("Error creating property:", error);
-      toast.error(error?.message || "Failed to create property");
+      
+      let errorMessage = "Failed to create property";
+      
+      // Handle different error types
+      if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      // Check for insufficient points error
+      if (errorMessage.includes("Insufficient points") || errorMessage.includes("points")) {
+        setToast({ 
+          type: "error", 
+          message: `${errorMessage}. Please purchase more points.` 
+        });
+      } else {
+        setToast({ type: "error", message: errorMessage });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -624,6 +741,15 @@ export default function AddProperty() {
         </div>
       </div>
       <div className="overlay-dashboard" />
+      
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

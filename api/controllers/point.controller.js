@@ -1,7 +1,7 @@
 const User = require('../models/user.model');
 const Point = require('../models/point.model');
 const PointTransaction = require('../models/pointTransaction.model');
-const { errorHandler } = require('../utils/error');
+const errorHandler = require('../utils/error');
 
 // Get user's point balance
 const getPointBalance = async (req, res, next) => {

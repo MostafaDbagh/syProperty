@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('./db/connect');
 const cors = require('cors')
 const authRouter = require('./routes/auth.route');
+const userRouter = require('./routes/user.route');
 const listingRouter = require('./routes/listing.route');
 const reviewRouter = require('./routes/review.route');
 const contactRoutes = require('./routes/contact.route')
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 app.use('/api/listing', listingRouter);
 app.use('/api/review',reviewRouter)
 app.use('/api/contacts', contactRoutes);

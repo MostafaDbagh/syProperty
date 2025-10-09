@@ -11,7 +11,8 @@ const {
 } = require('../middleware/pointDeduction.js');
 
 router.get('/search', filterListings, ListingController.getFilteredListings);
-router.post('/create', verifyToken, checkAndDeductPoints, uploadListingImages, uploadListingImagesMiddleware, ListingController.createListing, deductPointsAfterListing);
+// Move point check AFTER multer parses the body
+router.post('/create', verifyToken, uploadListingImages, uploadListingImagesMiddleware, checkAndDeductPoints, ListingController.createListing, deductPointsAfterListing);
 router.get('/stateCount',ListingController.getEachStateListing)
 
 // router.post('/create',   uploadListingImages, uploadListingImagesMiddleware, ListingController.createListing);

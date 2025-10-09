@@ -10,14 +10,20 @@ export default function PropertyListItems2() {
     <>
       {properties11.map((property, i) => (
         <div key={i} className="box-house hover-img style-list">
-          <div className="image-wrap">
+          <div className="image-wrap" style={{ width: '600px', height: '401px', overflow: 'hidden' }}>
             <Link href={`/property-detail/${property.id}`}>
               <Image
                 className="lazyload"
                 alt={property.title}
                 src={property.imageSrc}
-                width={property.imageWidth}
-                height={property.imageHeight}
+                width={600}
+                height={401}
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
               />
             </Link>
             <ul className="box-tag flex gap-8">

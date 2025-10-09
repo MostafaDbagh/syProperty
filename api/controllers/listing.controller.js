@@ -192,19 +192,50 @@ const getFilteredListings = async (req, res) => {
   try {
     const filter = req.filter || {};
     
+    // Add filter to exclude deleted listings
+    filter.isDeleted = { $ne: true };
+    
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const limit = parseInt(req.query.limit) || 12; // Default to 12 items per page
     const skip = (page - 1) * limit;
 
-    const listings = await Listing.find(filter).skip(skip).limit(limit);
+    const listings = await Listing.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Sort by newest first
 
     const total = await Listing.countDocuments(filter);
+    const totalPages = Math.ceil(total / limit);
+
+    console.log('API Debug:', {
+      filter,
+      total,
+      page,
+      limit,
+      totalPages,
+      listingsCount: listings.length
+    });
+
+    // Debug first listing structure
+    if (listings.length > 0) {
+      console.log('First listing structure:', {
+        _id: listings[0]._id,
+        propertyTitle: listings[0].propertyTitle,
+        images: listings[0].images,
+        imageNames: listings[0].imageNames,
+        hasImages: listings[0].images && listings[0].images.length > 0,
+        imageCount: listings[0].images ? listings[0].images.length : 0
+      });
+    }
 
     res.status(200).json({
       success: true,
       total,
       page,
       limit,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
       data: listings
     });
   } catch (error) {

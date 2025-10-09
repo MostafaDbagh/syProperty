@@ -3,32 +3,54 @@ const User = require('../models/user.model.js');
 const errorHandler = require('../utils/error.js');
 const  Listing = require( '../models/listing.model.js');
 
- const test = (req, res) => {
+const test = (req, res) => {
   res.json({
     message: 'Api route is working!',
   });
 };
 
- const updateUser = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, 'You can only update your own account!'));
   try {
+    // Prepare update object
+    const updateData = {};
+    
+    // Basic fields
+    if (req.body.username) updateData.username = req.body.username;
+    if (req.body.email) updateData.email = req.body.email;
+    if (req.body.avatar) updateData.avatar = req.body.avatar;
+    if (req.body.posterImage) updateData.posterImage = req.body.posterImage;
+    
+    // Profile fields
+    if (req.body.description !== undefined) updateData.description = req.body.description;
+    if (req.body.company !== undefined) updateData.company = req.body.company;
+    if (req.body.position !== undefined) updateData.position = req.body.position;
+    if (req.body.officeNumber !== undefined) updateData.officeNumber = req.body.officeNumber;
+    if (req.body.officeAddress !== undefined) updateData.officeAddress = req.body.officeAddress;
+    if (req.body.job !== undefined) updateData.job = req.body.job;
+    if (req.body.phone !== undefined) updateData.phone = req.body.phone;
+    if (req.body.location !== undefined) updateData.location = req.body.location;
+    
+    // Social media fields
+    if (req.body.facebook !== undefined) updateData.facebook = req.body.facebook;
+    if (req.body.twitter !== undefined) updateData.twitter = req.body.twitter;
+    if (req.body.linkedin !== undefined) updateData.linkedin = req.body.linkedin;
+    
+    // Hash password if provided
     if (req.body.password) {
-      req.body.password = bcryptjs.hashSync(req.body.password, 10);
+      updateData.password = bcryptjs.hashSync(req.body.password, 10);
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          avatar: req.body.avatar,
-        },
-      },
+      { $set: updateData },
       { new: true }
     );
+
+    if (!updatedUser) {
+      return next(errorHandler(404, 'User not found'));
+    }
 
     const { password, ...rest } = updatedUser._doc;
 
@@ -38,7 +60,7 @@ const  Listing = require( '../models/listing.model.js');
   }
 };
 
- const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, 'You can only delete your own account!'));
   try {
@@ -50,7 +72,7 @@ const  Listing = require( '../models/listing.model.js');
   }
 };
 
- const getUserListings = async (req, res, next) => {
+const getUserListings = async (req, res, next) => {
   if (req.user.id === req.params.id) {
     try {
       const listings = await Listing.find({ userRef: req.params.id });
@@ -63,7 +85,7 @@ const  Listing = require( '../models/listing.model.js');
   }
 };
 
- const getUser = async (req, res, next) => {
+const getUser = async (req, res, next) => {
   try {
     
     const user = await User.findById(req.params.id);

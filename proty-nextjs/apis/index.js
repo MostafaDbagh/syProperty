@@ -1,5 +1,6 @@
 // Comprehensive API exports for the frontend
 import authAPI from './auth';
+import userAPI from './user';
 import listingAPI from './listing';
 import reviewAPI from './review';
 import contactAPI from './contact';
@@ -10,6 +11,7 @@ import pointAPI from './points';
 // Export all APIs
 export {
   authAPI,
+  userAPI,
   listingAPI,
   reviewAPI,
   contactAPI,
@@ -21,6 +23,7 @@ export {
 // Default export with all APIs
 export default {
   auth: authAPI,
+  user: userAPI,
   listing: listingAPI,
   review: reviewAPI,
   contact: contactAPI,
@@ -31,6 +34,7 @@ export default {
 
 // Individual exports for convenience
 export const auth = authAPI;
+export const user = userAPI;
 export const listing = listingAPI;
 export const review = reviewAPI;
 export const contact = contactAPI;

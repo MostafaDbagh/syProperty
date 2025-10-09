@@ -16,26 +16,54 @@ const calculateListingPoints = (listingData) => {
     'land': 0.8
   };
 
+  // Parse size if it's a string (from multipart/form-data)
+  const size = listingData.size ? parseInt(listingData.size) : 0;
+  const bedrooms = listingData.bedrooms ? parseInt(listingData.bedrooms) : 0;
+
   // Size factor (larger properties cost more)
   let sizeFactor = 1.0;
-  if (listingData.size > 200) sizeFactor += 0.2;
-  if (listingData.size > 500) sizeFactor += 0.3;
-  if (listingData.size > 1000) sizeFactor += 0.5;
+  if (size > 200) sizeFactor += 0.2;
+  if (size > 500) sizeFactor += 0.3;
+  if (size > 1000) sizeFactor += 0.5;
 
   // Bedroom factor
   let bedroomFactor = 1.0;
-  if (listingData.bedrooms > 3) bedroomFactor += 0.1;
-  if (listingData.bedrooms > 5) bedroomFactor += 0.2;
+  if (bedrooms > 3) bedroomFactor += 0.1;
+  if (bedrooms > 5) bedroomFactor += 0.2;
 
   // Amenities factor
   let amenitiesFactor = 1.0;
-  if (listingData.amenities && listingData.amenities.length > 5) amenitiesFactor += 0.2;
-  if (listingData.amenities && listingData.amenities.length > 10) amenitiesFactor += 0.3;
+  let amenitiesLength = 0;
+  
+  if (listingData.amenities) {
+    // Handle both array and comma-separated string
+    if (Array.isArray(listingData.amenities)) {
+      amenitiesLength = listingData.amenities.length;
+    } else if (typeof listingData.amenities === 'string') {
+      amenitiesLength = listingData.amenities.split(',').filter(a => a.trim()).length;
+    }
+  }
+  
+  if (amenitiesLength > 5) amenitiesFactor += 0.2;
+  if (amenitiesLength > 10) amenitiesFactor += 0.3;
 
-  // Images factor
+  // Images factor (will be calculated later after upload)
   let imagesFactor = 1.0;
-  if (listingData.images && listingData.images.length > 5) imagesFactor += 0.1;
-  if (listingData.images && listingData.images.length > 10) imagesFactor += 0.2;
+  let imagesLength = 0;
+  
+  if (listingData.images) {
+    imagesLength = Array.isArray(listingData.images) ? listingData.images.length : 0;
+  } else if (listingData.imageNames) {
+    // Handle imageNames from multipart form
+    if (Array.isArray(listingData.imageNames)) {
+      imagesLength = listingData.imageNames.length;
+    } else if (typeof listingData.imageNames === 'string') {
+      imagesLength = listingData.imageNames.split(',').filter(n => n.trim()).length;
+    }
+  }
+  
+  if (imagesLength > 5) imagesFactor += 0.1;
+  if (imagesLength > 10) imagesFactor += 0.2;
 
   const totalCost = Math.round(
     baseCost * 

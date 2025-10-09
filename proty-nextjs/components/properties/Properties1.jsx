@@ -1,11 +1,199 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import DropdownSelect from "../common/DropdownSelect";
 import PropertyGridItems from "./PropertyGridItems";
 import PropertyListItems from "./PropertyListItems";
 import LayoutHandler from "./LayoutHandler";
 import FilterModal from "./FilterModal";
+import { useSearchListings } from "@/apis/hooks";
+import { cleanParams } from "@/utlis/cleanedParams";
 
 export default function Properties1({ defaultGrid = false }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useState({
+    status: "",
+    keyword: "",
+    priceMin: "",
+    priceMax: "",
+    sizeMin: "",
+    sizeMax: "",
+    state: "",
+    bedrooms: "",
+    bathrooms: "",
+    amenities: [],
+    propertyType: "",
+    furnished: "",
+    propertyId: ""
+  });
+
+  // Prepare API params with pagination
+  const apiParams = {
+    ...cleanParams(searchParams),
+    page: currentPage,
+    limit: 12
+  };
+
+  const {
+    data: searchResponse,
+    isLoading,
+    isError,
+    error
+  } = useSearchListings(apiParams);
+
+
+  const listings = searchResponse?.data || [];
+  const pagination = {
+    total: searchResponse?.total || 0,
+    page: searchResponse?.page || 1,
+    limit: searchResponse?.limit || 12,
+    totalPages: searchResponse?.totalPages || 0,
+    hasNextPage: searchResponse?.hasNextPage || false,
+    hasPrevPage: searchResponse?.hasPrevPage || false
+  };
+
+  // Debug: Log the API response
+  console.log('API Response:', searchResponse);
+  console.log('Listings count:', listings.length);
+  console.log('Pagination object:', pagination);
+
+  const handleSearchChange = (newParams) => {
+    setSearchParams((prev) => ({ ...prev, ...newParams }));
+    setCurrentPage(1); // Reset to first page when search changes
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const generatePaginationItems = () => {
+    const items = [];
+    const { page, totalPages } = pagination;
+    
+    // Debug: Log pagination values
+    console.log('Pagination Debug:', { 
+      page, 
+      totalPages, 
+      total: pagination.total, 
+      limit: pagination.limit,
+      calculatedPages: Math.ceil(pagination.total / pagination.limit)
+    });
+    
+    // Previous button
+    items.push(
+      <li key="prev" className={`arrow ${!pagination.hasPrevPage ? 'disabled' : ''}`}>
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            if (pagination.hasPrevPage) {
+              handlePageChange(page - 1);
+            }
+          }}
+        >
+          <i className="icon-arrow-left" />
+        </a>
+      </li>
+    );
+
+    // Calculate total pages manually if API doesn't provide it correctly
+    const actualTotalPages = Math.ceil(pagination.total / pagination.limit);
+    const effectiveTotalPages = actualTotalPages > 0 ? actualTotalPages : 1;
+
+    // Page numbers
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(effectiveTotalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // First page
+    if (startPage > 1) {
+      items.push(
+        <li key={1}>
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              handlePageChange(1);
+            }}
+          >
+            1
+          </a>
+        </li>
+      );
+      if (startPage > 2) {
+        items.push(
+          <li key="ellipsis1">
+            <a href="#">...</a>
+          </li>
+        );
+      }
+    }
+
+    // Middle pages
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <li key={i} className={i === page ? 'active' : ''}>
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              handlePageChange(i);
+            }}
+          >
+            {i}
+          </a>
+        </li>
+      );
+    }
+
+    // Last page
+    if (endPage < effectiveTotalPages) {
+      if (endPage < effectiveTotalPages - 1) {
+        items.push(
+          <li key="ellipsis2">
+            <a href="#">...</a>
+          </li>
+        );
+      }
+      items.push(
+        <li key={effectiveTotalPages}>
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              handlePageChange(effectiveTotalPages);
+            }}
+          >
+            {effectiveTotalPages}
+          </a>
+        </li>
+      );
+    }
+
+    // Next button
+    items.push(
+      <li key="next" className={`arrow ${!pagination.hasNextPage ? 'disabled' : ''}`}>
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            if (pagination.hasNextPage) {
+              handlePageChange(page + 1);
+            }
+          }}
+        >
+          <i className="icon-arrow-right" />
+        </a>
+      </li>
+    );
+
+    return items;
+  };
   return (
     <>
       <section className="section-property-layout">
@@ -114,7 +302,32 @@ export default function Properties1({ defaultGrid = false }) {
                     role="tabpanel"
                   >
                     <div className="tf-grid-layout lg-col-3 md-col-2">
-                      <PropertyGridItems />
+                      {isLoading ? (
+                        <div className="loading-container" style={{ 
+                          display: 'flex', 
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          minHeight: '200px',
+                          gridColumn: '1 / -1'
+                        }}>
+                          <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        </div>
+                      ) : isError ? (
+                        <div className="error-container" style={{ 
+                          display: 'flex', 
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          minHeight: '200px',
+                          gridColumn: '1 / -1',
+                          color: '#dc3545'
+                        }}>
+                          <p>Error loading properties: {error?.message || 'Unknown error'}</p>
+                        </div>
+                      ) : (
+                        <PropertyGridItems listings={listings} />
+                      )}
                     </div>
                   </div>
                   <div
@@ -123,43 +336,66 @@ export default function Properties1({ defaultGrid = false }) {
                     role="tabpanel"
                   >
                     <div className="tf-grid-layout lg-col-2">
-                      <PropertyListItems />
+                      {isLoading ? (
+                        <div className="loading-container" style={{ 
+                          display: 'flex', 
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          minHeight: '200px',
+                          gridColumn: '1 / -1'
+                        }}>
+                          <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        </div>
+                      ) : isError ? (
+                        <div className="error-container" style={{ 
+                          display: 'flex', 
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          minHeight: '200px',
+                          gridColumn: '1 / -1',
+                          color: '#dc3545'
+                        }}>
+                          <p>Error loading properties: {error?.message || 'Unknown error'}</p>
+                        </div>
+                      ) : (
+                        <PropertyListItems listings={listings} />
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="wrap-pagination">
-                <p className="text-1">Showing 1-8 of 42 results.</p>
+                <p className="text-1">
+                  Showing {((pagination.page - 1) * pagination.limit) + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results.
+                </p>
                 <ul className="wg-pagination">
-                  <li className="arrow">
-                    <a href="#">
-                      <i className="icon-arrow-left" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">1</a>
-                  </li>
-                  <li className="active">
-                    <a href="#">2</a>
-                  </li>
-                  <li>
-                    <a href="#">...</a>
-                  </li>
-                  <li>
-                    <a href="#">20</a>
-                  </li>
-                  <li className="arrow">
-                    <a href="#">
-                      <i className="icon-arrow-right" />
-                    </a>
-                  </li>
+                  {Math.ceil(pagination.total / pagination.limit) > 1 ? generatePaginationItems() : (
+                    // Show single page if only one page
+                    <>
+                      <li className="arrow disabled">
+                        <a href="#">
+                          <i className="icon-arrow-left" />
+                        </a>
+                      </li>
+                      <li className="active">
+                        <a href="#">1</a>
+                      </li>
+                      <li className="arrow disabled">
+                        <a href="#">
+                          <i className="icon-arrow-right" />
+                        </a>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <FilterModal />
+      <FilterModal onSearchChange={handleSearchChange} searchParams={searchParams} />
     </>
   );
 }

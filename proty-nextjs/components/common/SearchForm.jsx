@@ -66,6 +66,33 @@ export default function SearchForm({
       <div className="search-form-header mb-32">
         <h4 className="advanced-search-title">Advanced Search</h4>
       </div>
+      
+      {/* Property ID Input Field */}
+      <div className="group-input mb-30">
+        <div className="box-input">
+          <label className="mb-2" htmlFor="propertyId">
+            Property ID
+          </label>
+          <input
+            type="text"
+            id="propertyId"
+            className="form-control"
+            placeholder="Enter Property ID"
+            value={searchParams.propertyId || ""}
+            onChange={(e) => handleChange("propertyId", e.target.value)}
+            style={{
+              width: '290px',
+              height: '56px',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e0e0e0',
+              padding: '0 16px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+      </div>
+      
       <div className="group-price">
         <div className="widget-price">
           <label className="mb-2 title-price" htmlFor="priceRange">

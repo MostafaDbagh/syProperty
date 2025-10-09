@@ -29,7 +29,7 @@ export default function Listings() {
         {properties.map((property, i) => (
           <div key={i} className="tf_filter_rent tf-filter-item tf-tab-content">
             <div className="box-house hover-img">
-              <div className="image-wrap">
+              <div className="image-wrap" style={{ width: '600px', height: '401px', overflow: 'hidden' }}>
                 <Link href={`/property-detail/${property.id}`}>
                   <Image
                     className="lazyload"
@@ -37,6 +37,12 @@ export default function Listings() {
                     width={600}
                     height={401}
                     src={property.imageSrc}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
                   />
                 </Link>
                 <ul className="box-tag flex gap-8">

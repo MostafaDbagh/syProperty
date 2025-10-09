@@ -19,6 +19,8 @@ const filterListings = async (req, res, next) => {
       rentType,
       offer,
       propertyType,
+      propertyId,
+      agentId,
     } = req.query;
 
     const filters = {};
@@ -29,6 +31,8 @@ const filterListings = async (req, res, next) => {
     if (neighborhood) filters.neighborhood = neighborhood;
     if (rentType) filters.rentType = rentType;
     if (propertyType) filters.propertyType = propertyType;
+    if (propertyId) filters.propertyId = propertyId;
+    if (agentId) filters.agentId = agentId;
     if (offer !== undefined) filters.offer = offer === 'true';
     if (furnished !== undefined) filters.furnished = furnished === 'true';
     if (garages !== undefined) filters.garages = garages === 'true';

@@ -2,7 +2,7 @@
 import Slider from "rc-slider";
 import React, { useState } from "react";
 
-export default function FilterModal() {
+export default function FilterModal({ onSearchChange, searchParams = {} }) {
   const [priceRange, setPriceRange] = useState([100, 700]);
   const [sizeRange, setSizeRange] = useState([200, 820]);
   return (
