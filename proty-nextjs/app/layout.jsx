@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query"; 
 import ReduxProvider from "@/store/ReduxProvider";
 import { GlobalModalProvider } from "@/components/contexts/GlobalModalContext";
+import { FavoritesProvider } from "@/components/contexts/FavoritesContext";
 
 import "../public/main.scss";
 import "odometer/themes/odometer-theme-default.css";
@@ -75,12 +76,14 @@ export default function RootLayout({ children }) {
       <body className="popup-loader">
         <ReduxProvider>
           <GlobalModalProvider>
-            <QueryClientProvider client={queryClient}>
-              {children}
-              <MobileMenu />
-              <BackToTop />
-              <SettingsHandler />
-            </QueryClientProvider>
+            <FavoritesProvider>
+              <QueryClientProvider client={queryClient}>
+                {children}
+                <MobileMenu />
+                <BackToTop />
+                <SettingsHandler />
+              </QueryClientProvider>
+            </FavoritesProvider>
           </GlobalModalProvider>
         </ReduxProvider>
       </body>

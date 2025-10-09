@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
+import FavoriteButton from "@/components/common/FavoriteButton";
 
 export default function Properties({ listings, isLoading, isError }) {
 
@@ -50,10 +51,10 @@ export default function Properties({ listings, isLoading, isError }) {
           </ul>
 
           <div className="list-btn flex gap-8">
-            <a href="#" className="btn-icon save hover-tooltip">
-              <i className="icon-save" />
-              <span className="tooltip">Add Favorite</span>
-            </a>
+            <FavoriteButton 
+              propertyId={listing._id}
+              showLabel={true}
+            />
             <a href="#" className="btn-icon find hover-tooltip">
               <i className="icon-find-plus" />
               <span className="tooltip">Quick View</span>

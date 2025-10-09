@@ -6,11 +6,13 @@ import { useQuery } from '@tanstack/react-query';
 import { favoriteAPI } from "@/apis/favorites";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
+import { useFavorites } from "@/components/contexts/FavoritesContext";
 
 export default function Favorites() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const { favoritesCount, refreshFavoritesCount } = useFavorites();
   const [confirmationModal, setConfirmationModal] = useState({
     isOpen: false,
     title: '',
@@ -151,6 +153,7 @@ export default function Favorites() {
         try {
           await favoriteAPI.removeFavorite(favorite.propertyId._id);
           refetch(); // Refresh the favorites list
+          refreshFavoritesCount(); // Update the global count
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           showToast('Property removed from favorites successfully!', 'success');
         } catch (error) {
@@ -173,9 +176,9 @@ export default function Favorites() {
         <div className="widget-box-2 wd-listing">
           <h3 className="title">
             My Favorites
-            {pagination.totalFavorites > 0 && (
+            {favoritesCount > 0 && (
               <span style={{ fontSize: '14px', fontWeight: 'normal', marginLeft: '10px', color: '#666' }}>
-                ({pagination.totalFavorites} total {pagination.totalFavorites === 1 ? 'property' : 'properties'})
+                ({favoritesCount} total {favoritesCount === 1 ? 'property' : 'properties'})
               </span>
             )}
           </h3>

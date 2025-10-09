@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/store/hooks/useAuth";
 import React from "react";
+import FavoritesCount from "@/components/common/FavoritesCount";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -188,7 +189,7 @@ export default function Sidebar() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                My favorites (1)
+                <FavoritesCount />
               </Link>
             </li>
        

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuthState } from "@/store/hooks/useAuth";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
+import FavoritesCount from "@/components/common/FavoritesCount";
 import { 
   UserAvatarIcon, 
   DashboardIcon, 
@@ -145,7 +146,7 @@ export default function DashboardNav({ color = "" }) {
         {isLoggedIn && (
           <Link className="dropdown-item" href={`/my-favorites`}>
             <HeartIcon />
-            My favorites (1)
+            <FavoritesCount />
           </Link>
         )}
 

@@ -1,7 +1,9 @@
+"use client";
 import { projects, projects2 } from "@/data/projects";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import FavoriteButton from "@/components/common/FavoriteButton";
 
 export default function Project1() {
   return (
@@ -32,10 +34,10 @@ export default function Project1() {
                       </li>
                     </ul>
                     <div className="list-btn flex gap-8">
-                      <a href="#" className="btn-icon save hover-tooltip">
-                        <i className="icon-save" />
-                        <span className="tooltip">Add Favorite</span>
-                      </a>
+                      <FavoriteButton 
+                        propertyId={project.id}
+                        showLabel={true}
+                      />
                       <a href="#" className="btn-icon find hover-tooltip">
                         <i className="icon-find-plus" />
                         <span className="tooltip">Quick View</span>

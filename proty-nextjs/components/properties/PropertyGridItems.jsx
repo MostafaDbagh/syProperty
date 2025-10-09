@@ -1,7 +1,9 @@
+"use client";
 import { properties11 } from "@/data/properties";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import FavoriteButton from "../common/FavoriteButton";
 
 export default function PropertyGridItems({ showItems = properties11.length }) {
   return (
@@ -32,10 +34,10 @@ export default function PropertyGridItems({ showItems = properties11.length }) {
               )}
             </ul>
             <div className="list-btn flex gap-8">
-              <a href="#" className="btn-icon save hover-tooltip">
-                <i className="icon-save" />
-                <span className="tooltip">Add Favorite</span>
-              </a>
+              <FavoriteButton 
+                propertyId={property.id}
+                showLabel={true}
+              />
               <a href="#" className="btn-icon find hover-tooltip">
                 <i className="icon-find-plus" />
                 <span className="tooltip">Quick View</span>

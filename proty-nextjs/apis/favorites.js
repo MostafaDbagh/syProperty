@@ -5,7 +5,14 @@ export const favoriteAPI = {
   // Add property to favorites
   addFavorite: async (propertyId) => {
     try {
-      const response = await Axios.post('/favorites', { propertyId });
+      const token = localStorage.getItem('token');
+      
+      const response = await Axios.post('/favorites', { propertyId }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -16,6 +23,7 @@ export const favoriteAPI = {
   removeFavorite: async (propertyId) => {
     try {
       const token = localStorage.getItem('token');
+      
       const response = await Axios.delete(`/favorites/${propertyId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -48,9 +56,20 @@ export const favoriteAPI = {
   // Check if property is favorited
   isFavorited: async (propertyId) => {
     try {
-      const favorites = await favoriteAPI.getFavorites();
-      return favorites.some(fav => fav.propertyId === propertyId || fav._id === propertyId);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return false;
+      }
+      
+      const response = await favoriteAPI.getFavorites({ page: 1, limit: 1000 }); // Get all to check
+      const favorites = response?.data || response || [];
+      return favorites.some(fav => 
+        fav.propertyId?._id === propertyId || 
+        fav.propertyId === propertyId || 
+        fav._id === propertyId
+      );
     } catch (error) {
+      console.error('Error checking if favorited:', error);
       return false;
     }
   },
