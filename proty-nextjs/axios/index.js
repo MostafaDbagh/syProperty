@@ -35,14 +35,21 @@ Axios.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Only redirect to login for specific authentication endpoints
+    // Don't redirect for listing operations to avoid disrupting user workflow
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      localStorage.removeItem('token');
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      const url = error.config?.url || '';
       
-      // Redirect to login page
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+      // Only redirect to login for auth-related endpoints
+      if (url.includes('/auth/') || url.includes('/login') || url.includes('/register')) {
+        // Clear token and redirect to login
+        localStorage.removeItem('token');
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        
+        // Redirect to login page
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
       }
     }
     

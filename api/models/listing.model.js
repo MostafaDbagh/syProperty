@@ -5,6 +5,7 @@ const listingSchema = new mongoose.Schema(
     propertyType: { type: String, required: true },           
     propertyKeyword: { type: String, required: true },
     propertyDesc: { type: String, required: true },
+    description: { type: String }, // Alternative field name
     propertyPrice: { type: Number, required: true },
     status: { type: String, required: true, enum: ['sale', 'rent'] },   
     rentType: {
@@ -17,7 +18,8 @@ const listingSchema = new mongoose.Schema(
 //////property specification//////
     bedrooms: { type: Number, required: true },
     bathrooms: { type: Number, required: true },
-    size: { type: Number,required:true },                      
+    size: { type: Number,required:true },
+    squareFootage: { type: Number }, // Alternative field name                      
     landArea: { type: Number },                       
     furnished: { type: Boolean, required: true },
     garages: { type: Boolean, required: true },
@@ -30,7 +32,13 @@ const listingSchema = new mongoose.Schema(
     state: { type: String,required:true  },
     neighborhood: { type: String,required:true },
 
-    agent: { type: String, required: true },
+    agent: { type: String, required: true }, // Legacy field - keep for backward compatibility
+    agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // New field for proper reference
+    approvalStatus: { 
+      type: String, 
+      enum: ['pending', 'approved', 'rejected', 'closed'], 
+      default: 'pending' 
+    },
     isSold: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     offer: { type: Boolean, required: false },

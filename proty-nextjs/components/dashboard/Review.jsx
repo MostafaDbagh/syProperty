@@ -1,6 +1,96 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
+import { useQuery } from '@tanstack/react-query';
+import { reviewAPI } from "@/apis/review";
+
 export default function Review() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Fetch reviews with pagination
+  const { data: reviewsData, isLoading, isError } = useQuery({
+    queryKey: ['reviews', currentPage],
+    queryFn: () => reviewAPI.getReviews({ page: currentPage, limit: itemsPerPage }),
+    keepPreviousData: true
+  });
+
+  const reviews = reviewsData?.data || [];
+  const pagination = reviewsData?.pagination || {};
+
+  // Format date helper
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Recently';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return '1 day ago';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return date.toLocaleDateString();
+  };
+
+  // Render stars
+  const renderStars = (rating = 5) => {
+    return Array(rating).fill(0).map((_, index) => (
+      <i key={index} className="icon-star" />
+    ));
+  };
+
+  // Get avatar
+  const getAvatar = (review) => {
+    if (review.userId?.avatar) return review.userId.avatar;
+    return '/images/avatar/avt-png13.png'; // Default avatar
+  };
+
+  // Get reviewer name
+  const getReviewerName = (review) => {
+    if (review.userId?.username) return review.userId.username;
+    return review.name || 'Anonymous';
+  };
+
+  // Pagination handlers
+  const handlePrevPage = () => {
+    if (pagination.hasPreviousPage) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pagination.hasNextPage) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Generate page numbers
+  const getPageNumbers = () => {
+    const pages = [];
+    const totalPages = pagination.totalPages || 1;
+    
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   return (
     <div className="main-content w-100">
       <div className="main-content-inner style-3">
@@ -8,145 +98,164 @@ export default function Review() {
           <span className="body-1">Show Dashboard</span>
         </div>
         <div className="widget-box-2 mess-box">
-          <h3 className="title">Recent Reviews</h3>
-          <ul className="list-mess">
-            <li className="mess-item">
-              <div className="user-box">
-                <div className="avatar">
-                  <Image
-                    alt="avt"
-                    src="/images/avatar/avt-png13.png"
-                    width={51}
-                    height={51}
-                  />
+          <h3 className="title">
+            Recent Reviews 
+            {pagination.totalReviews > 0 && (
+              <span style={{ fontSize: '14px', fontWeight: 'normal', marginLeft: '10px', color: '#666' }}>
+                ({pagination.totalReviews} total reviews)
+              </span>
+            )}
+          </h3>
+
+          {isLoading && (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <p>Loading reviews...</p>
+            </div>
+          )}
+
+          {isError && (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#dc3545' }}>
+              <p>Failed to load reviews. Please try again later.</p>
+            </div>
+          )}
+
+          {!isLoading && !isError && reviews.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <p>No reviews found.</p>
+            </div>
+          )}
+
+          {!isLoading && !isError && reviews.length > 0 && (
+            <>
+              <ul className="list-mess">
+                {reviews.map((review) => (
+                  <li key={review._id} className="mess-item">
+                    <div className="user-box">
+                      <div className="avatar">
+                        <Image
+                          alt={getReviewerName(review)}
+                          src={getAvatar(review)}
+                          width={51}
+                          height={51}
+                        />
+                      </div>
+                      <div className="content justify-content-start">
+                        <div className="name fw-6">{getReviewerName(review)}</div>
+                        <span className="caption-2 text-variant-3">
+                          {formatDate(review.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                    <p>{review.review}</p>
+                    {review.propertyId && (
+                      <div style={{ 
+                        fontSize: '12px', 
+                        color: '#666', 
+                        marginTop: '8px',
+                        marginBottom: '8px' 
+                      }}>
+                        Property: <strong>{review.propertyId.propertyKeyword || 'N/A'}</strong>
+                      </div>
+                    )}
+                    <div className="ratings">
+                      {renderStars(review.rating || 5)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Pagination */}
+              {pagination.totalPages > 1 && (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginTop: '30px',
+                  paddingTop: '20px',
+                  borderTop: '1px solid #e5e5e5'
+                }}>
+                  {/* Previous Button */}
+                  <button
+                    onClick={handlePrevPage}
+                    disabled={!pagination.hasPreviousPage}
+                    style={{
+                      padding: '8px 16px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '6px',
+                      background: pagination.hasPreviousPage ? '#fff' : '#f5f5f5',
+                      color: pagination.hasPreviousPage ? '#333' : '#999',
+                      cursor: pagination.hasPreviousPage ? 'pointer' : 'not-allowed',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    « Previous
+                  </button>
+
+                  {/* Page Numbers */}
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    {getPageNumbers().map((page, index) => (
+                      page === '...' ? (
+                        <span key={`ellipsis-${index}`} style={{ padding: '8px 12px', color: '#999' }}>
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          key={page}
+                          onClick={() => handlePageClick(page)}
+                          style={{
+                            padding: '8px 12px',
+                            border: '1px solid #e5e5e5',
+                            borderRadius: '6px',
+                            background: currentPage === page ? '#ff6b35' : '#fff',
+                            color: currentPage === page ? '#fff' : '#333',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: currentPage === page ? '600' : '400',
+                            minWidth: '40px',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== page) {
+                              e.target.style.backgroundColor = '#f5f5f5';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== page) {
+                              e.target.style.backgroundColor = '#fff';
+                            }
+                          }}
+                        >
+                          {page}
+                        </button>
+                      )
+                    ))}
+                  </div>
+
+                  {/* Next Button */}
+                  <button
+                    onClick={handleNextPage}
+                    disabled={!pagination.hasNextPage}
+                    style={{
+                      padding: '8px 16px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '6px',
+                      background: pagination.hasNextPage ? '#fff' : '#f5f5f5',
+                      color: pagination.hasNextPage ? '#333' : '#999',
+                      cursor: pagination.hasNextPage ? 'pointer' : 'not-allowed',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Next »
+                  </button>
                 </div>
-                <div className="content justify-content-start">
-                  <div className="name fw-6">Bessie Cooper</div>
-                  <span className="caption-2 text-variant-3">3 day ago</span>
-                </div>
-              </div>
-              <p>
-                Maecenas eu lorem et urna accumsan vestibulum vel vitae magna.
-              </p>
-              <div className="ratings">
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-              </div>
-            </li>
-            <li className="mess-item">
-              <div className="user-box">
-                <div className="avatar">
-                  <Image
-                    alt="avt"
-                    src="/images/avatar/avt-png14.png"
-                    width={68}
-                    height={68}
-                  />
-                </div>
-                <div className="content justify-content-start">
-                  <div className="name fw-6">Annette Black</div>
-                  <span className="caption-2 text-variant-3">3 day ago</span>
-                </div>
-              </div>
-              <p>
-                Nullam rhoncus dolor arcu, et commodo tellus semper vitae.
-                Aenean finibus tristique lectus, ac lobortis mauris venenatis
-                ac.
-              </p>
-              <div className="ratings">
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-              </div>
-            </li>
-            <li className="mess-item">
-              <div className="user-box">
-                <div className="avatar">
-                  <Image
-                    alt="avt"
-                    src="/images/avatar/avt-png15.png"
-                    width={51}
-                    height={51}
-                  />
-                </div>
-                <div className="content justify-content-start">
-                  <div className="name fw-6">Ralph Edwards</div>
-                  <span className="caption-2 text-variant-3">3 day ago</span>
-                </div>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                viverra semper convallis. Integer vestibulum tempus tincidunt.
-              </p>
-              <div className="ratings">
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-              </div>
-            </li>
-            <li className="mess-item">
-              <div className="user-box">
-                <div className="avatar">
-                  <Image
-                    alt="avt"
-                    src="/images/avatar/avt-png16.png"
-                    width={51}
-                    height={51}
-                  />
-                </div>
-                <div className="content justify-content-start">
-                  <div className="name fw-6">Jerome Bell</div>
-                  <span className="caption-2 text-variant-3">3 day ago</span>
-                </div>
-              </div>
-              <p>
-                Fusce sit amet purus eget quam eleifend hendrerit nec a erat.
-                Sed turpis neque, iaculis blandit viverra ut, dapibus eget nisi.
-              </p>
-              <div className="ratings">
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-              </div>
-            </li>
-            <li className="mess-item">
-              <div className="user-box">
-                <div className="avatar">
-                  <Image
-                    alt="avt"
-                    src="/images/avatar/avt-png17.png"
-                    width={51}
-                    height={51}
-                  />
-                </div>
-                <div className="content justify-content-start">
-                  <div className="name fw-6">Albert Flores</div>
-                  <span className="caption-2 text-variant-3">3 day ago</span>
-                </div>
-              </div>
-              <p>
-                Donec bibendum nibh quis nisl luctus, at aliquet ipsum bibendum.
-                Fusce at dui tincidunt nulla semper venenatis at et magna.
-                Mauris turpis lorem, ultricies vel justo sed.
-              </p>
-              <div className="ratings">
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-                <i className="icon-star" />
-              </div>
-            </li>
-          </ul>
+              )}
+            </>
+          )}
         </div>
         {/* .footer-dashboard */}
         <div className="footer-dashboard">

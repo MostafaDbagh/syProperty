@@ -78,7 +78,13 @@ export const listingAPI = {
   // Update listing
   updateListing: async (id, listingData) => {
     try {
-      const response = await Axios.post(`/listing/update/${id}`, listingData);
+      const token = localStorage.getItem('token');
+      const response = await Axios.post(`/listing/update/${id}`, listingData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -88,7 +94,13 @@ export const listingAPI = {
   // Delete listing
   deleteListing: async (id) => {
     try {
-      const response = await Axios.delete(`/listing/delete/${id}`);
+      const token = localStorage.getItem('token');
+      const response = await Axios.delete(`/listing/delete/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -98,7 +110,13 @@ export const listingAPI = {
   // Get listings by agent
   getListingsByAgent: async (agentId) => {
     try {
-      const response = await Axios.get(`/listing/agent/${agentId}`);
+      const token = localStorage.getItem('token');
+      const response = await Axios.get(`/listing/agent/${agentId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

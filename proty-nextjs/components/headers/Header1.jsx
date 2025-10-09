@@ -6,6 +6,8 @@ import Image from "next/image";
 import DashboardNav from "./DashboardNav";
 import { PhoneIcon } from "@/components/icons";
 import { useAuthState } from "@/store/hooks/useAuth";
+import { authAPI } from "@/apis/auth";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 
 export default function Header1({ parentClass = "header" }) {
   // Use Redux for auth state
@@ -81,6 +83,7 @@ export default function Header1({ parentClass = "header" }) {
                   {isLoggedIn && !isAgent && (
                     <div className="btn-add">
                       <button
+                        type="button"
                         className="tf-btn pd-23"
                         onClick={makeAgent}
                         style={{

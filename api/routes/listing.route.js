@@ -19,7 +19,7 @@ router.delete('/delete/:id', verifyToken, refundPointsOnListingDelete, ListingCo
 router.post('/update/:id', verifyToken, ListingController.updateListing);
 router.get('/:id', ListingController.getListingById);
 router.get('/:id/images', ListingController.getListingImages);
-router.get('/agent/:agentId', ListingController.getListingsByAgent);
+router.get('/agent/:agentId', verifyToken, ListingController.getListingsByAgent);
 
 
 module.exports = router;

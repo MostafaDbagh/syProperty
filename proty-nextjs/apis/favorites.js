@@ -15,7 +15,13 @@ export const favoriteAPI = {
   // Remove property from favorites
   removeFavorite: async (propertyId) => {
     try {
-      const response = await Axios.delete(`/favorites/${propertyId}`);
+      const token = localStorage.getItem('token');
+      const response = await Axios.delete(`/favorites/${propertyId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -23,9 +29,16 @@ export const favoriteAPI = {
   },
 
   // Get user's favorite properties
-  getFavorites: async () => {
+  getFavorites: async (params = {}) => {
     try {
-      const response = await Axios.get('/favorites');
+      const token = localStorage.getItem('token');
+      const response = await Axios.get('/favorites', {
+        params, // Pass pagination parameters
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

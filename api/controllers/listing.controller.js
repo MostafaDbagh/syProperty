@@ -12,7 +12,9 @@ const createListing = async (req, res, next) => {
       ...req.body,
       // Ensure images and imageNames are properly set
       images: req.body.images || [],
-      imageNames: req.body.imageNames || []
+      imageNames: req.body.imageNames || [],
+      // Set agentId from req.body if provided (should be user's _id)
+      agentId: req.body.agentId || req.body.userId || null
     };
 
     const newListing = await Listing.create(listingData);
@@ -35,17 +37,40 @@ const createListing = async (req, res, next) => {
 };
 
 const deleteListing = async (req, res, next) => {
-  const listing = await Listing.findById(req.params.id);
-
-  if (!listing) {
-    return next(errorHandler(404, 'Listing not found!'));
-  }
-
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, 'You can only delete your own listings!'));
-  }
-
   try {
+    const listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+      return next(errorHandler(404, 'Listing not found!'));
+    }
+
+    // Check if user is authenticated
+    if (!req.user) {
+      return next(errorHandler(401, 'You must be logged in to delete listings!'));
+    }
+
+    // Get user ID from req.user (could be req.user.id or req.user._id)
+    const userId = req.user.id || req.user._id?.toString();
+
+    // Check authorization - support both old and new agent systems
+    // Compare with string representations to ensure proper matching
+    const listingUserRef = listing.userRef?.toString();
+    const listingAgentId = listing.agentId?.toString();
+    
+    const isAuthorized = 
+      (listingUserRef && userId === listingUserRef) || // Old system
+      (listingAgentId && userId === listingAgentId); // New system
+
+    if (!isAuthorized) {
+      console.log('Authorization failed for delete:', {
+        userId,
+        listingUserRef,
+        listingAgentId,
+        reqUser: req.user
+      });
+      return next(errorHandler(401, 'You can only delete your own listings!'));
+    }
+
     await Listing.findByIdAndDelete(req.params.id);
     
     // Prepare response with refund info if available
@@ -61,21 +86,59 @@ const deleteListing = async (req, res, next) => {
 };
 
 const updateListing = async (req, res, next) => {
-  const listing = await Listing.findById(req.params.id);
-  if (!listing) {
-    return next(errorHandler(404, 'Listing not found!'));
-  }
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, 'You can only update your own listings!'));
-  }
-
   try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(errorHandler(404, 'Listing not found!'));
+    }
+
+    // Check if user is authenticated
+    if (!req.user) {
+      return next(errorHandler(401, 'You must be logged in to update listings!'));
+    }
+
+    // Get user ID from req.user (could be req.user.id or req.user._id)
+    const userId = req.user.id || req.user._id?.toString();
+
+    // Check authorization - support both old and new agent systems
+    // Compare with string representations to ensure proper matching
+    const listingUserRef = listing.userRef?.toString();
+    const listingAgentId = listing.agentId?.toString();
+    
+    const isAuthorized = 
+      (listingUserRef && userId === listingUserRef) || // Old system
+      (listingAgentId && userId === listingAgentId); // New system
+
+    if (!isAuthorized) {
+      console.log('Authorization failed:', {
+        userId,
+        listingUserRef,
+        listingAgentId,
+        reqUser: req.user
+      });
+      return next(errorHandler(401, 'You can only update your own listings!'));
+    }
+
+    // Remove fields that shouldn't be updated directly
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.createdAt;
+    delete updateData.updatedAt;
+
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.status(200).json(updatedListing);
+      updateData,
+      { 
+        new: true, 
+        runValidators: true 
+      }
+    ).populate('agentId', 'firstName lastName email phone');
+
+    res.status(200).json({
+      success: true,
+      message: 'Listing updated successfully',
+      data: updatedListing
+    });
   } catch (error) {
     next(error);
   }
@@ -160,8 +223,16 @@ const getListingsByAgent = async (req, res, next) => {
       return next(errorHandler(400, 'Agent ID is required'));
     }
 
-    const listings = await Listing.find({ agent: agentId, isDeleted: false })
-      .sort({ createdAt: -1 });
+    // Support both legacy 'agent' field and new 'agentId' field
+    const listings = await Listing.find({ 
+      $or: [
+        { agent: agentId }, // Legacy field (string)
+        { agentId: agentId } // New field (ObjectId)
+      ],
+      isDeleted: { $ne: true } // Exclude deleted listings
+    })
+      .sort({ createdAt: -1 })
+      .populate('agentId', 'username email avatar'); // Populate agent details if available
 
     res.status(200).json(listings);
   } catch (error) {

@@ -3,7 +3,11 @@ const errorHandler = require('../utils/error')
 
  const verifyToken = (req, res, next) => {
 
-  const token = req.cookies.access_token;
+  // Check for token in Authorization header first, then cookies
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') 
+    ? authHeader.slice(7) // Remove 'Bearer ' prefix
+    : req.cookies.access_token;
 
   if (!token) return next(errorHandler(401, 'Unauthorized'));
 
