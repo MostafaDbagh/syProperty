@@ -22,18 +22,6 @@ export default function Categories({
   
   const allListings = allListingsResponse?.data || [];
 
-  // Debug: Log total listings and counts
-  console.log('Categories Debug:', {
-    totalListings: allListings.length,
-    apartmentCount: allListings.filter(p => p.propertyType === 'Apartment').length,
-    villaCount: allListings.filter(p => p.propertyType === 'Villa').length,
-    studioCount: allListings.filter(p => p.propertyType === 'Studio').length,
-    propertyTypes: [...new Set(allListings.map(p => p.propertyType))],
-    sampleProperties: allListings.slice(0, 5).map(p => ({ 
-      title: p.propertyKeyword, 
-      type: p.propertyType 
-    }))
-  });
 
   // Create categories from API data with accurate counts
   const categories = [

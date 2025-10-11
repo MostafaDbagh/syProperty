@@ -30,7 +30,7 @@ export default function MobileMenu() {
         <div className="offcanvas-title">
           <Link href={`/`}>
             <Image
-              alt=""
+              alt="Mobile menu icon"
               src="/images/logo/logo@2x.png"
               width={272}
               height={84}

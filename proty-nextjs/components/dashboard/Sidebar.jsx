@@ -21,13 +21,12 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/dashboard`}>
-                  <svg
-                    width={20}
+                  <svg width={20}
                     height={20}
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M7.5 2.5H3.33333C2.8731 2.5 2.5 2.8731 2.5 3.33333V9.16667C2.5 9.6269 2.8731 10 3.33333 10H7.5C7.96024 10 8.33333 9.6269 8.33333 9.16667V3.33333C8.33333 2.8731 7.96024 2.5 7.5 2.5Z"
                       stroke="#A8ABAE"
@@ -67,13 +66,12 @@ export default function Sidebar() {
               } `}
             >
               <Link className="nav-menu-link" href={`/my-profile`}>
-                <svg
-                  width={20}
+                <svg width={20}
                   height={20}
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M12.082 18.3333H14.9987C15.4407 18.3333 15.8646 18.1577 16.1772 17.8451C16.4898 17.5326 16.6654 17.1087 16.6654 16.6666V5.83329L12.4987 1.66663H4.9987C4.55667 1.66663 4.13275 1.84222 3.82019 2.15478C3.50763 2.46734 3.33203 2.89127 3.33203 3.33329V6.66663"
                     stroke="#A8ABAE"
@@ -121,13 +119,12 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/my-package`}>
-                  <svg
-                    width={20}
+                  <svg width={20}
                     height={20}
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M2.5 7.5H17.5V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V7.5Z"
                       stroke="#A8ABAE"
@@ -160,13 +157,12 @@ export default function Sidebar() {
               } `}
             >
               <Link className="nav-menu-link" href={`/my-favorites`}>
-                <svg
-                  width={20}
+                <svg width={20}
                   height={20}
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M3.33203 18.3333H14.9987C15.4407 18.3333 15.8646 18.1577 16.1772 17.8451C16.4898 17.5326 16.6654 17.1087 16.6654 16.6666V5.83329L12.4987 1.66663H4.9987C4.55667 1.66663 4.13275 1.84222 3.82019 2.15478C3.50763 2.46734 3.33203 2.89127 3.33203 3.33329V4.99996"
                     stroke="#A8ABAE"
@@ -199,13 +195,12 @@ export default function Sidebar() {
               } `}
             >
               <Link className="nav-menu-link" href={`/review`}>
-                <svg
-                  width={20}
+                <svg width={20}
                   height={20}
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M17.5 12.5C17.5 12.942 17.3244 13.366 17.0118 13.6785C16.6993 13.9911 16.2754 14.1667 15.8333 14.1667H5.83333L2.5 17.5V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H15.8333C16.2754 2.5 16.6993 2.67559 17.0118 2.98816C17.3244 3.30072 17.5 3.72464 17.5 4.16667V12.5Z"
                     stroke="#A8ABAE"
@@ -239,13 +234,12 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/messages`}>
-                  <svg
-                    width={20}
+                  <svg width={20}
                     height={20}
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M17.5 4.16667H2.5C2.05833 4.16667 1.63441 4.34226 1.32185 4.65482C1.00929 4.96738 0.833694 5.3913 0.833694 5.83333V14.1667C0.833694 14.6087 1.00929 15.0326 1.32185 15.3452C1.63441 15.6577 2.05833 15.8333 2.5 15.8333H17.5C17.9417 15.8333 18.3656 15.6577 18.6782 15.3452C18.9907 15.0326 19.1663 14.6087 19.1663 14.1667V5.83333C19.1663 5.3913 18.9907 4.96738 18.6782 4.65482C18.3656 4.34226 17.9417 4.16667 17.5 4.16667Z"
                       stroke="#A8ABAE"
@@ -280,13 +274,12 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/my-property`}>
-                  <svg
-                    width={20}
+                  <svg width={20}
                     height={20}
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M15 15C16.3807 15 17.5 13.8807 17.5 12.5C17.5 11.1193 16.3807 10 15 10C13.6193 10 12.5 11.1193 12.5 12.5C12.5 13.8807 13.6193 15 15 15Z"
                       stroke="#A8ABAE"
@@ -377,13 +370,12 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/add-property`}>
-                  <svg
-                    width={20}
+                  <svg width={20}
                     height={20}
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M14.9987 4.16663L12.987 2.15496C12.6745 1.84238 12.2507 1.66672 11.8087 1.66663H4.9987C4.55667 1.66663 4.13275 1.84222 3.82019 2.15478C3.50763 2.46734 3.33203 2.89127 3.33203 3.33329V16.6666C3.33203 17.1087 3.50763 17.5326 3.82019 17.8451C4.13275 18.1577 4.55667 18.3333 4.9987 18.3333H14.9987C15.4407 18.3333 15.8646 18.1577 16.1772 17.8451C16.4898 17.5326 16.6654 17.1087 16.6654 16.6666"
                       stroke="#A8ABAE"
@@ -412,13 +404,12 @@ export default function Sidebar() {
             )}
             <li className={`nav-menu-item `}>
               <Link className="nav-menu-link" href={`/`}>
-                <svg
-                  width={20}
+                <svg width={20}
                   height={20}
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5"
                     stroke="#A8ABAE"

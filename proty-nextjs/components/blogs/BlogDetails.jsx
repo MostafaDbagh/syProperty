@@ -15,13 +15,12 @@ export default function BlogDetails({ blog }) {
               <h2 className="title-heading">{blog.title}</h2>
               <div className="meta flex">
                 <div className="meta-item flex align-center">
-                  <svg
-                    width={18}
+                  <svg width={18}
                     height={18}
                     viewBox="0 0 18 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M14.25 15.75V14.25C14.25 13.4544 13.9339 12.6913 13.3713 12.1287C12.8087 11.5661 12.0456 11.25 11.25 11.25H6.75C5.95435 11.25 5.19129 11.5661 4.62868 12.1287C4.06607 12.6913 3.75 13.4544 3.75 14.25V15.75"
                       stroke="#A8ABAE"
@@ -40,13 +39,12 @@ export default function BlogDetails({ blog }) {
                   <p className="text-color-primary">Kathryn Murphy</p>
                 </div>
                 <div className="meta-item flex align-center">
-                  <svg
-                    width={18}
+                  <svg width={18}
                     height={18}
                     viewBox="0 0 18 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M15 15C15.3978 15 15.7794 14.842 16.0607 14.5607C16.342 14.2794 16.5 13.8978 16.5 13.5V6C16.5 5.60218 16.342 5.22064 16.0607 4.93934C15.7794 4.65804 15.3978 4.5 15 4.5H9.075C8.82414 4.50246 8.57666 4.44196 8.35523 4.32403C8.13379 4.20611 7.94547 4.03453 7.8075 3.825L7.2 2.925C7.06342 2.7176 6.87748 2.54736 6.65887 2.42955C6.44027 2.31174 6.19583 2.25004 5.9475 2.25H3C2.60218 2.25 2.22064 2.40804 1.93934 2.68934C1.65804 2.97064 1.5 3.35218 1.5 3.75V13.5C1.5 13.8978 1.65804 14.2794 1.93934 14.5607C2.22064 14.842 2.60218 15 3 15H15Z"
                       stroke="#A8ABAE"
@@ -58,13 +56,12 @@ export default function BlogDetails({ blog }) {
                   <p className="text-color-primary">Furniture</p>
                 </div>
                 <div className="meta-item flex align-center">
-                  <svg
-                    width={18}
+                  <svg width={18}
                     height={18}
                     viewBox="0 0 18 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M5.925 15C7.35643 15.7343 9.00306 15.9332 10.5682 15.5609C12.1333 15.1885 13.5139 14.2694 14.4613 12.9692C15.4087 11.6689 15.8606 10.0731 15.7354 8.46916C15.6103 6.86524 14.9164 5.35876 13.7789 4.22118C12.6413 3.0836 11.1348 2.38972 9.53088 2.2646C7.92697 2.13947 6.3311 2.59132 5.03086 3.53872C3.73063 4.48612 2.81152 5.86677 2.43917 7.43187C2.06682 8.99697 2.26571 10.6436 3 12.075L1.5 16.5L5.925 15Z"
                       stroke="#A8ABAE"
@@ -90,7 +87,7 @@ export default function BlogDetails({ blog }) {
               <Image
                 className="lazyload"
                 data-src="/images/blog/blog-details.jpg"
-                alt=""
+                alt="Blog detail image"
                 width={840}
                 height={473}
                 src="/images/blog/blog-details.jpg"
@@ -126,7 +123,7 @@ export default function BlogDetails({ blog }) {
                 <Image
                   className="lazyload"
                   data-src="/images/blog/blog-details-1.jpg"
-                  alt=""
+                  alt="Blog detail image"
                   width={410}
                   height={273}
                   src="/images/blog/blog-details-1.jpg"
@@ -136,7 +133,7 @@ export default function BlogDetails({ blog }) {
                 <Image
                   className="lazyload"
                   data-src="/images/blog/blog-details-2.jpg"
-                  alt=""
+                  alt="Blog detail image"
                   width={410}
                   height={273}
                   src="/images/blog/blog-details-2.jpg"
@@ -279,7 +276,7 @@ export default function BlogDetails({ blog }) {
                       <div className="image-wrap">
                         <Image
                           className="lazyload"
-                          alt=""
+                          alt="Blog detail image"
                           width={224}
                           height={148}
                           src={post.imageSrc}
@@ -293,13 +290,12 @@ export default function BlogDetails({ blog }) {
                         </div>
                         <p>
                           <span className="icon">
-                            <svg
-                              width={16}
+                            <svg width={16}
                               height={17}
                               viewBox="0 0 16 17"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                            >
+                             aria-hidden="true">
                               <path
                                 d="M4.5 2.5V4M11.5 2.5V4M2 13V5.5C2 5.10218 2.15804 4.72064 2.43934 4.43934C2.72064 4.15804 3.10218 4 3.5 4H12.5C12.8978 4 13.2794 4.15804 13.5607 4.43934C13.842 4.72064 14 5.10218 14 5.5V13M2 13C2 13.3978 2.15804 13.7794 2.43934 14.0607C2.72064 14.342 3.10218 14.5 3.5 14.5H12.5C12.8978 14.5 13.2794 14.342 13.5607 14.0607C13.842 13.7794 14 13.3978 14 13M2 13V8C2 7.60218 2.15804 7.22064 2.43934 6.93934C2.72064 6.65804 3.10218 6.5 3.5 6.5H12.5C12.8978 6.5 13.2794 6.65804 13.5607 6.93934C13.842 7.22064 14 7.60218 14 8V13"
                                 stroke="#A8ABAE"
@@ -389,7 +385,7 @@ export default function BlogDetails({ blog }) {
                   <Image
                     className="lazyload"
                     data-src="/images/blog/ads.jpg"
-                    alt=""
+                    alt="Blog detail image"
                     width={400}
                     height={470}
                     src="/images/blog/ads.jpg"
@@ -397,7 +393,7 @@ export default function BlogDetails({ blog }) {
                 </div>
                 <div className="logo relative z-5">
                   <Image
-                    alt=""
+                    alt="Blog detail image"
                     width={272}
                     height={85}
                     src="/images/logo/logo-2@2x.png"

@@ -45,6 +45,7 @@ const listingSchema = new mongoose.Schema(
     isSold: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     offer: { type: Boolean, required: false },
+    visitCount: { type: Number, default: 0 },
 
     ////media -part
     videoUrl: { type: String },                      

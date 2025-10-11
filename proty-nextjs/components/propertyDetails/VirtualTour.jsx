@@ -8,7 +8,7 @@ export default function VirtualTour() {
       </div>
       <div className="image-wrap">
         <Image
-          alt=""
+          alt="Virtual tour preview"
           src="/images/section/property-detail-2.jpg"
           width={792}
           height={439}

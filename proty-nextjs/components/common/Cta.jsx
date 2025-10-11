@@ -8,7 +8,7 @@ export default function Cta() {
           <div className="col-12">
             <div className="content-inner">
               <Image
-                alt=""
+                alt="Call to action background"
                 src="/images/section/cta.png"
                 width={216}
                 height={312}

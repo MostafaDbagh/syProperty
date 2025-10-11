@@ -15,7 +15,7 @@ export default function AgencyDetails({ agency }) {
                 <Image
                   className="lazyload"
                   data-src="/images/section/agency-details.jpg"
-                  alt=""
+                  alt="Agency image"
                   width={840}
                   height={300}
                   src="/images/section/agency-details.jpg"
@@ -24,7 +24,7 @@ export default function AgencyDetails({ agency }) {
               <div className="content">
                 <div className="logo">
                   <Image
-                    alt=""
+                    alt="Agency image"
                     width={380}
                     height={380}
                     src="/images/brands/brand-5.1.jpg"
@@ -145,13 +145,12 @@ export default function AgencyDetails({ agency }) {
                 </fieldset>
                 <div className="wrap-btn">
                   <a href="#" className="tf-btn bg-color-primary w-full">
-                    <svg
-                      width={20}
+                    <svg width={20}
                       height={20}
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <path
                         d="M18.125 5.625V14.375C18.125 14.8723 17.9275 15.3492 17.5758 15.7008C17.2242 16.0525 16.7473 16.25 16.25 16.25H3.75C3.25272 16.25 2.77581 16.0525 2.42417 15.7008C2.07254 15.3492 1.875 14.8723 1.875 14.375V5.625M18.125 5.625C18.125 5.12772 17.9275 4.65081 17.5758 4.29917C17.2242 3.94754 16.7473 3.75 16.25 3.75H3.75C3.25272 3.75 2.77581 3.94754 2.42417 4.29917C2.07254 4.65081 1.875 5.12772 1.875 5.625M18.125 5.625V5.8275C18.125 6.14762 18.0431 6.46242 17.887 6.74191C17.7309 7.0214 17.5059 7.25628 17.2333 7.42417L10.9833 11.27C10.6877 11.4521 10.3472 11.5485 10 11.5485C9.65275 11.5485 9.31233 11.4521 9.01667 11.27L2.76667 7.425C2.4941 7.25711 2.26906 7.02224 2.11297 6.74275C1.95689 6.46325 1.87496 6.14845 1.875 5.82833V5.625"
                         stroke="white"
@@ -163,13 +162,12 @@ export default function AgencyDetails({ agency }) {
                     Send message
                   </a>
                   <a href="#" className="tf-btn style-border pd-9">
-                    <svg
-                      width={21}
+                    <svg width={21}
                       height={20}
                       viewBox="0 0 21 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <path
                         d="M12.375 8.125V4.375M12.375 8.125H16.125M12.375 8.125L17.375 3.125M14.875 18.125C7.97167 18.125 2.375 12.5283 2.375 5.625V3.75C2.375 3.25272 2.57254 2.77581 2.92417 2.42417C3.27581 2.07254 3.75272 1.875 4.25 1.875H5.39333C5.82333 1.875 6.19833 2.1675 6.3025 2.585L7.22417 6.27083C7.31583 6.6375 7.17917 7.0225 6.87667 7.24833L5.79917 8.05667C5.64494 8.16831 5.53083 8.32672 5.47379 8.50837C5.41674 8.69002 5.4198 8.88523 5.4825 9.065C5.98406 10.4293 6.77618 11.6682 7.80398 12.696C8.83179 13.7238 10.0707 14.5159 11.435 15.0175C11.8025 15.1525 12.2083 15.0142 12.4433 14.7008L13.2517 13.6233C13.3623 13.4756 13.5141 13.3639 13.688 13.3021C13.8619 13.2402 14.0501 13.2311 14.2292 13.2758L17.915 14.1975C18.3317 14.3017 18.625 14.6767 18.625 15.1067V16.25C18.625 16.7473 18.4275 17.2242 18.0758 17.5758C17.7242 17.9275 17.2473 18.125 16.75 18.125H14.875Z"
                         stroke="#F1913D"
@@ -188,7 +186,7 @@ export default function AgencyDetails({ agency }) {
                   <Image
                     className="lazyload"
                     data-src="/images/blog/ads.jpg"
-                    alt=""
+                    alt="Agency image"
                     width={400}
                     height={470}
                     src="/images/blog/ads.jpg"
@@ -196,7 +194,7 @@ export default function AgencyDetails({ agency }) {
                 </div>
                 <div className="logo relative z-5">
                   <Image
-                    alt=""
+                    alt="Agency image"
                     width={272}
                     height={85}
                     src="/images/logo/logo-2@2x.png"

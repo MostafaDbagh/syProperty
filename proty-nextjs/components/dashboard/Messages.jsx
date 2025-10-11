@@ -223,8 +223,9 @@ export default function Messages() {
             cursor: page <= 1 ? 'not-allowed' : 'pointer',
             opacity: page <= 1 ? 0.5 : 1
           }}
+          aria-label="Go to previous page"
         >
-          <i className="icon-chevron-left"></i>
+          <i className="icon-chevron-left" aria-hidden="true"></i>
         </a>
       </li>
     );
@@ -247,6 +248,8 @@ export default function Messages() {
               e.preventDefault();
               handlePageChange(i);
             }}
+            aria-label={`Go to page ${i}`}
+            aria-current={i === page ? 'page' : undefined}
           >
             {i}
           </a>
@@ -267,8 +270,9 @@ export default function Messages() {
             cursor: page >= totalPages ? 'not-allowed' : 'pointer',
             opacity: page >= totalPages ? 0.5 : 1
           }}
+          aria-label="Go to next page"
         >
-          <i className="icon-chevron-right"></i>
+          <i className="icon-chevron-right" aria-hidden="true"></i>
         </a>
       </li>
     );
@@ -308,7 +312,7 @@ export default function Messages() {
           </div>
           <div style={{ textAlign: 'center', padding: '40px', color: '#dc3545' }}>
             <p>Error loading messages. Please try again.</p>
-            <button onClick={() => refetch()} className="btn btn-primary">
+            <button onClick={() => refetch()} className="btn btn-primary" aria-label="Retry loading messages">
               Retry
             </button>
           </div>
@@ -325,44 +329,84 @@ export default function Messages() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="row mb-4">
-          <div className="col-md-3">
-            <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-              <div className="card-body text-center p-4">
-                <h3 className="mb-2" style={{ color: '#dc3545', fontSize: '32px', fontWeight: '700' }}>
-                  {stats.unread || 0}
-                </h3>
-                <p className="mb-0 text-muted">Unread Messages</p>
+        <div className="row mb-4" style={{ justifyContent: 'center' }}>
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div style={{ 
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              borderRadius: '16px',
+              padding: '28px 24px',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
+              textAlign: 'center',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 15px 40px rgba(99, 102, 241, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 30px rgba(99, 102, 241, 0.2)';
+            }}>
+              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+                {stats.total || 0}
+              </div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+                Total Messages
               </div>
             </div>
           </div>
-          <div className="col-md-3">
-            <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-              <div className="card-body text-center p-4">
-                <h3 className="mb-2" style={{ color: '#28a745', fontSize: '32px', fontWeight: '700' }}>
-                  {stats.replied || 0}
-                </h3>
-                <p className="mb-0 text-muted">Replied</p>
+          
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div style={{ 
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              borderRadius: '16px',
+              padding: '28px 24px',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(16, 185, 129, 0.2)',
+              textAlign: 'center',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 15px 40px rgba(16, 185, 129, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.2)';
+            }}>
+              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+                {stats.replied || 0}
+              </div>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+                Replied
               </div>
             </div>
           </div>
-          <div className="col-md-3">
-            <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-              <div className="card-body text-center p-4">
-                <h3 className="mb-2" style={{ color: '#17a2b8', fontSize: '32px', fontWeight: '700' }}>
-                  {stats.read || 0}
-                </h3>
-                <p className="mb-0 text-muted">Read</p>
+          
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div style={{ 
+              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+              borderRadius: '16px',
+              padding: '28px 24px',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(245, 158, 11, 0.2)',
+              textAlign: 'center',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 15px 40px rgba(245, 158, 11, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 30px rgba(245, 158, 11, 0.2)';
+            }}>
+              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+                {stats.unread || 0}
               </div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-              <div className="card-body text-center p-4">
-                <h3 className="mb-2" style={{ color: '#6c757d', fontSize: '32px', fontWeight: '700' }}>
-                  {stats.total || 0}
-                </h3>
-                <p className="mb-0 text-muted">Total Messages</p>
+              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+                Unread
               </div>
             </div>
           </div>
@@ -413,8 +457,8 @@ export default function Messages() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <button type="submit" className="btn btn-outline-primary">
-                    <i className="icon-search"></i>
+                  <button type="submit" className="btn btn-outline-primary" aria-label="Search messages">
+                    <i className="icon-search" aria-hidden="true"></i>
                   </button>
                 </form>
               </div>
@@ -438,7 +482,7 @@ export default function Messages() {
             {messages.length === 0 ? (
               <div className="text-center py-5">
                 <div className="mb-3">
-                  <i className="icon-message" style={{ fontSize: '48px', color: '#6c757d' }}></i>
+                  <i className="icon-message" style={{ fontSize: '48px', color: '#6c757d' }} aria-hidden="true"></i>
                 </div>
                 <h5>No messages found</h5>
                 <p className="text-muted">You don't have any messages matching your current filters.</p>
@@ -515,32 +559,36 @@ export default function Messages() {
                                 onClick={() => handleMarkAsRead(message._id)}
                                 disabled={isMarkingAsRead}
                                 title="Mark as Read"
+                                aria-label={`Mark message from ${message.senderName} as read`}
                               >
-                                <i className="icon-eye"></i>
+                                <i className="icon-eye" aria-hidden="true"></i>
                               </button>
                             )}
                             <button
                               className="btn btn-sm btn-outline-primary"
                               onClick={() => setReplyModal({ isOpen: true, message, response: '' })}
                               title="Reply"
+                              aria-label={`Reply to message from ${message.senderName}`}
                             >
-                              <i className="icon-reply"></i>
+                              <i className="icon-reply" aria-hidden="true"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-warning"
                               onClick={() => handleArchive(message._id)}
                               disabled={isArchiving}
                               title="Archive"
+                              aria-label={`Archive message from ${message.senderName}`}
                             >
-                              <i className="icon-archive"></i>
+                              <i className="icon-archive" aria-hidden="true"></i>
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => handleDelete(message._id)}
                               disabled={isDeleting}
                               title="Delete"
+                              aria-label={`Delete message from ${message.senderName}`}
                             >
-                              <i className="icon-trash"></i>
+                              <i className="icon-trash" aria-hidden="true"></i>
                             </button>
                           </div>
                         </td>
@@ -573,6 +621,7 @@ export default function Messages() {
                     type="button"
                     className="btn-close"
                     onClick={() => setReplyModal({ isOpen: false, message: null, response: '' })}
+                    aria-label="Close reply modal"
                   ></button>
                 </div>
                 <div className="modal-body">

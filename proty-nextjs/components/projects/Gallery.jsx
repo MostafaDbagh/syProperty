@@ -55,7 +55,7 @@ export default function Gallery() {
                 <Image
                   className="lazyload"
                   data-src={src}
-                  alt=""
+                  alt="Project gallery image"
                   src={src}
                   width="1280"
                   height="720"

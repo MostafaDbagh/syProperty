@@ -1,65 +1,178 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
 import { properties5 } from "@/data/properties";
+import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings } from "@/apis/hooks";
+import LocationLoader from "@/components/common/LocationLoader";
+
 export default function Dashboard() {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+    }
+  }, []);
+
+  // Fetch recent messages (last 5)
+  const { 
+    data: messagesData, 
+    isLoading: messagesLoading, 
+    error: messagesError 
+  } = useMessagesByAgent(userData?.id, { limit: 5 });
+
+  // Fetch recent reviews (last 5)
+  const { 
+    data: reviewsData, 
+    isLoading: reviewsLoading, 
+    error: reviewsError 
+  } = useReviewsByAgent(userData?.id, { limit: 5 });
+
+  // Fetch most visited listings (last 5)
+  const { 
+    data: mostVisitedData, 
+    isLoading: mostVisitedLoading, 
+    error: mostVisitedError 
+  } = useMostVisitedListings(userData?.id, { limit: 5 });
+
+  const recentMessages = messagesData?.data || [];
+  const recentReviews = reviewsData?.data || [];
+  const mostVisitedListings = mostVisitedData?.data || [];
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 14) return "1 week ago";
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    return `${Math.ceil(diffDays / 30)} months ago`;
+  };
+
+  const truncateText = (text, maxLength = 80) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
   return (
     <div className="main-content w-100">
       <div className="main-content-inner">
         <div className="button-show-hide show-mb">
           <span className="body-1">Show Dashboard</span>
         </div>
-        <div className="flat-counter-v2 tf-counter">
-          <div className="counter-box">
-            <div className="box-icon">
+        {/* First Row - 3 Cards */}
+        <div className="row" style={{ marginBottom: '24px' }}>
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
+                <span className="icon">
+                  <svg width={40}
+                    height={40}
+                    viewBox="0 0 36 36"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                   aria-hidden="true">
+                    <path
+                      d="M18 3L21.09 12.26L30 15L21.09 17.74L18 27L14.91 17.74L6 15L14.91 12.26L18 3Z"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18 9V15L21 16.5"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle cx="18" cy="18" r="15" stroke="white" strokeWidth={2} fill="none"/>
+                  </svg>
+                </span>
+              </div>
+              <div className="content-box">
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Balance</div>
+                <div className="box-count d-flex align-items-end">
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>$2,450</div>
+                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>Available</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(6, 182, 212, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
               <span className="icon">
-                <svg
-                  width={36}
-                  height={36}
+                <svg width={40}
+                    height={40}
                   viewBox="0 0 36 36"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M22.5 3H9C8.20435 3 7.44129 3.31607 6.87868 3.87868C6.31607 4.44129 6 5.20435 6 6V30C6 30.7956 6.31607 31.5587 6.87868 32.1213C7.44129 32.6839 8.20435 33 9 33H27C27.7956 33 28.5587 32.6839 29.1213 32.1213C29.6839 31.5587 30 30.7956 30 30V10.5L22.5 3Z"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 3V9C21 9.79565 21.3161 10.5587 21.8787 11.1213C22.4413 11.6839 23.2044 12 24 12H30"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M12 19.5H15"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 19.5H24"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M12 25.5H15"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 25.5H24"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -68,47 +181,58 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="content-box">
-              <div className="title-count text-variant-1">Your listing</div>
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Your listing</div>
               <div className="box-count d-flex align-items-end">
-                <div className="number">32</div>
-                <span className="text">/50 remaining</span>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>32</div>
+                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>/50 remaining</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="counter-box">
-            <div className="box-icon">
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(245, 158, 11, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
               <span className="icon">
-                <svg
-                  width={36}
-                  height={36}
+                <svg width={40}
+                    height={40}
                   viewBox="0 0 36 36"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M18.5061 32.991C15.4409 33.0945 12.4177 32.2559 9.84374 30.5882C7.26982 28.9206 5.26894 26.504 4.11073 23.6642C2.95253 20.8243 2.69265 17.6977 3.36614 14.7056C4.03962 11.7135 5.61409 8.9998 7.87737 6.9301C10.1407 4.86039 12.984 3.5342 16.0242 3.13022C19.0644 2.72624 22.1554 3.2639 24.8807 4.67074C27.6059 6.07757 29.8344 8.28598 31.2659 10.9984C32.6974 13.7107 33.263 16.7967 32.8866 19.8405"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M18 9V18L21 19.5"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 27L27 33L33 27"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M27 21V33"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -117,39 +241,54 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="content-box">
-              <div className="title-count text-variant-1">Pending</div>
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Pending</div>
               <div className="box-count d-flex align-items-end">
-                <div className="number">02</div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>02</div>
+                </div>
+              </div>
               </div>
             </div>
           </div>
-          <div className="counter-box">
-            <div className="box-icon">
+
+        {/* Second Row - 3 Cards */}
+        <div className="row" style={{ marginBottom: '24px' }}>
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(16, 185, 129, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
               <span className="icon">
-                <svg
-                  width={36}
-                  height={36}
+                <svg width={40}
+                    height={40}
                   viewBox="0 0 36 36"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M6 33H27C27.7956 33 28.5587 32.6839 29.1213 32.1213C29.6839 31.5587 30 30.7956 30 30V10.5L22.5 3H9C8.20435 3 7.44129 3.31607 6.87868 3.87868C6.31607 4.44129 6 5.20435 6 6V9"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 3V9C21 9.79565 21.3161 10.5587 21.8787 11.1213C22.4413 11.6839 23.2044 12 24 12H30"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M15.4348 16.05C14.9224 15.5384 14.2692 15.191 13.5586 15.0521C12.848 14.9132 12.1121 14.989 11.4448 15.27C11.0098 15.45 10.6048 15.72 10.2748 16.065L9.74976 16.575L9.22476 16.065C8.71531 15.5539 8.0656 15.2055 7.35797 15.064C6.65033 14.9225 5.9166 14.9942 5.24976 15.27C4.79976 15.45 4.40976 15.72 4.06476 16.065C2.63976 17.475 2.56476 19.86 4.36476 21.675L9.74976 27L15.1498 21.675C16.9498 19.86 16.8598 17.475 15.4348 16.065V16.05Z"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -158,39 +297,109 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="content-box">
-              <div className="title-count text-variant-1">Favorites</div>
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Favorites</div>
               <div className="d-flex align-items-end">
-                <div className="number">06</div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>06</div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="counter-box">
-            <div className="box-icon">
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(236, 72, 153, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
               <span className="icon">
-                <svg
-                  width={36}
-                  height={36}
+                <svg width={40}
+                    height={40}
                   viewBox="0 0 36 36"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                >
+                 aria-hidden="true">
                   <path
                     d="M31.5 22.5C31.5 23.2956 31.1839 24.0587 30.6213 24.6213C30.0587 25.1839 29.2956 25.5 28.5 25.5H10.5L4.5 31.5V7.5C4.5 6.70435 4.81607 5.94129 5.37868 5.37868C5.94129 4.81607 6.70435 4.5 7.5 4.5H28.5C29.2956 4.5 30.0587 4.81607 30.6213 5.37868C31.1839 5.94129 31.5 6.70435 31.5 7.5V22.5Z"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M12 18C12.7956 18 13.5587 17.6839 14.1213 17.1213C14.6839 16.5587 15 15.7956 15 15V12H12"
-                    stroke="#F1913D"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M21 18C21.7956 18 22.5587 17.6839 23.1213 17.1213C23.6839 16.5587 24 15.7956 24 15V12H21"
-                    stroke="#F1913D"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <div className="content-box">
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Reviews</div>
+                <div className="d-flex align-items-end">
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>1.483</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6 mb-3">
+        <div className="counter-box" style={{ 
+          background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+          borderRadius: '16px',
+          padding: '28px 24px',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(139, 92, 246, 0.2)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
+              <div className="box-icon" style={{ marginBottom: '16px' }}>
+                <span className="icon">
+                  <svg width={40}
+                    height={40}
+                    viewBox="0 0 36 36"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                   aria-hidden="true">
+                    <path
+                      d="M31.5 13.5C31.5 14.2956 31.1839 15.0587 30.6213 15.6213C30.0587 16.1839 29.2956 16.5 28.5 16.5H10.5L4.5 22.5V4.5C4.5 3.70435 4.81607 2.94129 5.37868 2.37868C5.94129 1.81607 6.70435 1.5 7.5 1.5H28.5C29.2956 1.5 30.0587 1.81607 30.6213 2.37868C31.1839 2.94129 31.5 3.70435 31.5 4.5V13.5Z"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12 9C12.7956 9 13.5587 8.68393 14.1213 8.12132C14.6839 7.55871 15 6.79565 15 6V3H12"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M21 9C21.7956 9 22.5587 8.68393 23.1213 8.12132C23.6839 7.55871 24 6.79565 24 6V3H21"
+                      stroke="white"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18 27L21 30L27 24"
+                      stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -199,439 +408,380 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="content-box">
-              <div className="title-count text-variant-1">Reviews</div>
+                <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Messages</div>
               <div className="d-flex align-items-end">
-                <div className="number">1.483</div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>8</div>
+                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>New</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-xl-9">
             <div className="widget-box-2 wd-listing mb-24">
-              <h3 className="title">My Favorites</h3>
+              <h3 className="title">Most Visited Listings</h3>
               <div className="wrap-table">
+                {mostVisitedLoading ? (
+                  <div style={{ padding: '40px', textAlign: 'center' }}>
+                    <LocationLoader 
+                      size="medium" 
+                      message="Loading most visited listings..."
+                    />
+                  </div>
+                ) : mostVisitedError ? (
+                  <div className="text-center p-4" style={{ color: '#dc3545' }}>
+                    Error loading most visited listings
+                  </div>
+                ) : mostVisitedListings.length === 0 ? (
+                  <div className="text-center p-4" style={{ color: '#6c757d' }}>
+                    No visited listings yet
+                  </div>
+                ) : (
                 <div className="table-responsive">
                   <table>
                     <thead>
                       <tr>
                         <th>Listing</th>
+                          <th>Visits</th>
                         <th>Status</th>
-                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {properties5.map((listing) => (
-                        <tr key={listing.id} className="file-delete">
+                        {mostVisitedListings.slice(0, 5).map((listing) => (
+                          <tr key={listing._id} className="file-delete">
                           <td>
                             <div className="listing-box">
                               <div className="images">
                                 <Image
-                                  alt="images"
+                                  alt={listing.propertyKeyword || listing.propertyTitle || "Property listing"}
                                   width={615}
                                   height={405}
-                                  src={listing.imageSrc}
+                                    src={listing.images?.[0]?.url || "/images/section/box-house-1.jpg"}
                                 />
                               </div>
                               <div className="content">
                                 <div className="title">
                                   <Link
-                                    href={`/property-detail/${listing.id}`}
+                                      href={`/property-detail/${listing._id}`}
                                     className="link"
                                   >
-                                    {listing.title}
+                                      {listing.propertyKeyword || 'Property Listing'}
                                   </Link>
                                 </div>
                                 <div className="text-date">
-                                  Posting date: {listing.postingDate}
+                                    Posted: {formatDate(listing.createdAt)}
                                 </div>
                                 <div className="text-btn text-color-primary">
-                                  {listing.price.toLocaleString()}
+                                    ${listing.propertyPrice?.toLocaleString()}
                                 </div>
                               </div>
                             </div>
                           </td>
                           <td>
-                            <span>{listing.expiryDate}</span>
+                              <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px',
+                                justifyContent: 'center'
+                              }}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#F1913D"/>
+                                </svg>
+                                <span style={{ fontWeight: '600', color: '#F1913D' }}>
+                                  {listing.visitCount}
+                                </span>
+                            </div>
                           </td>
                           <td>
-                            <ul className="list-action">
-                              <li>
-                                <a className="item">
-                                  <svg
-                                    width={16}
-                                    height={16}
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M11.2413 2.9915L12.366 1.86616C12.6005 1.63171 12.9184 1.5 13.25 1.5C13.5816 1.5 13.8995 1.63171 14.134 1.86616C14.3685 2.10062 14.5002 2.4186 14.5002 2.75016C14.5002 3.08173 14.3685 3.39971 14.134 3.63416L4.55467 13.2135C4.20222 13.5657 3.76758 13.8246 3.29 13.9668L1.5 14.5002L2.03333 12.7102C2.17552 12.2326 2.43442 11.7979 2.78667 11.4455L11.242 2.9915H11.2413ZM11.2413 2.9915L13 4.75016"
-                                      stroke="#A3ABB0"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                  Edit
-                                </a>
-                              </li>
-                              <li>
-                                <a className="item">
-                                  <svg
-                                    width={16}
-                                    height={16}
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M12.2427 12.2427C13.3679 11.1175 14.0001 9.59135 14.0001 8.00004C14.0001 6.40873 13.3679 4.8826 12.2427 3.75737C11.1175 2.63214 9.59135 2 8.00004 2C6.40873 2 4.8826 2.63214 3.75737 3.75737M12.2427 12.2427C11.1175 13.3679 9.59135 14.0001 8.00004 14.0001C6.40873 14.0001 4.8826 13.3679 3.75737 12.2427C2.63214 11.1175 2 9.59135 2 8.00004C2 6.40873 2.63214 4.8826 3.75737 3.75737M12.2427 12.2427L3.75737 3.75737"
-                                      stroke="#A3ABB0"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                  Sold
-                                </a>
-                              </li>
-                              <li>
-                                <a className="remove-file item">
-                                  <svg
-                                    width={16}
-                                    height={16}
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M9.82667 6.00035L9.596 12.0003M6.404 12.0003L6.17333 6.00035M12.8187 3.86035C13.0467 3.89501 13.2733 3.93168 13.5 3.97101M12.8187 3.86035L12.1067 13.1157C12.0776 13.4925 11.9074 13.8445 11.63 14.1012C11.3527 14.3579 10.9886 14.5005 10.6107 14.5003H5.38933C5.0114 14.5005 4.64735 14.3579 4.36999 14.1012C4.09262 13.8445 3.92239 13.4925 3.89333 13.1157L3.18133 3.86035M12.8187 3.86035C12.0492 3.74403 11.2758 3.65574 10.5 3.59568M3.18133 3.86035C2.95333 3.89435 2.72667 3.93101 2.5 3.97035M3.18133 3.86035C3.95076 3.74403 4.72416 3.65575 5.5 3.59568M10.5 3.59568V2.98501C10.5 2.19835 9.89333 1.54235 9.10667 1.51768C8.36908 1.49411 7.63092 1.49411 6.89333 1.51768C6.10667 1.54235 5.5 2.19901 5.5 2.98501V3.59568M10.5 3.59568C8.83581 3.46707 7.16419 3.46707 5.5 3.59568"
-                                      stroke="#A3ABB0"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                  Delete
-                                </a>
-                              </li>
-                            </ul>
+                              <span style={{
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                fontWeight: '500',
+                                backgroundColor: listing.approvalStatus === 'approved' ? '#d4edda' : '#fff3cd',
+                                color: listing.approvalStatus === 'approved' ? '#155724' : '#856404'
+                              }}>
+                                {listing.approvalStatus || 'Pending'}
+                              </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <ul className="wg-pagination">
-                  <li className="arrow">
-                    <a href="#">
-                      <i className="icon-arrow-left" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">1</a>
-                  </li>
-                  <li className="active">
-                    <a href="#">2</a>
-                  </li>
-                  <li>
-                    <a href="#">...</a>
-                  </li>
-                  <li>
-                    <a href="#">3</a>
-                  </li>
-                  <li className="arrow">
-                    <a href="#">
-                      <i className="icon-arrow-right" />
-                    </a>
-                  </li>
-                </ul>
+                )}
               </div>
             </div>
             <div className="widget-box-2 wd-chart">
-              <h5 className="title">Page Inside</h5>
+              <h5 className="title">Property Analytics</h5>
               <div className="wd-filter-date">
                 <div className="left">
-                  <div className="dates active">Day</div>
-                  <div className="dates">Week</div>
-                  <div className="dates">Month</div>
-                  <div className="dates">Year</div>
+                  <div className="dates active">Overview</div>
                 </div>
                 <div className="right">
-                  <form>
-                    <fieldset className="ip-group icon">
-                      <input
-                        type="text"
-                        id="datepicker3"
-                        className="ip-datepicker icon"
-                        placeholder="From Date"
-                      />
-                    </fieldset>
-                  </form>
-                  <form>
-                    <fieldset className="ip-group icon">
-                      <input
-                        type="text"
-                        id="datepicker4"
-                        className="ip-datepicker icon"
-                        placeholder="To Date"
-                      />
-                    </fieldset>
-                  </form>
+                  <div style={{ fontSize: '12px', color: '#6c757d', fontWeight: '500' }}>
+                    Last 30 days
+                  </div>
                 </div>
               </div>
               <div className="chart-box">
-                <LineChart />
+                <div style={{ padding: '20px', minHeight: '300px' }}>
+                  <div className="row">
+                    <div className="col-md-6 mb-4">
+                      <div style={{
+                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        color: 'white',
+                        textAlign: 'center'
+                      }}>
+                        <h6 style={{ margin: '0 0 10px 0', fontSize: '14px', opacity: 0.9 }}>Total Views</h6>
+                        <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '5px' }}>
+                          {mostVisitedListings.reduce((total, listing) => total + (listing.visitCount || 0), 0)}
+              </div>
+                        <div style={{ fontSize: '12px', opacity: 0.8 }}>All Properties</div>
+          </div>
+                    </div>
+                    <div className="col-md-6 mb-4">
+                      <div style={{
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        color: 'white',
+                        textAlign: 'center'
+                      }}>
+                        <h6 style={{ margin: '0 0 10px 0', fontSize: '14px', opacity: 0.9 }}>Avg. Views</h6>
+                        <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '5px' }}>
+                          {mostVisitedListings.length > 0 
+                            ? Math.round(mostVisitedListings.reduce((total, listing) => total + (listing.visitCount || 0), 0) / mostVisitedListings.length)
+                            : 0}
+                        </div>
+                        <div style={{ fontSize: '12px', opacity: 0.8 }}>Per Property</div>
               </div>
             </div>
           </div>
+                  
+                  <div className="row">
+                    <div className="col-md-6 mb-4">
+                      <div style={{
+                        background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        color: 'white',
+                        textAlign: 'center'
+                      }}>
+                        <h6 style={{ margin: '0 0 10px 0', fontSize: '14px', opacity: 0.9 }}>Approved</h6>
+                        <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '5px' }}>
+                          {mostVisitedListings.filter(listing => listing.approvalStatus === 'approved').length}
+                    </div>
+                        <div style={{ fontSize: '12px', opacity: 0.8 }}>Properties</div>
+                    </div>
+                  </div>
+                    <div className="col-md-6 mb-4">
+                      <div style={{
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        color: 'white',
+                        textAlign: 'center'
+                      }}>
+                        <h6 style={{ margin: '0 0 10px 0', fontSize: '14px', opacity: 0.9 }}>Pending</h6>
+                        <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '5px' }}>
+                          {mostVisitedListings.filter(listing => listing.approvalStatus === 'pending').length}
+                        </div>
+                        <div style={{ fontSize: '12px', opacity: 0.8 }}>Properties</div>
+                    </div>
+                    </div>
+                  </div>
+
+                  {mostVisitedListings.length > 0 && (
+                    <div style={{ marginTop: '20px' }}>
+                      <h6 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#333' }}>
+                        Top Performing Properties
+                      </h6>
+                      <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                        {mostVisitedListings.slice(0, 3).map((listing, index) => (
+                          <div key={listing._id} style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '12px 0',
+                            borderBottom: index < 2 ? '1px solid #eee' : 'none'
+                          }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '4px' }}>
+                                {listing.propertyKeyword || 'Property Listing'}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#6c757d' }}>
+                                ${listing.propertyPrice?.toLocaleString()}
+                              </div>
+                    </div>
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              background: '#f8f9fa',
+                              padding: '6px 12px',
+                              borderRadius: '20px'
+                            }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#F1913D"/>
+                              </svg>
+                              <span style={{ fontSize: '14px', fontWeight: '600', color: '#F1913D' }}>
+                                {listing.visitCount}
+                      </span>
+                    </div>
+                  </div>
+                        ))}
+                    </div>
+                  </div>
+                  )}
+            </div>
+                    </div>
+                    </div>
+                  </div>
           <div className="col-xl-3">
             <div className="widget-box-2 mess-box mb-20">
-              <h5 className="title">Messages</h5>
-              <ul className="list-mess">
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png9.png"
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="title mb-0">Recent Messages</h5>
+                <Link href="/messages" className="btn-view-all" style={{ 
+                  fontSize: '12px', 
+                  color: '#F1913D', 
+                  textDecoration: 'none',
+                  fontWeight: '500'
+                }}>
+                  View All →
+                </Link>
+                  </div>
+              
+              {messagesLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <LocationLoader 
+                    size="small" 
+                    message="Loading messages..."
                       />
                     </div>
+              ) : messagesError ? (
+                <div className="text-center p-3" style={{ color: '#dc3545' }}>
+                  Error loading messages
+                    </div>
+              ) : recentMessages.length === 0 ? (
+                <div className="text-center p-3" style={{ color: '#6c757d' }}>
+                  No recent messages
+                  </div>
+              ) : (
+                <ul className="list-mess">
+                  {recentMessages.slice(0, 5).map((message, index) => (
+                    <li key={message._id || index} className="mess-item">
+                  <div className="user-box">
+                    <div className="avatar">
+                          <div style={{
+                            width: '51px',
+                            height: '51px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '18px'
+                          }}>
+                            {message.senderName?.charAt(0)?.toUpperCase() || 'U'}
+                          </div>
+                    </div>
                     <div className="content">
-                      <div className="name fw-6">Themesflat</div>
+                          <div className="name fw-6">{message.senderName || 'Unknown User'}</div>
                       <span className="caption-2 text-variant-3">
-                        3 day ago
+                            {formatDate(message.createdAt)}
                       </span>
                     </div>
                   </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aenean scelerisque vulputate tincidunt. Maecenas lorem
-                    sapien
-                  </p>
+                      <p>{truncateText(message.messageContent || 'No content')}</p>
                 </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png10.png"
-                      />
+                  ))}
+                </ul>
+              )}
                     </div>
-                    <div className="content">
-                      <div className="name fw-6">ThemeMu</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Nullam lacinia lorem id sapien suscipit, vitae pellentesque
-                    metus maximus. Duis eu mollis dolor. Proin faucibus eu
-                    lectus a eleifend
-                  </p>
-                </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png11.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Cameron Williamson</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>In consequat lacus augue, a vestibulum est aliquam non</p>
-                </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png12.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Esther Howard</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Cras congue in justo vel dapibus. Praesent euismod, lectus
-                    et aliquam pretium
-                  </p>
-                </li>
-              </ul>
-            </div>
             <div className="widget-box-2 mess-box">
-              <h5 className="title">Recent Reviews</h5>
-              <ul className="list-mess">
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png13.png"
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="title mb-0">Recent Reviews</h5>
+                <Link href="/reviews" className="btn-view-all" style={{ 
+                  fontSize: '12px', 
+                  color: '#F1913D', 
+                  textDecoration: 'none',
+                  fontWeight: '500'
+                }}>
+                  View All →
+                </Link>
+                  </div>
+              
+              {reviewsLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <LocationLoader 
+                    size="small" 
+                    message="Loading reviews..."
                       />
                     </div>
+              ) : reviewsError ? (
+                <div className="text-center p-3" style={{ color: '#dc3545' }}>
+                  Error loading reviews
+                    </div>
+              ) : recentReviews.length === 0 ? (
+                <div className="text-center p-3" style={{ color: '#6c757d' }}>
+                  No recent reviews
+                  </div>
+              ) : (
+                <ul className="list-mess">
+                  {recentReviews.slice(0, 5).map((review, index) => (
+                    <li key={review._id || index} className="mess-item">
+                  <div className="user-box">
+                    <div className="avatar">
+                          <div style={{
+                            width: '51px',
+                            height: '51px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '18px'
+                          }}>
+                            {review.reviewerName?.charAt(0)?.toUpperCase() || 'R'}
+                          </div>
+                    </div>
                     <div className="content">
-                      <div className="name fw-6">Bessie Cooper</div>
+                          <div className="name fw-6">{review.reviewerName || 'Anonymous'}</div>
                       <span className="caption-2 text-variant-3">
-                        3 day ago
+                            {formatDate(review.createdAt)}
                       </span>
                     </div>
                   </div>
-                  <p>
-                    Maecenas eu lorem et urna accumsan vestibulum vel vitae
-                    magna.
-                  </p>
+                      <p>{truncateText(review.reviewText || 'No review text')}</p>
                   <div className="ratings">
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
+                        {[...Array(5)].map((_, i) => (
+                          <i 
+                            key={i}
+                            className={`icon-star ${i < (review.rating || 5) ? 'active' : ''}`}
+                            style={{ 
+                              color: i < (review.rating || 5) ? '#FFD700' : '#ddd',
+                              fontSize: '14px'
+                            }}
+                          />
+                        ))}
                   </div>
                 </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={68}
-                        height={68}
-                        src="/images/avatar/avt-png14.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Annette Black</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Nullam rhoncus dolor arcu, et commodo tellus semper vitae.
-                    Aenean finibus tristique lectus, ac lobortis mauris
-                    venenatis ac.
-                  </p>
-                  <div className="ratings">
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                  </div>
-                </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png15.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Ralph Edwards</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Vivamus viverra semper convallis. Integer vestibulum tempus
-                    tincidunt.
-                  </p>
-                  <div className="ratings">
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                  </div>
-                </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png16.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Jerome Bell</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Fusce sit amet purus eget quam eleifend hendrerit nec a
-                    erat. Sed turpis neque, iaculis blandit viverra ut, dapibus
-                    eget nisi.
-                  </p>
-                  <div className="ratings">
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                  </div>
-                </li>
-                <li className="mess-item">
-                  <div className="user-box">
-                    <div className="avatar">
-                      <Image
-                        alt="avt"
-                        width={51}
-                        height={51}
-                        src="/images/avatar/avt-png17.png"
-                      />
-                    </div>
-                    <div className="content">
-                      <div className="name fw-6">Albert Flores</div>
-                      <span className="caption-2 text-variant-3">
-                        3 day ago
-                      </span>
-                    </div>
-                  </div>
-                  <p>
-                    Donec bibendum nibh quis nisl luctus, at aliquet ipsum
-                    bibendum. Fusce at dui tincidunt nulla semper venenatis at
-                    et magna. Mauris turpis lorem, ultricies vel justo sed.
-                  </p>
-                  <div className="ratings">
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                    <i className="icon-star" />
-                  </div>
-                </li>
+                  ))}
               </ul>
+              )}
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-xl-9">
             {/* .footer-dashboard */}

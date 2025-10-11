@@ -3,11 +3,60 @@ import Link from "next/link";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import LocationLoader from "@/components/common/LocationLoader";
 
 export default function Properties({ listings, isLoading, isError }) {
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong!</p>;
+  if (isLoading) return (
+    <section className="section-listing tf-spacing-1">
+      <div className="tf-container">
+        <div className="row">
+          <div className="col-12">
+            <div className="heading-section text-center">
+              <h2 className="title split-text effect-right">
+                <SplitTextAnimation text="Today's Luxury Listings" />
+              </h2>
+              <p className="text-1 split-text split-lines-transform">
+                Thousands of luxury home enthusiasts just like you visit our
+                website.
+              </p>
+            </div>
+            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <LocationLoader 
+                size="large" 
+                message="Loading luxury properties..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+  
+  if (isError) return (
+    <section className="section-listing tf-spacing-1">
+      <div className="tf-container">
+        <div className="row">
+          <div className="col-12">
+            <div className="heading-section text-center">
+              <h2 className="title split-text effect-right">
+                <SplitTextAnimation text="Today's Luxury Listings" />
+              </h2>
+              <p className="text-1 split-text split-lines-transform">
+                Thousands of luxury home enthusiasts just like you visit our
+                website.
+              </p>
+            </div>
+            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <div style={{ color: '#dc3545', fontSize: '18px', fontWeight: '500' }}>
+                Something went wrong while loading properties
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
   
   return (
     <section className="section-listing tf-spacing-1">

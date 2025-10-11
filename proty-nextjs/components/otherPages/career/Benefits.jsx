@@ -25,7 +25,7 @@ export default function Benefits() {
                   <Image
                     className="lazyload parallax-img"
                     data-src="/images/section/section-benefits-1.jpg"
-                    alt=""
+                    alt="Benefits icon"
                     width={400}
                     height={509}
                     src="/images/section/section-benefits-1.jpg"
@@ -39,7 +39,7 @@ export default function Benefits() {
                   <Image
                     className="lazyload parallax-img"
                     data-src="/images/section/section-benefits-2.jpg"
-                    alt=""
+                    alt="Benefits icon"
                     width={400}
                     height={509}
                     src="/images/section/section-benefits-2.jpg"

@@ -34,13 +34,12 @@ export default function Process() {
                   data-wow-delay="0s"
                 >
                   <div className="tf-icon">
-                    <svg
-                      width={60}
+                    <svg width={60}
                       height={60}
                       viewBox="0 0 60 60"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <path
                         d="M21.0375 38.925C19.5457 40.0915 18.3393 41.5826 17.5098 43.2849C16.6802 44.9873 16.2494 46.8563 16.25 48.75V52.5H8.75C6.675 52.5 5 50.825 5 48.75V46.25C5 41.4125 8.9125 37.5 13.75 37.5H16.25C18.025 37.5 19.6625 38.025 21.0375 38.925Z"
                         fill="#F1913D"
@@ -82,13 +81,12 @@ export default function Process() {
                   </p>
                   <a href="#" className="tf-btn-link mx-auto">
                     <span> Read More </span>
-                    <svg
-                      width={20}
+                    <svg width={20}
                       height={20}
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <g clipPath="url(#clip0_2450_13860)">
                         <path
                           d="M10.0013 18.3334C14.6037 18.3334 18.3346 14.6024 18.3346 10C18.3346 5.39765 14.6037 1.66669 10.0013 1.66669C5.39893 1.66669 1.66797 5.39765 1.66797 10C1.66797 14.6024 5.39893 18.3334 10.0013 18.3334Z"
@@ -129,13 +127,12 @@ export default function Process() {
                   data-wow-delay="0s"
                 >
                   <div className="tf-icon">
-                    <svg
-                      width={60}
+                    <svg width={60}
                       height={60}
                       viewBox="0 0 60 60"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <path
                         d="M21.0375 38.925C19.5457 40.0915 18.3393 41.5826 17.5098 43.2849C16.6802 44.9873 16.2494 46.8563 16.25 48.75V52.5H8.75C6.675 52.5 5 50.825 5 48.75V46.25C5 41.4125 8.9125 37.5 13.75 37.5H16.25C18.025 37.5 19.6625 38.025 21.0375 38.925Z"
                         fill="#F1913D"
@@ -177,13 +174,12 @@ export default function Process() {
                   </p>
                   <a href="#" className="tf-btn-link mx-auto">
                     <span> Read More </span>
-                    <svg
-                      width={20}
+                    <svg width={20}
                       height={20}
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <g clipPath="url(#clip0_2450_13860)">
                         <path
                           d="M10.0013 18.3334C14.6037 18.3334 18.3346 14.6024 18.3346 10C18.3346 5.39765 14.6037 1.66669 10.0013 1.66669C5.39893 1.66669 1.66797 5.39765 1.66797 10C1.66797 14.6024 5.39893 18.3334 10.0013 18.3334Z"
@@ -224,13 +220,12 @@ export default function Process() {
                   data-wow-delay="0s"
                 >
                   <div className="tf-icon">
-                    <svg
-                      width={60}
+                    <svg width={60}
                       height={60}
                       viewBox="0 0 60 60"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <path
                         d="M21.0375 38.925C19.5457 40.0915 18.3393 41.5826 17.5098 43.2849C16.6802 44.9873 16.2494 46.8563 16.25 48.75V52.5H8.75C6.675 52.5 5 50.825 5 48.75V46.25C5 41.4125 8.9125 37.5 13.75 37.5H16.25C18.025 37.5 19.6625 38.025 21.0375 38.925Z"
                         fill="#F1913D"
@@ -272,13 +267,12 @@ export default function Process() {
                   </p>
                   <a href="#" className="tf-btn-link mx-auto">
                     <span> Read More </span>
-                    <svg
-                      width={20}
+                    <svg width={20}
                       height={20}
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                    >
+                     aria-hidden="true">
                       <g clipPath="url(#clip0_2450_13860)">
                         <path
                           d="M10.0013 18.3334C14.6037 18.3334 18.3346 14.6024 18.3346 10C18.3346 5.39765 14.6037 1.66669 10.0013 1.66669C5.39893 1.66669 1.66797 5.39765 1.66797 10C1.66797 14.6024 5.39893 18.3334 10.0013 18.3334Z"

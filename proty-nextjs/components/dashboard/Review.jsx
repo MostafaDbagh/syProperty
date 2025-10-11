@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useReviewsByAgent } from "@/apis/hooks";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Review() {
   const [user, setUser] = useState(null);
@@ -153,8 +154,11 @@ export default function Review() {
           </h3>
 
           {isLoading && (
-            <div style={{ textAlign: 'center', padding: '40px' }}>
-              <p>Loading reviews...</p>
+            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <LocationLoader 
+                size="large" 
+                message="Loading property reviews..."
+              />
             </div>
           )}
 

@@ -15,13 +15,29 @@ export default function Properties2() {
   // Use search endpoint with empty params to get all listings
   const { data: searchResponse, isLoading, isError, error } = useSearchListings({});
   const listings = searchResponse?.data || [];
+
+  // Function to get image source
+  const getImageSource = (property) => {
+    // Try different possible image sources
+    if (property.images && property.images.length > 0) {
+      const firstImage = property.images[0];
+      
+      if (typeof firstImage === 'string') {
+        return firstImage;
+      } else if (firstImage && firstImage.url) {
+        return firstImage.url;
+      }
+    }
+    
+    // Try imageNames as fallback
+    if (property.imageNames && property.imageNames.length > 0) {
+      return property.imageNames[0];
+    }
+    
+    // Return default image
+    return "/images/section/property-1.jpg";
+  };
   
-  console.log('🏠 Properties2 Debug:');
-  console.log('- searchResponse:', searchResponse);
-  console.log('- listings count:', listings?.length || 0);
-  console.log('- isLoading:', isLoading);
-  console.log('- isError:', isError);
-  console.log('- error:', error);
   // Show loading state
   if (isLoading) {
     return (
@@ -150,7 +166,7 @@ export default function Properties2() {
                           <Image
                             className="lazyload"
                             alt={property.propertyKeyword || property.propertyType || "Property"}
-                            src={property.images?.[0] || "/images/section/property-1.jpg"}
+                            src={getImageSource(property)}
                             width={435}
                             height={408}
                           />

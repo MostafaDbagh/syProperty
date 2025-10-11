@@ -61,7 +61,7 @@ export default function Slider3({ property }) {
                       <Image
                         ref={ref}
                         className="lazyload"
-                        alt=""
+                        alt="Property gallery image"
                         src={elm.src}
                         width={840}
                         height={473}
@@ -91,7 +91,7 @@ export default function Slider3({ property }) {
           {images.map((elm, i) => (
             <SwiperSlide key={i} className="swiper-slide">
               <div className="img-thumb-pagi">
-                <Image alt="images" src={elm.src} width={317} height={202} />
+                <Image alt="Property gallery thumbnail" src={elm.src} width={317} height={202} />
               </div>
             </SwiperSlide>
           ))}

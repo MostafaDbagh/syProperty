@@ -97,7 +97,6 @@ export default function Login({ isOpen, onClose }) {
     }
   };
 
-  console.log('🔑 Login render - isOpen:', isOpen);
 
   if (!isOpen) return null;
 

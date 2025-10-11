@@ -133,7 +133,7 @@ export default function Sidebar() {
               <div className="image-wrap">
                 <Image
                   className="lazyload"
-                  alt=""
+                  alt="Property feature icon"
                   width={224}
                   height={160}
                   src={property.imageSrc}
@@ -172,7 +172,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-23.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-23.jpg"
                 width={390}
                 height={220}
@@ -188,7 +188,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-24.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-24.jpg"
                 width={390}
                 height={220}
@@ -204,7 +204,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-25.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-25.jpg"
                 width={390}
                 height={220}
@@ -220,7 +220,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-26.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-26.jpg"
                 width={390}
                 height={220}
@@ -236,7 +236,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-27.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-27.jpg"
                 width={390}
                 height={220}
@@ -252,7 +252,7 @@ export default function Sidebar() {
               <Image
                 className="lazyload"
                 data-src="/images/section/location-28.jpg"
-                alt=""
+                alt="Property location"
                 src="/images/section/location-28.jpg"
                 width={390}
                 height={220}
@@ -271,7 +271,7 @@ export default function Sidebar() {
           <div className="box-contact-agent">
             <div className="avatar">
               <Image
-                alt=""
+                alt="Property location"
                 src="/images/avatar/avt-png19.png"
                 width={130}
                 height={130}
@@ -287,7 +287,7 @@ export default function Sidebar() {
           <div className="box-contact-agent">
             <div className="avatar">
               <Image
-                alt=""
+                alt="Property location"
                 src="/images/avatar/avt-png20.png"
                 width={130}
                 height={130}
@@ -303,7 +303,7 @@ export default function Sidebar() {
           <div className="box-contact-agent">
             <div className="avatar">
               <Image
-                alt=""
+                alt="Property location"
                 src="/images/avatar/avt-png21.png"
                 width={130}
                 height={130}
@@ -323,7 +323,7 @@ export default function Sidebar() {
           <Image
             className="lazyload"
             data-src="/images/blog/ads.jpg"
-            alt=""
+            alt="Advertisement"
             src="/images/blog/ads.jpg"
             width={400}
             height={470}
@@ -331,7 +331,7 @@ export default function Sidebar() {
         </div>
         <div className="logo relative z-5">
           <Image
-            alt=""
+            alt="Advertisement"
             src="/images/logo/logo-2@2x.png"
             width={272}
             height={85}

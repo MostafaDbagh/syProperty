@@ -11,7 +11,7 @@ export default function Header8() {
             <Link href={`/`} className="site-logo">
               <img
                 className="logo_header"
-                alt=""
+                alt="Property website logo"
                 data-light="/images/logo/logo@2x.png"
                 data-dark="/images/logo/logo-2@2x.png"
                 src="/images/logo/logo@2x.png"
@@ -31,13 +31,12 @@ export default function Header8() {
               >
                 Book a visit
                 <span>
-                  <svg
-                    width={24}
+                  <svg width={24}
                     height={24}
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M7 7H17V17"
                       stroke="#F1913D"

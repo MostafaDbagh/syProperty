@@ -77,7 +77,7 @@ export default function Facts() {
                 <Image
                   className="lazyload parallax-img"
                   data-src="/images/section/section-box-team.jpg"
-                  alt=""
+                  alt="Fact icon"
                   width={400}
                   height={509}
                   src="/images/section/section-box-team.jpg"
@@ -91,7 +91,7 @@ export default function Facts() {
                 <Image
                   className="lazyload parallax-img"
                   data-src="/images/section/section-box-team-2.jpg"
-                  alt=""
+                  alt="Fact icon"
                   width={400}
                   height={509}
                   src="/images/section/section-box-team-2.jpg"

@@ -13,7 +13,7 @@ export default function FavoritesCount({
   if (isLoading) {
     return (
       <span className={className}>
-        {icon && <i className="icon-save" style={{ marginRight: '8px' }} />}
+{icon && <i className="icon-save" style={{ marginRight: '8px' }} />}
         {showLabel && 'My favorites'} <span>(...)</span>
       </span>
     );

@@ -21,6 +21,8 @@ router.post('/update/:id', verifyToken, ListingController.updateListing);
 router.get('/:id', ListingController.getListingById);
 router.get('/:id/images', ListingController.getListingImages);
 router.get('/agent/:agentId', verifyToken, ListingController.getListingsByAgent);
+router.post('/:id/visit', ListingController.incrementVisitCount);
+router.get('/agent/:agentId/most-visited', verifyToken, ListingController.getMostVisitedListings);
 
 
 module.exports = router;

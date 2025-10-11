@@ -36,12 +36,11 @@ export default function BackToTop() {
       className={`progress-wrap ${scrolled > 150 ? "active-progress" : ""}`}
       onClick={() => scrollToTop()}
     >
-      <svg
-        className="progress-circle svg-content"
+      <svg className="progress-circle svg-content"
         width="100%"
         height="100%"
         viewBox="-1 -1 102 102"
-      >
+       aria-hidden="true">
         <path
           d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
           style={{

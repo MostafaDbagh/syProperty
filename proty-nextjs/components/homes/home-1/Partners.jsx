@@ -53,7 +53,7 @@ export default function Partners() {
                   data-wow-duration="2s"
                 >
                   <Image
-                    alt=""
+                    alt="Partner logo"
                     src="/images/section/person-1.png"
                     width={366}
                     height={491}

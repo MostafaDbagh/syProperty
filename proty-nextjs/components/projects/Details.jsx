@@ -30,7 +30,7 @@ export default function Details({ project }) {
                               ref={ref}
                               className="lazyload"
                               data-src="/images/section/project-details-1.jpg"
-                              alt=""
+                              alt="Project detail icon"
                               src="/images/section/project-details-1.jpg"
                               width={900}
                               height={600}
@@ -56,7 +56,7 @@ export default function Details({ project }) {
                                 ref={ref}
                                 className="lazyload"
                                 data-src="/images/section/project-details-2.jpg"
-                                alt=""
+                                alt="Project detail icon"
                                 src="/images/section/project-details-2.jpg"
                                 width={444}
                                 height={400}
@@ -81,7 +81,7 @@ export default function Details({ project }) {
                                 ref={ref}
                                 className="lazyload"
                                 data-src="/images/section/project-details-3.jpg"
-                                alt=""
+                                alt="Project detail icon"
                                 src="/images/section/project-details-3.jpg"
                                 width={444}
                                 height={400}

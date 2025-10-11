@@ -22,7 +22,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src={property.imageSrc}
-                        alt=""
+                        alt={property.title || property.type || 'Property'}
                         src={property.imageSrc}
                         width={property.width}
                         height={property.height}
@@ -35,7 +35,7 @@ export default function Project1() {
                     </ul>
                     <div className="list-btn flex gap-8">
                       <FavoriteButton 
-                        propertyId={project.id}
+                        propertyId={property.id}
                         showLabel={true}
                       />
                       <a href="#" className="btn-icon find hover-tooltip">
@@ -96,7 +96,7 @@ export default function Project1() {
                         <Image
                           className="lazyload"
                           data-src={listing.imageSrc}
-                          alt=""
+                          alt={listing.title || "Property listing"}
                           src={listing.imageSrc}
                           width={listing.width}
                           height={listing.height}
@@ -135,7 +135,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-23.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-23.jpg"
                         width={390}
                         height={220}
@@ -151,7 +151,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-24.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-24.jpg"
                         width={390}
                         height={220}
@@ -167,7 +167,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-25.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-25.jpg"
                         width={390}
                         height={220}
@@ -183,7 +183,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-26.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-26.jpg"
                         width={390}
                         height={220}
@@ -199,7 +199,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-27.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-27.jpg"
                         width={390}
                         height={220}
@@ -215,7 +215,7 @@ export default function Project1() {
                       <Image
                         className="lazyload"
                         data-src="/images/section/location-28.jpg"
-                        alt=""
+                        alt="Real estate location"
                         src="/images/section/location-28.jpg"
                         width={390}
                         height={220}
@@ -234,7 +234,7 @@ export default function Project1() {
                   <div className="box-contact-agent">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Real estate location"
                         src="/images/avatar/avt-png19.png"
                         width={130}
                         height={130}
@@ -250,7 +250,7 @@ export default function Project1() {
                   <div className="box-contact-agent">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Real estate location"
                         src="/images/avatar/avt-png20.png"
                         width={130}
                         height={130}
@@ -266,7 +266,7 @@ export default function Project1() {
                   <div className="box-contact-agent">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Real estate location"
                         src="/images/avatar/avt-png21.png"
                         width={130}
                         height={130}
@@ -286,7 +286,7 @@ export default function Project1() {
                   <Image
                     className="lazyload"
                     data-src="/images/blog/ads.jpg"
-                    alt=""
+                      alt="Property image"
                     src="/images/blog/ads.jpg"
                     width={400}
                     height={470}
@@ -294,7 +294,7 @@ export default function Project1() {
                 </div>
                 <div className="logo relative z-5">
                   <Image
-                    alt=""
+                      alt="Property image"
                     src="/images/logo/logo-2@2x.png"
                     width={272}
                     height={85}

@@ -1,13 +1,12 @@
 export default function ProfileIcon({ width = 20, height = 20, stroke = "#A8ABAE", ...props }) {
   return (
-    <svg
-      width={width}
+    <svg width={width}
       height={height}
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
-    >
+     aria-hidden="true">
       <path
         d="M15 15C16.3807 15 17.5 13.8807 17.5 12.5C17.5 11.1193 16.3807 10 15 10C13.6193 10 12.5 11.1193 12.5 12.5C12.5 13.8807 13.6193 15 15 15Z"
         stroke={stroke}

@@ -90,8 +90,35 @@ const getFavorites = async (req, res, next) => {
   }
 };
 
+const isFavorited = async (req, res, next) => {
+  try {
+    const { propertyId } = req.params;
+    const userId = req.user.id || req.user._id?.toString();
+
+    if (!userId) {
+      return next(errorHandler(401, 'User not authenticated'));
+    }
+
+    if (!propertyId) {
+      return next(errorHandler(400, 'Property ID is required'));
+    }
+
+    // Check if property is favorited
+    const favorite = await Favorite.findOne({ userId, propertyId });
+    
+    res.status(200).json({
+      success: true,
+      isFavorited: !!favorite,
+      favoriteId: favorite?._id || null
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addFavorite,
   removeFavorite,
-  getFavorites
+  getFavorites,
+  isFavorited
 };

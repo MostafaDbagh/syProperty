@@ -132,6 +132,33 @@ export const listingAPI = {
     } catch (error) {
       throw error.response?.data || error.message;
     }
+  },
+
+  // Increment visit count for a listing
+  incrementVisitCount: async (id) => {
+    try {
+      const response = await Axios.post(`/listing/${id}/visit`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get most visited listings by agent
+  getMostVisitedListings: async (agentId, params = {}) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await Axios.get(`/listing/agent/${agentId}/most-visited`, {
+        params,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
   }
 };
 

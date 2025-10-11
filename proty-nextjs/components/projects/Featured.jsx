@@ -45,7 +45,7 @@ export default function Featured() {
                       <Image
                         className="lazyload"
                         data-src={project.image}
-                        alt=""
+                        alt="Featured property"
                         src={project.image}
                         width={1840}
                         height={884}
@@ -69,13 +69,12 @@ export default function Featured() {
                       <div className="wrap-btn">
                         <div className="swiper-button-prev sw-button sw-thumbs-prev snbp445">
                           <div>
-                            <svg
-                              width={24}
+                            <svg width={24}
                               height={24}
                               viewBox="0 0 24 24"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                            >
+                             aria-hidden="true">
                               <path
                                 d="M19 12H5"
                                 stroke="#5C5E61"
@@ -95,13 +94,12 @@ export default function Featured() {
                         </div>
                         <div className="swiper-button-next sw-button sw-thumbs-next snbn445">
                           <div>
-                            <svg
-                              width={24}
+                            <svg width={24}
                               height={24}
                               viewBox="0 0 24 24"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                            >
+                             aria-hidden="true">
                               <path
                                 d="M5 12H19"
                                 stroke="#5C5E61"

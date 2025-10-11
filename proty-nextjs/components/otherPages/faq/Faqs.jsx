@@ -460,7 +460,7 @@ export default function Faqs() {
                 <div className="seller-info">
                   <div className="avartar">
                     <Image
-                      alt=""
+                      alt="FAQ illustration"
                       width={200}
                       height={200}
                       src="/images/avatar/seller.jpg"
@@ -510,7 +510,7 @@ export default function Faqs() {
                   <Image
                     className="lazyload"
                     data-src="/images/blog/ads.jpg"
-                    alt=""
+                    alt="FAQ illustration"
                     width={400}
                     height={470}
                     src="/images/blog/ads.jpg"
@@ -518,7 +518,7 @@ export default function Faqs() {
                 </div>
                 <div className="logo relative z-5">
                   <Image
-                    alt=""
+                    alt="FAQ illustration"
                     width={272}
                     height={85}
                     src="/images/logo/logo-2@2x.png"

@@ -41,13 +41,12 @@ export default function Properties6() {
             <div className="wrap-btn searchFormToggler">
               <div className="btn-filter show-form">
                 <div className="icons">
-                  <svg
-                    width={24}
+                  <svg width={24}
                     height={24}
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M21 4H14"
                       stroke="#F1913D"

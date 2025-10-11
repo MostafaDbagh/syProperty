@@ -42,7 +42,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/testimonials-4.jpg"
                         width={200}
                         height={200}
@@ -74,7 +74,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png7.png"
                         width={120}
                         height={120}
@@ -108,7 +108,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png12.png"
                         width={51}
                         height={51}
@@ -144,7 +144,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png12.png"
                         width={51}
                         height={51}
@@ -174,7 +174,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png6.png"
                         width={120}
                         height={120}
@@ -205,7 +205,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png5.png"
                         width={120}
                         height={120}
@@ -239,7 +239,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png8.png"
                         width={120}
                         height={120}
@@ -270,7 +270,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png5.png"
                         width={120}
                         height={120}
@@ -304,7 +304,7 @@ export default function Testimonials() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Client testimonial"
                         src="/images/avatar/avt-png12.png"
                         width={51}
                         height={51}

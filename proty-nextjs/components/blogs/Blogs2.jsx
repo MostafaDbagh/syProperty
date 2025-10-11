@@ -12,13 +12,12 @@ export default function Blogs2() {
               <h2>Blog grid</h2>
               <div className="group-layout">
                 <a href="#" className="btn-layout grid active">
-                  <svg
-                    width={25}
+                  <svg width={25}
                     height={25}
                     viewBox="0 0 25 25"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M5.04883 6.40508C5.04883 5.6222 5.67272 5 6.41981 5C7.16686 5 7.7908 5.62221 7.7908 6.40508C7.7908 7.18801 7.16722 7.8101 6.41981 7.8101C5.67241 7.8101 5.04883 7.18801 5.04883 6.40508Z"
                       stroke="#8E8E93"
@@ -58,13 +57,12 @@ export default function Blogs2() {
                   </svg>
                 </a>
                 <a href="#" className="btn-layout list">
-                  <svg
-                    width={25}
+                  <svg width={25}
                     height={25}
                     viewBox="0 0 25 25"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                  >
+                   aria-hidden="true">
                     <path
                       d="M19.7016 18.3317H9.00246C8.5615 18.3317 8.2041 17.9743 8.2041 17.5333C8.2041 17.0923 8.5615 16.7349 9.00246 16.7349H19.7013C20.1423 16.7349 20.4997 17.0923 20.4997 17.5333C20.4997 17.9743 20.1426 18.3317 19.7016 18.3317Z"
                       fill="#8E8E93"
@@ -99,7 +97,7 @@ export default function Blogs2() {
                   <div className="image-wrap">
                     <Image
                       className="lazyload"
-                      alt=""
+                      alt="Blog post image"
                       width={600}
                       height={396}
                       src={post.imageSrc}
@@ -113,13 +111,12 @@ export default function Blogs2() {
                   <div className="article-content">
                     <div className="time">
                       <div className="icons">
-                        <svg
-                          width={18}
+                        <svg width={18}
                           height={18}
                           viewBox="0 0 18 18"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                        >
+                         aria-hidden="true">
                           <g clipPath="url(#clip0_2450_13848)">
                             <path
                               fillRule="evenodd"
@@ -165,13 +162,12 @@ export default function Blogs2() {
                       className="tf-btn-link"
                     >
                       <span> Read More </span>
-                      <svg
-                        width={20}
+                      <svg width={20}
                         height={20}
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                      >
+                       aria-hidden="true">
                         <g clipPath="url(#clip0_2450_13860)">
                           <path
                             d="M10.0013 18.3334C14.6037 18.3334 18.3346 14.6024 18.3346 10C18.3346 5.39765 14.6037 1.66669 10.0013 1.66669C5.39893 1.66669 1.66797 5.39765 1.66797 10C1.66797 14.6024 5.39893 18.3334 10.0013 18.3334Z"

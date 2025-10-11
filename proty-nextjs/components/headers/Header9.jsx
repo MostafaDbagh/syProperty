@@ -14,7 +14,7 @@ export default function Header9() {
                   <Link href={`/`} className="site-logo">
                     <Image
                       id="logo_header"
-                      alt=""
+                      alt="Property website logo"
                       src="/images/logo/logo-2@2x.png"
                       width={272}
                       height={85}
@@ -33,13 +33,12 @@ export default function Header9() {
                       href={`/add-property`}
                     >
                       Add property
-                      <svg
-                        width={24}
+                      <svg width={24}
                         height={24}
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                      >
+                       aria-hidden="true">
                         <path
                           d="M7 7H17V17"
                           stroke="#F1913D"

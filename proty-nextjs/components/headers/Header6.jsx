@@ -14,7 +14,7 @@ export default function Header6() {
                   <Link href={`/`} className="site-logo">
                     <Image
                       className="logo_header"
-                      alt=""
+                      alt="Property website logo"
                       width={272}
                       height={85}
                       src="/images/logo/logo-2@2x.png"

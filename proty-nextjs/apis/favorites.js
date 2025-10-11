@@ -61,15 +61,18 @@ export const favoriteAPI = {
         return false;
       }
       
-      const response = await favoriteAPI.getFavorites({ page: 1, limit: 1000 }); // Get all to check
-      const favorites = response?.data || response || [];
-      return favorites.some(fav => 
-        fav.propertyId?._id === propertyId || 
-        fav.propertyId === propertyId || 
-        fav._id === propertyId
-      );
+      const response = await Axios.get(`/favorites/check/${propertyId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data?.isFavorited || false;
     } catch (error) {
-      console.error('Error checking if favorited:', error);
+      // Don't log error for unauthenticated users
+      if (error.response?.status !== 401) {
+        console.error('Error checking if favorited:', error);
+      }
       return false;
     }
   },

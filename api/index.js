@@ -13,6 +13,7 @@ const favoriteRoutes = require('./routes/favorite.route');
 const agentRoutes = require('./routes/agent.routes');
 const pointRoutes = require('./routes/point.route');
 const messageRoutes = require('./routes/message.route');
+const newsletterRoutes = require('./routes/newsletter.route');
 
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use('/api/favorites', favoriteRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/points', pointRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 
 
@@ -44,4 +46,6 @@ app.use('/api/message', messageRoutes);
 
 const PORT = process.env.PORT || 5500;
 
-app.listen(PORT, () => console.log('We are listening to the port ' + PORT));
+app.listen(PORT, () => {
+  // Server started successfully
+});

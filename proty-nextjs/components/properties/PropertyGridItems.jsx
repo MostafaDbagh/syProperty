@@ -19,39 +19,26 @@ export default function PropertyGridItems({ listings = [] }) {
     );
   }
 
-  // Debug: Log the first property to see the data structure
-  if (listings.length > 0) {
-    console.log('PropertyGridItems - First property data:', listings[0]);
-    console.log('PropertyGridItems - Images:', listings[0].images);
-    console.log('PropertyGridItems - ImageNames:', listings[0].imageNames);
-    console.log('PropertyGridItems - All keys:', Object.keys(listings[0]));
-  }
 
   // Function to get image source
   const getImageSource = (property) => {
-    console.log('Getting image source for property:', property.propertyTitle);
-    
     // Try different possible image sources
     if (property.images && property.images.length > 0) {
       const firstImage = property.images[0];
-      console.log('First image object:', firstImage);
       
       if (typeof firstImage === 'string') {
-        console.log('Image is string:', firstImage);
         return firstImage;
       } else if (firstImage && firstImage.url) {
-        console.log('Image URL:', firstImage.url);
         return firstImage.url;
       }
     }
     
     // Try imageNames as fallback
     if (property.imageNames && property.imageNames.length > 0) {
-      console.log('Using imageNames:', property.imageNames[0]);
       return property.imageNames[0];
     }
     
-    console.log('Using default image');
+    // Return default image
     return "/images/section/box-house-1.jpg";
   };
 

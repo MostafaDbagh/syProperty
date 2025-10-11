@@ -30,13 +30,12 @@ export default function BrandSlider({
       modules={[Autoplay]}
     >
       <SwiperSlide className="partner-item style-2 ">
-        <svg
-          width={126}
+        <svg width={126}
           height={82}
           viewBox="0 0 126 82"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5655)">
             <path
               d="M35.082 30.0261C35.082 30.2227 34.92 30.3835 34.722 30.3835H29.61C29.412 30.3835 29.25 30.2227 29.25 30.0261V24.9502C29.25 24.7536 29.412 24.5928 29.61 24.5928H34.722C34.92 24.5928 35.082 24.7536 35.082 24.9502V30.0261Z"
@@ -231,13 +230,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={130}
+        <svg width={130}
           height={49}
           viewBox="0 0 130 49"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5712)">
             <path
               d="M56.2047 42.9411V34.8164H59.6501C61.1912 34.8164 61.9555 35.4714 61.9555 36.7688C61.9555 37.8269 61.2037 38.6079 59.7003 39.1118L62.4692 42.9411H61.091L58.5225 39.2881V38.5953C60.0636 38.3434 60.8404 37.7514 60.8404 36.8066C60.8404 36.0509 60.4144 35.6856 59.5499 35.6856H57.2446V42.9411H56.2047Z"
@@ -376,13 +374,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={148}
+        <svg width={148}
           height={38}
           viewBox="0 0 148 38"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5750)">
             <path
               d="M22.8727 24.6738L0 11.6625L20.5075 0L43.3843 13.0113L22.8727 24.6738Z"
@@ -497,13 +494,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={126}
+        <svg width={126}
           height={75}
           viewBox="0 0 126 75"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5782)">
             <path
               d="M48.5762 19.0562H43.4095V24.1914H48.5762V19.0562Z"
@@ -634,13 +630,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={153}
+        <svg width={153}
           height={30}
           viewBox="0 0 153 30"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5818)">
             <path
               d="M34.0377 3.84326H38.7694V20.6786H34.0377V3.84326Z"
@@ -771,13 +766,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={86}
+        <svg width={86}
           height={82}
           viewBox="0 0 86 82"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5853)">
             <path
               d="M15.7606 76.9297H16.1343V81.9208H15.7606V79.5319H12.8879V81.9208H12.5143V76.9297H12.8879V79.1762H15.7606V76.9297Z"
@@ -884,13 +878,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2 ">
-        <svg
-          width={126}
+        <svg width={126}
           height={82}
           viewBox="0 0 126 82"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5655)">
             <path
               d="M35.082 30.0261C35.082 30.2227 34.92 30.3835 34.722 30.3835H29.61C29.412 30.3835 29.25 30.2227 29.25 30.0261V24.9502C29.25 24.7536 29.412 24.5928 29.61 24.5928H34.722C34.92 24.5928 35.082 24.7536 35.082 24.9502V30.0261Z"
@@ -1085,13 +1078,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={130}
+        <svg width={130}
           height={49}
           viewBox="0 0 130 49"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5712)">
             <path
               d="M56.2047 42.9411V34.8164H59.6501C61.1912 34.8164 61.9555 35.4714 61.9555 36.7688C61.9555 37.8269 61.2037 38.6079 59.7003 39.1118L62.4692 42.9411H61.091L58.5225 39.2881V38.5953C60.0636 38.3434 60.8404 37.7514 60.8404 36.8066C60.8404 36.0509 60.4144 35.6856 59.5499 35.6856H57.2446V42.9411H56.2047Z"
@@ -1230,13 +1222,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={148}
+        <svg width={148}
           height={38}
           viewBox="0 0 148 38"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5750)">
             <path
               d="M22.8727 24.6738L0 11.6625L20.5075 0L43.3843 13.0113L22.8727 24.6738Z"
@@ -1351,13 +1342,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={126}
+        <svg width={126}
           height={75}
           viewBox="0 0 126 75"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5782)">
             <path
               d="M48.5762 19.0562H43.4095V24.1914H48.5762V19.0562Z"
@@ -1488,13 +1478,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={153}
+        <svg width={153}
           height={30}
           viewBox="0 0 153 30"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5818)">
             <path
               d="M34.0377 3.84326H38.7694V20.6786H34.0377V3.84326Z"
@@ -1625,13 +1614,12 @@ export default function BrandSlider({
         </svg>
       </SwiperSlide>
       <SwiperSlide className="partner-item style-2">
-        <svg
-          width={86}
+        <svg width={86}
           height={82}
           viewBox="0 0 86 82"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-        >
+         aria-hidden="true">
           <g clipPath="url(#clip0_2304_5853)">
             <path
               d="M15.7606 76.9297H16.1343V81.9208H15.7606V79.5319H12.8879V81.9208H12.5143V76.9297H12.8879V79.1762H15.7606V76.9297Z"

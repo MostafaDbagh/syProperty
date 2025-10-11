@@ -11,7 +11,7 @@ export default function Cta() {
               <div className="content">
                 <div className="logo">
                   <Image
-                    alt=""
+                    alt="Call to action image"
                     width={272}
                     height={84}
                     src="/images/logo/logo-white@2x.png"
@@ -49,7 +49,7 @@ export default function Cta() {
               data-wow-delay="0s"
             >
               <Image
-                alt=""
+                alt="Call to action image"
                 width={346}
                 height={499}
                 src="/images/section/person-2.png"

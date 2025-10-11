@@ -8,6 +8,7 @@ import favoriteAPI from './favorites';
 import agentAPI from './agent';
 import pointAPI from './points';
 import { messageAPI } from './message';
+import { newsletterAPI } from './newsletter';
 
 // Export all APIs
 export {
@@ -19,7 +20,8 @@ export {
   favoriteAPI,
   agentAPI,
   pointAPI,
-  messageAPI
+  messageAPI,
+  newsletterAPI
 };
 
 // Default export with all APIs
@@ -32,7 +34,8 @@ export default {
   favorites: favoriteAPI,
   agent: agentAPI,
   points: pointAPI,
-  message: messageAPI
+  message: messageAPI,
+  newsletter: newsletterAPI
 };
 
 // Individual exports for convenience
@@ -45,3 +48,4 @@ export const favorites = favoriteAPI;
 export const agent = agentAPI;
 export const points = pointAPI;
 export const message = messageAPI;
+export const newsletter = newsletterAPI;

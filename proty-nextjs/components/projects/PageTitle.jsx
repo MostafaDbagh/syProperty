@@ -23,7 +23,7 @@ export default function PageTitle() {
             <Image
               className="lazyload"
               data-src="/images/section/banner-6.jpg"
-              alt=""
+              alt="Project location"
               src="/images/section/banner-6.jpg"
               width={1888}
               height={656}

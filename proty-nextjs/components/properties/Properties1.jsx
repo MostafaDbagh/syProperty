@@ -54,9 +54,6 @@ export default function Properties1({ defaultGrid = false }) {
   };
 
   // Debug: Log the API response
-  console.log('API Response:', searchResponse);
-  console.log('Listings count:', listings.length);
-  console.log('Pagination object:', pagination);
 
   const handleSearchChange = (newParams) => {
     setSearchParams((prev) => ({ ...prev, ...newParams }));
@@ -73,14 +70,6 @@ export default function Properties1({ defaultGrid = false }) {
     const items = [];
     const { page, totalPages } = pagination;
     
-    // Debug: Log pagination values
-    console.log('Pagination Debug:', { 
-      page, 
-      totalPages, 
-      total: pagination.total, 
-      limit: pagination.limit,
-      calculatedPages: Math.ceil(pagination.total / pagination.limit)
-    });
     
     // Previous button
     items.push(
@@ -213,13 +202,12 @@ export default function Properties1({ defaultGrid = false }) {
                   >
                     Filter
                     <div className="icons">
-                      <svg
-                        width={20}
+                      <svg width={20}
                         height={20}
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                      >
+                       aria-hidden="true">
                         <path
                           d="M21 4H14"
                           stroke="#F1913D"

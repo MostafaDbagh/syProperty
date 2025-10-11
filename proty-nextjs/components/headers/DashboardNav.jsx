@@ -116,15 +116,29 @@ export default function DashboardNav({ color = "" }) {
       >
         {/* Dashboard - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
-          <Link className="dropdown-item" href={`/dashboard`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/dashboard`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <DashboardIcon />
-            Dashboards
+            Dashboard
           </Link>
         )}
 
         {/* My Profile - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
-          <Link className="dropdown-item" href={`/my-profile`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/my-profile`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <ProfileIcon />
             My profile
           </Link>
@@ -132,7 +146,14 @@ export default function DashboardNav({ color = "" }) {
 
         {/* My Package - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
-          <Link className="dropdown-item" href={`/my-package`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/my-package`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <PackageIcon />
             My package
           </Link>
@@ -140,15 +161,28 @@ export default function DashboardNav({ color = "" }) {
 
         {/* My Favorites - For ALL logged in users */}
         {isLoggedIn && (
-          <Link className="dropdown-item" href={`/my-favorites`}>
-            <HeartIcon />
+          <Link 
+            className="dropdown-item" 
+            href={`/my-favorites`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <FavoritesCount />
           </Link>
         )}
 
         {/* Reviews - For ALL logged in users */}
         {isLoggedIn && (
-          <Link className="dropdown-item" href={`/review`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/review`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <ReviewIcon />
             Reviews
           </Link>
@@ -160,6 +194,11 @@ export default function DashboardNav({ color = "" }) {
             type="button"
             className="dropdown-item dashboard-nav-button" 
             onClick={handleMakeAgent}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db',
+              cursor: 'pointer'
+            }}
           >
             <AddPropertyIcon />
             Make me Agent
@@ -168,7 +207,14 @@ export default function DashboardNav({ color = "" }) {
 
         {/* My Properties - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
-          <Link className="dropdown-item" href={`/my-property`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/my-property`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <PropertyIcon />
             My properties
           </Link>
@@ -176,7 +222,14 @@ export default function DashboardNav({ color = "" }) {
 
         {/* Add Property - Only for logged in agents */}
         {isLoggedIn && isAgentUser && (
-          <Link className="dropdown-item " href={`/add-property`}>
+          <Link 
+            className="dropdown-item" 
+            href={`/add-property`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <AddPropertyIcon />
             Add property
           </Link>
@@ -184,15 +237,29 @@ export default function DashboardNav({ color = "" }) {
 
         {/* Login/Register - Only for non-logged in users */}
         {!isLoggedIn && (
-          <div className="dropdown-item ">
+          <div 
+            className="dropdown-item"
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
             <UserAvatarIcon stroke="#A8ABAE" />
-            <div className="d-flex wrap-login">
-              <a href="#" onClick={(e) => { e.preventDefault(); showLoginModal(); }}>
+            <div className="d-flex wrap-login" style={{ gap: '4px' }}>
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); showLoginModal(); }}
+                style={{ color: 'var(--Primary)', textDecoration: 'none', fontWeight: '500' }}
+              >
                 login
               </a>
-              <span>/</span>
-              <a href="#" onClick={(e) => { e.preventDefault(); showRegisterModal(); }}>
-                register{" "}
+              <span style={{ color: 'var(--Note)' }}>/</span>
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); showRegisterModal(); }}
+                style={{ color: 'var(--Primary)', textDecoration: 'none', fontWeight: '500' }}
+              >
+                register
               </a>
             </div>
           </div>
@@ -204,6 +271,11 @@ export default function DashboardNav({ color = "" }) {
             type="button" 
             className="dropdown-item dashboard-nav-button" 
             onClick={handleLogout} 
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db',
+              cursor: 'pointer'
+            }}
           >
             <LogoutIcon />
             Logout

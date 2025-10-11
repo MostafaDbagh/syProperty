@@ -374,6 +374,67 @@ const getEachStateListing = async (req, res) => {
   }
 };
 
+const incrementVisitCount = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    const listing = await Listing.findByIdAndUpdate(
+      id,
+      { $inc: { visitCount: 1 } },
+      { new: true }
+    );
+
+    if (!listing) {
+      return next(errorHandler(404, 'Listing not found!'));
+    }
+
+    res.status(200).json({
+      success: true,
+      visitCount: listing.visitCount
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getMostVisitedListings = async (req, res, next) => {
+  try {
+    const { agentId } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const filter = {
+      agentId: agentId,
+      isDeleted: { $ne: true },
+      visitCount: { $gt: 0 } // Only listings with visits
+    };
+
+    const listings = await Listing.find(filter)
+      .sort({ visitCount: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('agentId', 'username email fullName');
+
+    const total = await Listing.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      data: listings,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        hasNextPage: skip + parseInt(limit) < total,
+        hasPrevPage: parseInt(page) > 1
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 
 module.exports = {
@@ -384,5 +445,7 @@ module.exports = {
   getListingImages,
   getFilteredListings,
   getListingsByAgent,
-  getEachStateListing
+  getEachStateListing,
+  incrementVisitCount,
+  getMostVisitedListings
 };

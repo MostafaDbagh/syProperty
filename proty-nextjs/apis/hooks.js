@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI, messageAPI } from './index';
+import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI, messageAPI, newsletterAPI } from './index';
 
 // Authentication hooks
 export const useAuth = () => {
@@ -214,6 +214,30 @@ export const useListingsByAgent = (agentId, params = {}) => {
   });
 };
 
+// Get most visited listings by agent
+export const useMostVisitedListings = (agentId, params = {}) => {
+  return useQuery({
+    queryKey: ['listings', 'most-visited', agentId, params],
+    queryFn: () => listingAPI.getMostVisitedListings(agentId, params),
+    enabled: !!agentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Increment visit count mutation
+export const useIncrementVisitCount = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: listingAPI.incrementVisitCount,
+    onSuccess: (data, variables) => {
+      // Invalidate related queries to refresh data
+      queryClient.invalidateQueries(['listings']);
+      queryClient.invalidateQueries(['listings', 'most-visited']);
+    },
+  });
+};
+
 export const useCreateAgent = () => {
   const queryClient = useQueryClient();
 
@@ -332,5 +356,63 @@ export const useCreateMessage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['messages']);
     },
+  });
+};
+
+// Newsletter hooks
+export const useNewsletterSubscription = () => {
+  const queryClient = useQueryClient();
+
+  const subscribeMutation = useMutation({
+    mutationFn: ({ email, source, preferences }) => 
+      newsletterAPI.subscribe(email, source, preferences),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['newsletter']);
+    },
+  });
+
+  const unsubscribeMutation = useMutation({
+    mutationFn: newsletterAPI.unsubscribe,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['newsletter']);
+    },
+  });
+
+  const updatePreferencesMutation = useMutation({
+    mutationFn: ({ email, preferences }) => 
+      newsletterAPI.updatePreferences(email, preferences),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['newsletter']);
+    },
+  });
+
+  return {
+    subscribe: subscribeMutation.mutate,
+    unsubscribe: unsubscribeMutation.mutate,
+    updatePreferences: updatePreferencesMutation.mutate,
+    isSubscribing: subscribeMutation.isPending,
+    isUnsubscribing: unsubscribeMutation.isPending,
+    isUpdatingPreferences: updatePreferencesMutation.isPending,
+    subscribeError: subscribeMutation.error,
+    unsubscribeError: unsubscribeMutation.error,
+    updatePreferencesError: updatePreferencesMutation.error,
+  };
+};
+
+export const useNewsletterSubscribers = (params = {}) => {
+  return useQuery({
+    queryKey: ['newsletter', 'subscribers', params],
+    queryFn: () => newsletterAPI.getSubscribers(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: false, // Only fetch when explicitly called (admin only)
+  });
+};
+
+export const useNewsletterStats = () => {
+  return useQuery({
+    queryKey: ['newsletter', 'stats'],
+    queryFn: newsletterAPI.getStats,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: false, // Only fetch when explicitly called (admin only)
   });
 };

@@ -56,7 +56,7 @@ export default function Reviews() {
                   data-wow-delay="0s"
                 >
                   <Image
-                    alt=""
+                    alt="Review author"
                     width={509}
                     height={578}
                     src="/images/section/person-3.png"
@@ -69,7 +69,7 @@ export default function Reviews() {
                 >
                   <div className="avatar">
                     <Image
-                      alt=""
+                      alt="Review author"
                       width={120}
                       height={120}
                       src="/images/avatar/avt-png18.png"
@@ -111,7 +111,7 @@ export default function Reviews() {
                   <div className="author">
                     <div className="avatar">
                       <Image
-                        alt=""
+                        alt="Review author"
                         width={200}
                         height={200}
                         src="/images/avatar/testimonials-4.jpg"

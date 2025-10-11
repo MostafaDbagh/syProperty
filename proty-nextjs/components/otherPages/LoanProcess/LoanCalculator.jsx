@@ -13,7 +13,7 @@ export default function LoanCalculator() {
                 <Image
                   className="lazyload parallax-img"
                   data-src="/images/section/section-calculate.jpg"
-                  alt=""
+                  alt="Loan calculator illustration"
                   width={1280}
                   height={472}
                   src="/images/section/section-calculate.jpg"

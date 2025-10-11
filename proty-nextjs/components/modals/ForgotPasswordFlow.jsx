@@ -13,7 +13,6 @@ export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
   const [otpCode, setOtpCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  console.log('🔄 ForgotPasswordFlow render - isOpen:', isOpen, 'currentStep:', currentStep);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -126,7 +125,6 @@ export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
     onClose();
   };
 
-  console.log("🔄 ForgotPasswordFlow render - currentStep:", currentStep, "isOpen:", isOpen);
 
   return (
     <>

@@ -89,7 +89,6 @@ export const otherPages = [
   // { href: "/project-list", label: "Project List" },
   // { href: "/project-details/1", label: "Project Details" },
   // { href: "/404", label: "Page 404" },
-  { href: "/dashboard", label: "Dashboard" },
 ];
 
 export const blogMenu = [

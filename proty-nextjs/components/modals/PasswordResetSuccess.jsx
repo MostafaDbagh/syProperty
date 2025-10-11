@@ -26,8 +26,8 @@ export default function PasswordResetSuccess({ isOpen, onClose, onLogin }) {
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <button className={styles.closeButton} onClick={handleCloseClick}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <button className={styles.closeButton} onClick={handleCloseClick} aria-label="Close modal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M18 6L6 18M6 6L18 18"
                 stroke="currentColor"
@@ -41,7 +41,7 @@ export default function PasswordResetSuccess({ isOpen, onClose, onLogin }) {
 
         <div className={styles.content}>
           <div className={styles.iconContainer}>
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" role="img" aria-label="Success icon">
               <circle 
                 cx="12" 
                 cy="12" 
@@ -72,7 +72,7 @@ export default function PasswordResetSuccess({ isOpen, onClose, onLogin }) {
               className={styles.loginButton}
               onClick={handleLoginClick}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className={styles.buttonIcon}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className={styles.buttonIcon} aria-hidden="true">
                 <path
                   d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M21 12H9"
                   stroke="currentColor"

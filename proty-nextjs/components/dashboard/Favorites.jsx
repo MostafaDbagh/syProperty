@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { favoriteAPI } from "@/apis/favorites";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
+import LocationLoader from "../common/LocationLoader";
 import { useFavorites } from "@/components/contexts/FavoritesContext";
 
 export default function Favorites() {
@@ -47,10 +48,7 @@ export default function Favorites() {
   const { data: favoritesData, isLoading, isError, refetch } = useQuery({
     queryKey: ['my-favorites', user?._id, currentPage],
     queryFn: async () => {
-      console.log('🔍 Fetching favorites for user:', user?._id, 'page:', currentPage);
       const result = await favoriteAPI.getFavorites({ page: currentPage, limit: itemsPerPage });
-      console.log('✅ Favorites received:', result?.data?.length || 0, 'items');
-      console.log('📊 Pagination:', result?.pagination);
       return result;
     },
     enabled: !!user,
@@ -184,8 +182,11 @@ export default function Favorites() {
           </h3>
 
           {isLoading && (
-            <div className="favorites-loading">
-              <p>Loading favorites...</p>
+            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <LocationLoader 
+                size="large" 
+                message="Loading your favorite properties..."
+              />
             </div>
           )}
 
@@ -268,13 +269,12 @@ export default function Favorites() {
                                   onClick={() => handleDeleteFavorite(favorite)}
                                   className="remove-file item favorites-delete-button"
                                 >
-                                  <svg
-                                    width={16}
+                                  <svg width={16}
                                     height={16}
                                     viewBox="0 0 16 16"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
-                                  >
+                                   aria-hidden="true">
                                     <path
                                       d="M9.82667 6.00035L9.596 12.0003M6.404 12.0003L6.17333 6.00035M12.8187 3.86035C13.0467 3.89501 13.2733 3.93168 13.5 3.97101M12.8187 3.86035L12.1067 13.1157C12.0776 13.4925 11.9074 13.8445 11.63 14.1012C11.3527 14.3579 10.9886 14.5005 10.6107 14.5003H5.38933C5.0114 14.5005 4.64735 14.3579 4.36999 14.1012C4.09262 13.8445 3.92239 13.4925 3.89333 13.1157L3.18133 3.86035M12.8187 3.86035C12.0492 3.74403 11.2758 3.65574 10.5 3.59568M3.18133 3.86035C2.95333 3.89435 2.72667 3.93101 2.5 3.97035M3.18133 3.86035C3.95076 3.74403 4.72416 3.65575 5.5 3.59568M10.5 3.59568V2.98501C10.5 2.19835 9.89333 1.54235 9.10667 1.51768C8.36908 1.49411 7.63092 1.49411 6.89333 1.51768C6.10667 1.54235 5.5 2.19901 5.5 2.98501V3.59568M10.5 3.59568C8.83581 3.46707 7.16419 3.46707 5.5 3.59568"
                                       stroke="currentColor"

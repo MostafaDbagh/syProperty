@@ -51,7 +51,7 @@ export default function Blogs() {
                         <Image
                           className="lazyload"
                           data-src={post.imgSrc}
-                          alt=""
+                          alt="Blog post image"
                           src={post.imgSrc}
                           width={600}
                           height={396}

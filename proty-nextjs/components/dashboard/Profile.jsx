@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { userAPI } from "@/apis";
 import Toast from "../common/Toast";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -150,15 +151,22 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="main-content style-2">
-        <div className="main-content-inner wrap-dashboard-content-2">
-          <div className="widget-box-2" style={{ textAlign: "center", padding: "50px" }}>
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <p>Loading profile...</p>
-          </div>
-        </div>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#f8f9fa',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999
+      }}>
+        <LocationLoader 
+          size="large" 
+          message="Loading your profile..."
+        />
       </div>
     );
   }
@@ -196,7 +204,7 @@ export default function Profile() {
             <div className="box-agent-avt">
               <div className="avatar">
                 <Image
-                  alt="avatar"
+                  alt={user?.fullName || "User avatar"}
                   loading="lazy"
                   width={128}
                   height={128}

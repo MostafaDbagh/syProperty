@@ -46,13 +46,12 @@ export default function FloorLayout() {
                   </span>
                   <div className="box-icon d-flex gap-8 align-items-center">
                     <div>
-                      <svg
-                        width={16}
+                      <svg width={16}
                         height={16}
                         viewBox="0 0 16 16"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                      >
+                       aria-hidden="true">
                         <path
                           d="M14 7.33333V3.33333C14 2.97971 13.8595 2.64057 13.6095 2.39052C13.3594 2.14048 13.0203 2 12.6667 2H3.33333C2.97971 2 2.64057 2.14048 2.39052 2.39052C2.14048 2.64057 2 2.97971 2 3.33333V12.6667C2 13.0203 2.14048 13.3594 2.39052 13.6095C2.64057 13.8595 2.97971 14 3.33333 14H7.33333"
                           stroke="#5C5E61"

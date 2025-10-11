@@ -14,7 +14,7 @@ export default function Header10() {
                   <Link href={`/`} className="site-logo">
                     <img
                       className="logo_header"
-                      alt=""
+                      alt="Property website logo"
                       data-light="/images/logo/logo@2x.png"
                       data-dark="/images/logo/logo-2@2x.png"
                       src="/images/logo/logo@2x.png"
