@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { properties4 } from "@/data/properties";
 import { useAgent } from "@/apis/hooks";
+import LocationLoader from "../common/LocationLoader";
 
 export default function AgentDetails({ agentId }) {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
@@ -19,10 +20,10 @@ export default function AgentDetails({ agentId }) {
         <div className="tf-container">
           <div className="row">
             <div className="col-12 text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading agent details...</span>
-              </div>
-              <p className="mt-3">Loading agent details...</p>
+              <LocationLoader 
+                size="large" 
+                message="Loading agent profile..."
+              />
             </div>
           </div>
         </div>

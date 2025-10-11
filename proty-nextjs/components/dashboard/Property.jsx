@@ -8,6 +8,7 @@ import { listingAPI } from "@/apis/listing";
 import EditPropertyModal from "../modals/EditPropertyModal";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Property() {
   const [user, setUser] = useState(null);
@@ -382,7 +383,10 @@ export default function Property() {
             <div className="table-responsive">
               {isLoading ? (
                 <div style={{ padding: '40px', textAlign: 'center' }}>
-                  <p>Loading your properties...</p>
+                  <LocationLoader 
+                    size="medium" 
+                    message="Loading your properties..."
+                  />
                 </div>
               ) : isError ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#dc3545' }}>

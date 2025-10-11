@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import DropdownSelect from "../common/DropdownSelect";
 import { useAgents } from "@/apis/hooks";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Agents() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,10 +45,10 @@ export default function Agents() {
         <div className="tf-container">
           <div className="row">
             <div className="col-12 text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading agents...</span>
-              </div>
-              <p className="mt-3">Loading agents...</p>
+              <LocationLoader 
+                size="large" 
+                message="Finding the best real estate agents for you..."
+              />
             </div>
           </div>
         </div>

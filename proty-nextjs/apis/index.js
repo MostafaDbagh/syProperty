@@ -7,6 +7,7 @@ import contactAPI from './contact';
 import favoriteAPI from './favorites';
 import agentAPI from './agent';
 import pointAPI from './points';
+import { messageAPI } from './message';
 
 // Export all APIs
 export {
@@ -17,7 +18,8 @@ export {
   contactAPI,
   favoriteAPI,
   agentAPI,
-  pointAPI
+  pointAPI,
+  messageAPI
 };
 
 // Default export with all APIs
@@ -29,7 +31,8 @@ export default {
   contact: contactAPI,
   favorites: favoriteAPI,
   agent: agentAPI,
-  points: pointAPI
+  points: pointAPI,
+  message: messageAPI
 };
 
 // Individual exports for convenience
@@ -41,3 +44,4 @@ export const contact = contactAPI;
 export const favorites = favoriteAPI;
 export const agent = agentAPI;
 export const points = pointAPI;
+export const message = messageAPI;

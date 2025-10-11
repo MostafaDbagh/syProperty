@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI } from './index';
+import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI, messageAPI } from './index';
 
 // Authentication hooks
 export const useAuth = () => {
@@ -255,5 +255,82 @@ export const useChargePoints = () => {
 export const useCalculateListingCost = () => {
   return useMutation({
     mutationFn: pointAPI.calculateListingCost,
+  });
+};
+
+// Message hooks
+export const useMessagesByAgent = (agentId, params = {}) => {
+  return useQuery({
+    queryKey: ['messages', 'agent', agentId, params],
+    queryFn: () => messageAPI.getMessagesByAgent(agentId, params),
+    enabled: !!agentId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+export const useMessageById = (messageId) => {
+  return useQuery({
+    queryKey: ['message', messageId],
+    queryFn: () => messageAPI.getMessageById(messageId),
+    enabled: !!messageId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useMessageMutations = () => {
+  const queryClient = useQueryClient();
+
+  const markAsReadMutation = useMutation({
+    mutationFn: messageAPI.markAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
+  });
+
+  const replyToMessageMutation = useMutation({
+    mutationFn: ({ messageId, response }) => messageAPI.replyToMessage(messageId, response),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
+  });
+
+  const archiveMessageMutation = useMutation({
+    mutationFn: messageAPI.archiveMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
+  });
+
+  const deleteMessageMutation = useMutation({
+    mutationFn: messageAPI.deleteMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
+  });
+
+  return {
+    markAsRead: markAsReadMutation.mutate,
+    replyToMessage: replyToMessageMutation.mutate,
+    archiveMessage: archiveMessageMutation.mutate,
+    deleteMessage: deleteMessageMutation.mutate,
+    isMarkingAsRead: markAsReadMutation.isPending,
+    isReplying: replyToMessageMutation.isPending,
+    isArchiving: archiveMessageMutation.isPending,
+    isDeleting: deleteMessageMutation.isPending,
+    markAsReadError: markAsReadMutation.error,
+    replyError: replyToMessageMutation.error,
+    archiveError: archiveMessageMutation.error,
+    deleteError: deleteMessageMutation.error,
+  };
+};
+
+export const useCreateMessage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: messageAPI.createMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
   });
 };

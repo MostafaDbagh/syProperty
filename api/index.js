@@ -12,6 +12,7 @@ const contactRoutes = require('./routes/contact.route')
 const favoriteRoutes = require('./routes/favorite.route');
 const agentRoutes = require('./routes/agent.routes');
 const pointRoutes = require('./routes/point.route');
+const messageRoutes = require('./routes/message.route');
 
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/points', pointRoutes);
+app.use('/api/message', messageRoutes);
 
 
 

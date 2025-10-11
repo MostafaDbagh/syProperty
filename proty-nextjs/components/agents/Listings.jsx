@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import { useListingsByAgent } from "@/apis/hooks";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Listings({ agentId }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -159,10 +160,10 @@ export default function Listings({ agentId }) {
           </div>
         </div>
         <div className="tf-grid-layout md-col-2" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading listings...</span>
-          </div>
-          <p className="mt-3">Loading agent listings...</p>
+          <LocationLoader 
+            size="medium" 
+            message="Loading agent's properties..."
+          />
         </div>
       </div>
     );

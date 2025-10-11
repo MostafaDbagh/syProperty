@@ -7,6 +7,7 @@ import LayoutHandler from "./LayoutHandler";
 import FilterModal from "./FilterModal";
 import { useSearchListings } from "@/apis/hooks";
 import { cleanParams } from "@/utlis/cleanedParams";
+import LocationLoader from "../common/LocationLoader";
 
 export default function Properties1({ defaultGrid = false }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -313,12 +314,13 @@ export default function Properties1({ defaultGrid = false }) {
                           display: 'flex', 
                           justifyContent: 'center', 
                           alignItems: 'center', 
-                          minHeight: '200px',
+                          minHeight: '300px',
                           gridColumn: '1 / -1'
                         }}>
-                          <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
+                          <LocationLoader 
+                            size="large" 
+                            message="Finding amazing properties for you..."
+                          />
                         </div>
                       ) : isError ? (
                         <div className="error-container" style={{ 
@@ -347,12 +349,13 @@ export default function Properties1({ defaultGrid = false }) {
                           display: 'flex', 
                           justifyContent: 'center', 
                           alignItems: 'center', 
-                          minHeight: '200px',
+                          minHeight: '300px',
                           gridColumn: '1 / -1'
                         }}>
-                          <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
+                          <LocationLoader 
+                            size="large" 
+                            message="Finding amazing properties for you..."
+                          />
                         </div>
                       ) : isError ? (
                         <div className="error-container" style={{ 
