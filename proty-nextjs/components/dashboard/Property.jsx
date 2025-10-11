@@ -154,11 +154,52 @@ export default function Property() {
   };
 
   // Fetch listings for the logged-in user
-  const { data: listings = [], isLoading, isError, refetch } = useQuery({
+  const { data: listingsResponse, isLoading, isError, refetch } = useQuery({
     queryKey: ['my-listings', user?._id],
-    queryFn: () => listingAPI.getListingsByAgent(user._id),
+    queryFn: () => {
+      console.log('Property.jsx - Fetching listings for user:', user?._id);
+      return listingAPI.getListingsByAgent(user._id);
+    },
     enabled: !!user?._id, // Only fetch if user ID exists
   });
+
+  // Extract listings array from the API response
+  // Handle different response structures
+  let listings = [];
+  
+  // Debug: Log the response structure
+  if (listingsResponse) {
+    console.log('Property.jsx - listingsResponse structure:', {
+      type: typeof listingsResponse,
+      isArray: Array.isArray(listingsResponse),
+      hasData: !!listingsResponse.data,
+      dataIsArray: Array.isArray(listingsResponse.data),
+      keys: Object.keys(listingsResponse),
+      response: listingsResponse
+    });
+  }
+  
+  // Debug: Log any errors
+  if (isError) {
+    console.error('Property.jsx - Error fetching listings:', isError);
+  }
+  
+  if (Array.isArray(listingsResponse)) {
+    // If response is directly an array (old format)
+    listings = listingsResponse;
+  } else if (listingsResponse?.data && Array.isArray(listingsResponse.data)) {
+    // If response has data property with array (new format)
+    listings = listingsResponse.data;
+  } else if (listingsResponse && Array.isArray(listingsResponse)) {
+    // Fallback for direct array
+    listings = listingsResponse;
+  }
+  
+  // Ensure listings is always an array
+  if (!Array.isArray(listings)) {
+    console.warn('Property.jsx - Listings is not an array:', listings);
+    listings = [];
+  }
 
   // Filter listings based on search, status, and approval
   const filteredListings = listings.filter((listing) => {

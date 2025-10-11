@@ -21,6 +21,7 @@ const filterListings = async (req, res, next) => {
       propertyType,
       propertyId,
       agentId,
+      sort,
     } = req.query;
 
     const filters = {};
@@ -69,8 +70,32 @@ const filterListings = async (req, res, next) => {
       filters.amenities = { $all: amenitiesArray };
     }
 
-    // Store filters in request object for the controller to use
+    // Handle sorting
+    let sortOptions = { createdAt: -1 }; // Default: newest first
+    if (sort) {
+      console.log('Sort parameter received:', sort);
+      switch (sort.toLowerCase()) {
+        case 'newest':
+          sortOptions = { createdAt: -1 };
+          break;
+        case 'oldest':
+          sortOptions = { createdAt: 1 };
+          break;
+        case 'price_asc':
+          sortOptions = { propertyPrice: 1 };
+          break;
+        case 'price_desc':
+          sortOptions = { propertyPrice: -1 };
+          break;
+        default:
+          sortOptions = { createdAt: -1 };
+      }
+      console.log('Sort options applied:', sortOptions);
+    }
+
+    // Store filters and sort options in request object for the controller to use
     req.filter = filters;
+    req.sortOptions = sortOptions;
     next();
   } catch (err) {
     console.error(err);

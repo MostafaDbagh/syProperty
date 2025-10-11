@@ -114,19 +114,30 @@ export default function Listings({ agentId }) {
 
   // Function to get image source
   const getImageSource = (property) => {
-    if (property.images && property.images.length > 0) {
+    // Check if property exists
+    if (!property) {
+      return "/images/section/box-house-1.jpg";
+    }
+
+    // Check images array first
+    if (property.images && Array.isArray(property.images) && property.images.length > 0) {
       const firstImage = property.images[0];
-      if (typeof firstImage === 'string') {
+      if (typeof firstImage === 'string' && firstImage.trim() !== '') {
         return firstImage;
-      } else if (firstImage && firstImage.url) {
+      } else if (firstImage && typeof firstImage === 'object' && firstImage.url && firstImage.url.trim() !== '') {
         return firstImage.url;
       }
     }
     
-    if (property.imageNames && property.imageNames.length > 0) {
-      return property.imageNames[0];
+    // Check imageNames array as fallback
+    if (property.imageNames && Array.isArray(property.imageNames) && property.imageNames.length > 0) {
+      const firstImageName = property.imageNames[0];
+      if (typeof firstImageName === 'string' && firstImageName.trim() !== '') {
+        return firstImageName;
+      }
     }
     
+    // Always return a valid default image
     return "/images/section/box-house-1.jpg";
   };
 
@@ -222,7 +233,7 @@ export default function Listings({ agentId }) {
                         alt={property.propertyKeyword || property.propertyTitle || 'Property'}
                         width={600}
                         height={401}
-                        src={getImageSource(property)}
+                        src={getImageSource(property) || "/images/section/box-house-1.jpg"}
                         style={{ 
                           width: '100%', 
                           height: '100%', 

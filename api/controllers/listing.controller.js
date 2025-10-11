@@ -191,6 +191,7 @@ const getListingImages = async (req, res, next) => {
 const getFilteredListings = async (req, res) => {
   try {
     const filter = req.filter || {};
+    const sortOptions = req.sortOptions || { createdAt: -1 };
     
     // Add filter to exclude deleted listings
     filter.isDeleted = { $ne: true };
@@ -202,7 +203,7 @@ const getFilteredListings = async (req, res) => {
     const listings = await Listing.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 }); // Sort by newest first
+      .sort(sortOptions); // Use dynamic sort options
 
     const total = await Listing.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);

@@ -23,7 +23,8 @@ export default function Properties1({ defaultGrid = false }) {
     amenities: [],
     propertyType: "",
     furnished: "",
-    propertyId: ""
+    propertyId: "",
+    sort: "newest"
   });
 
   // Prepare API params with pagination
@@ -290,7 +291,12 @@ export default function Properties1({ defaultGrid = false }) {
 
                   <DropdownSelect
                     addtionalParentClass="select-filter list-sort"
-                    options={["Sort by (Default)", "Newest", "Oldest"]}
+                    options={["Newest", "Oldest"]}
+                    value={searchParams.sort === "newest" ? "Newest" : "Oldest"}
+                    onChange={(value) => {
+                      const sortValue = value === "Newest" ? "newest" : "oldest";
+                      handleSearchChange({ sort: sortValue });
+                    }}
                   />
                 </div>
               </div>

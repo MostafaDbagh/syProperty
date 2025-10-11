@@ -1,10 +1,34 @@
 "use client";
 import Slider from "rc-slider";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import DropdownSelect from "../common/DropdownSelect";
 
 export default function FilterModal({ onSearchChange, searchParams = {} }) {
   const [priceRange, setPriceRange] = useState([100, 700]);
   const [sizeRange, setSizeRange] = useState([200, 820]);
+  
+  // Initialize ranges from search parameters
+  useEffect(() => {
+    if (searchParams.priceMin !== undefined || searchParams.priceMax !== undefined) {
+      setPriceRange([
+        searchParams.priceMin || 100,
+        searchParams.priceMax || 700
+      ]);
+    }
+    if (searchParams.sizeMin !== undefined || searchParams.sizeMax !== undefined) {
+      setSizeRange([
+        searchParams.sizeMin || 200,
+        searchParams.sizeMax || 820
+      ]);
+    }
+  }, [searchParams.priceMin, searchParams.priceMax, searchParams.sizeMin, searchParams.sizeMax]);
+  
+  const handleChange = (key, value) => {
+    if (onSearchChange) {
+      onSearchChange({ [key]: value });
+    }
+  };
+  
   return (
     <div className="modal modal-filter fade" id="modalFilter">
       <div className="modal-dialog modal-dialog-centered">
@@ -16,6 +40,32 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 className="close-modal icon-close"
                 data-bs-dismiss="modal"
               />
+            </div>
+            
+            {/* Property ID Input Field */}
+            <div className="group-input mb-30">
+              <div className="box-input">
+                <label className="mb-2" htmlFor="propertyId">
+                  Property ID
+                </label>
+                <input
+                  type="text"
+                  id="propertyId"
+                  className="form-control"
+                  placeholder="Enter Property ID"
+                  value={searchParams.propertyId || ""}
+                  onChange={(e) => handleChange("propertyId", e.target.value)}
+                  style={{
+                    width: '100%',
+                    height: '56px',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid #e0e0e0',
+                    padding: '0 16px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
             </div>
             <div className="group-price">
               <div className="widget-price">
@@ -38,7 +88,11 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                   max={1000}
                   min={0}
                   value={priceRange}
-                  onChange={setPriceRange}
+                  onChange={(value) => {
+                    setPriceRange(value);
+                    handleChange("priceMin", value[0]);
+                    handleChange("priceMax", value[1]);
+                  }}
                 />
               </div>
               <div className="widget-price">
@@ -60,238 +114,105 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                   max={1000}
                   min={0}
                   value={sizeRange}
-                  onChange={setSizeRange}
+                  onChange={(value) => {
+                    setSizeRange(value);
+                    handleChange("sizeMin", value[0]);
+                    handleChange("sizeMax", value[1]);
+                  }}
                 />
               </div>
             </div>
             <div className="group-select">
               <div className="box-select">
-                <div className="nice-select" tabIndex={0}>
-                  <span className="current">Province / States</span>
-                  <ul className="list">
-                    <li data-value={1} className="option">
-                      California
-                    </li>
-                    <li data-value={2} className="option selected">
-                      Texas
-                    </li>
-                    <li data-value={3} className="option">
-                      Florida
-                    </li>
-                    <li data-value={4} className="option">
-                      New York
-                    </li>
-                    <li data-value={5} className="option">
-                      Illinois
-                    </li>
-                    <li data-value={6} className="option">
-                      Washington
-                    </li>
-                    <li data-value={7} className="option">
-                      Pennsylvania
-                    </li>
-                    <li data-value={8} className="option">
-                      Ohio
-                    </li>
-                    <li data-value={9} className="option">
-                      Georgia
-                    </li>
-                    <li data-value={10} className="option">
-                      North Carolina
-                    </li>
-                  </ul>
-                </div>
+                <label className="mb-2" htmlFor="stateSelect">
+                  Province / States
+                </label>
+                <DropdownSelect
+                  id="stateSelect"
+                  options={["Any", "California", "Texas", "Florida", "New York", "Illinois", "Washington", "Pennsylvania", "Ohio", "Georgia", "North Carolina"]}
+                  addtionalParentClass=""
+                  value={searchParams.state || "Any"}
+                  onChange={(value) => handleChange("state", value === "Any" ? "" : value)}
+                />
               </div>
+              
               <div className="box-select">
-                <div className="nice-select" tabIndex={0}>
-                  <span className="current">Rooms</span>
-                  <ul className="list">
-                    <li data-value={1} className="option">
-                      1
-                    </li>
-                    <li data-value={2} className="option selected">
-                      2
-                    </li>
-                    <li data-value={3} className="option">
-                      3
-                    </li>
-                    <li data-value={4} className="option">
-                      4
-                    </li>
-                    <li data-value={5} className="option">
-                      5
-                    </li>
-                    <li data-value={6} className="option">
-                      6
-                    </li>
-                    <li data-value={7} className="option">
-                      7
-                    </li>
-                    <li data-value={8} className="option">
-                      8
-                    </li>
-                    <li data-value={9} className="option">
-                      9
-                    </li>
-                    <li data-value={10} className="option">
-                      10
-                    </li>
-                  </ul>
-                </div>
+                <label className="mb-2" htmlFor="propertyTypeSelect">
+                  Property Type
+                </label>
+                <DropdownSelect
+                  id="propertyTypeSelect"
+                  options={["Any", "Holiday Homes", "Apartment", "House", "Villa", "Commercial", "Land"]}
+                  addtionalParentClass=""
+                  value={searchParams.propertyType || "Any"}
+                  onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
+                />
               </div>
+              
               <div className="box-select">
-                <div className="nice-select" tabIndex={0}>
-                  <span className="current">Bath: Any</span>
-                  <ul className="list">
-                    <li data-value={1} className="option">
-                      1
-                    </li>
-                    <li data-value={2} className="option selected">
-                      2
-                    </li>
-                    <li data-value={3} className="option">
-                      3
-                    </li>
-                    <li data-value={4} className="option">
-                      4
-                    </li>
-                  </ul>
-                </div>
+                <label className="mb-2" htmlFor="bathsSelect">
+                  Baths
+                </label>
+                <DropdownSelect
+                  id="bathsSelect"
+                  options={["Any", "1", "2", "3", "4", "5", "6"]}
+                  addtionalParentClass=""
+                  value={searchParams.bathrooms || "Any"}
+                  onChange={(value) => handleChange("bathrooms", value === "Any" ? "" : value)}
+                />
               </div>
+              
               <div className="box-select">
-                <div className="nice-select" tabIndex={0}>
-                  <span className="current">Beds: Any</span>
-                  <ul className="list">
-                    <li data-value={1} className="option">
-                      1
-                    </li>
-                    <li data-value={2} className="option selected">
-                      2
-                    </li>
-                    <li data-value={3} className="option">
-                      3
-                    </li>
-                    <li data-value={4} className="option">
-                      4
-                    </li>
-                    <li data-value={5} className="option">
-                      5
-                    </li>
-                    <li data-value={6} className="option">
-                      6
-                    </li>
-                  </ul>
-                </div>
+                <label className="mb-2" htmlFor="bedsSelect">
+                  Beds
+                </label>
+                <DropdownSelect
+                  id="bedsSelect"
+                  options={["Any", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+                  addtionalParentClass=""
+                  value={searchParams.bedrooms || "Any"}
+                  onChange={(value) => handleChange("bedrooms", value === "Any" ? "" : value)}
+                />
               </div>
             </div>
             <div className="group-checkbox">
               <div className="title text-4 fw-6">Amenities:</div>
               <div className="group-amenities">
-                <fieldset className="checkbox-item style-1">
-                  <label>
-                    <span className="text-4">Bed linens</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4"> Carbon alarm</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Check-in lockbox </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Coffee maker </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4"> Fireplace</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Extra pillows </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">First aid kit </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1">
-                  <label>
-                    <span className="text-4">Hangers </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Iron</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4"> Microwave</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Fireplace</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1">
-                  <label>
-                    <span className="text-4"> Refrigerator</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Security cameras </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4"> Smoke alarm</span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
-                <fieldset className="checkbox-item style-1 mt-12">
-                  <label>
-                    <span className="text-4">Fireplace </span>
-                    <input type="checkbox" />
-                    <span className="btn-checkbox" />
-                  </label>
-                </fieldset>
+                {[
+                  "Bed linens",
+                  "Carbon alarm", 
+                  "Check-in lockbox",
+                  "Coffee maker",
+                  "Fireplace",
+                  "Extra pillows",
+                  "First aid kit",
+                  "Hangers",
+                  "Iron",
+                  "Microwave",
+                  "Refrigerator",
+                  "Security cameras",
+                  "Smoke alarm"
+                ].map((amenity, index) => (
+                  <fieldset key={amenity} className={`checkbox-item style-1 ${index > 0 ? 'mt-12' : ''}`}>
+                    <label>
+                      <span className="text-4">{amenity}</span>
+                      <input 
+                        type="checkbox" 
+                        checked={searchParams.amenities?.includes(amenity) || false}
+                        onChange={(e) => {
+                          const newAmenities = new Set(searchParams.amenities || []);
+                          if (e.target.checked) {
+                            newAmenities.add(amenity);
+                          } else {
+                            newAmenities.delete(amenity);
+                          }
+                          handleChange("amenities", Array.from(newAmenities));
+                        }}
+                      />
+                      <span className="btn-checkbox" />
+                    </label>
+                  </fieldset>
+                ))}
               </div>
             </div>
           </div>

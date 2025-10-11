@@ -192,11 +192,19 @@ const containerStyle = {
 };
 export default function MapComponent({ zoom = 16 }) {
   const [getLocation, setLocation] = useState(null);
+  const [mapError, setMapError] = useState(false);
 
-  const { isLoaded } = useLoadScript({
+  const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyAAz77U5XQuEME6TpftaMdX0bBelQxXRlM",
   });
+  
   const center = useMemo(() => ({ lat: 40.709295, lng: -74.003099 }), []);
+
+  // Handle Google Maps loading errors (like billing not enabled)
+  if (loadError) {
+    console.warn('Google Maps failed to load:', loadError);
+    setMapError(true);
+  }
 
   // add long & lat
   const locationHandler = (location) => {
@@ -225,10 +233,50 @@ export default function MapComponent({ zoom = 16 }) {
       </div>
     );
   };
+  // Show fallback if Google Maps fails to load
+  if (mapError || loadError) {
+    return (
+      <div style={{ 
+        width: "100%", 
+        height: "400px", 
+        backgroundColor: "#f8f9fa", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        border: "1px solid #dee2e6",
+        borderRadius: "8px"
+      }}>
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px" }}>🗺️</div>
+          <h4 style={{ color: "#6c757d", marginBottom: "8px" }}>Map Unavailable</h4>
+          <p style={{ color: "#6c757d", margin: 0 }}>
+            Google Maps is currently unavailable. Please check back later.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {!isLoaded ? (
-        <p>Loading...</p>
+        <div style={{ 
+          width: "100%", 
+          height: "400px", 
+          backgroundColor: "#f8f9fa", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center",
+          border: "1px solid #dee2e6",
+          borderRadius: "8px"
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading map...</span>
+            </div>
+            <p style={{ marginTop: "16px", color: "#6c757d" }}>Loading map...</p>
+          </div>
+        </div>
       ) : (
         <GoogleMap
           mapContainerStyle={containerStyle}

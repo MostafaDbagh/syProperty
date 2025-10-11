@@ -80,6 +80,15 @@ export default function PropertyListItems({ listings = [] }) {
               />
             </Link>
             <ul className="box-tag flex gap-8">
+              {property.propertyType === 'Holiday Homes' && (
+                <li className="flat-tag text-4 fw-6 text_white" style={{
+                  background: 'linear-gradient(135deg, #FF6B6B, #FF8E8E)',
+                  border: '2px solid #FF4757',
+                  boxShadow: '0 4px 15px rgba(255, 107, 107, 0.3)'
+                }}>
+                  🏖️ Holiday Home
+                </li>
+              )}
               {property.offer && (
                 <li className="flat-tag text-4 bg-main fw-6 text_white">
                   Special Offer
