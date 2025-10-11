@@ -1,0 +1,61 @@
+import axios from 'axios'
+
+export const Axios = axios.create({
+  baseURL: 'http://localhost:5500/api', 
+  timeout: 10000, // Request timeout in milliseconds
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+// Request interceptor to add auth token
+Axios.interceptors.request.use(
+  (config) => {
+    // Get token from localStorage or cookies
+    const token = localStorage.getItem('token') || 
+                  document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('token='))
+                    ?.split('=')[1];
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle auth errors
+Axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Only redirect to login for specific authentication endpoints
+    // Don't redirect for listing operations to avoid disrupting user workflow
+    if (error.response?.status === 401) {
+      const url = error.config?.url || '';
+      
+      // Only redirect to login for auth-related endpoints
+      if (url.includes('/auth/') || url.includes('/login') || url.includes('/register')) {
+        // Clear token and redirect to login
+        localStorage.removeItem('token');
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        
+        // Redirect to login page
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+export default Axios;
+
