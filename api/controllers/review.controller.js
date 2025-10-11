@@ -148,29 +148,95 @@ const getReviewsByProperty = async (req, res) => {
       const { agentId } = req.params;
   
       if (!agentId) {
-        return res.status(400).json({ message: 'agentId is required' });
+        return res.status(400).json({ 
+          success: false,
+          message: 'agentId is required' 
+        });
       }
+
+      // Get pagination parameters from query
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
   
       // Step 1: Find all properties for this agent
       const properties = await Listing.find({ 
         $or: [
           { agent: agentId },
           { agentId: agentId }
-        ]
-      }).select('_id');
-      const propertyIds = properties.map(p => p._id);
+        ],
+        isDeleted: { $ne: true }
+      }).select('_id propertyKeyword');
+      
+      const propertyIds = properties.map(p => p._id.toString());
   
       if (propertyIds.length === 0) {
-        return res.status(200).json([]); // No properties means no reviews
+        return res.status(200).json({
+          success: true,
+          data: [],
+          stats: {
+            totalReviews: 0,
+            averageRating: 0,
+            totalProperties: 0
+          },
+          pagination: {
+            currentPage: page,
+            totalPages: 0,
+            totalReviews: 0,
+            limit
+          }
+        });
       }
   
-      // Step 2: Find all reviews for those properties
-      const reviews = await Review.find({ propertyId: { $in: propertyIds } }).sort({ createdAt: -1 });
+      // Step 2: Get total count for pagination
+      const totalReviews = await Review.countDocuments({ 
+        propertyId: { $in: propertyIds } 
+      });
+      const totalPages = Math.ceil(totalReviews / limit);
+
+      // Step 3: Find all reviews for those properties with pagination
+      const reviews = await Review.find({ 
+        propertyId: { $in: propertyIds } 
+      })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('userId', 'username email avatar')
+        .populate('propertyId', 'propertyKeyword address propertyPrice images');
+
+      // Step 4: Calculate statistics
+      const allReviews = await Review.find({ 
+        propertyId: { $in: propertyIds } 
+      });
+      
+      const averageRating = allReviews.length > 0
+        ? allReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / allReviews.length
+        : 0;
   
-      res.status(200).json(reviews);
+      res.status(200).json({
+        success: true,
+        data: reviews,
+        stats: {
+          totalReviews: allReviews.length,
+          averageRating: Math.round(averageRating * 10) / 10,
+          totalProperties: properties.length
+        },
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalReviews,
+          limit,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1
+        }
+      });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Error in getReviewsByAgent:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Server error',
+        error: error.message 
+      });
     }
   };
 

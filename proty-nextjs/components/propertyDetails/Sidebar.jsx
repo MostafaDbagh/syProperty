@@ -2,34 +2,56 @@
 import React from "react";
 import Image from "next/image";
 
-export default function Sidebar() {
+export default function Sidebar({ property }) {
+  // Extract agent contact information from property
+  const agentEmail = property?.agentEmail || property?.agent || "contact@property.com";
+  const agentNumber = property?.agentNumber || "Not provided";
+  const agentWhatsapp = property?.agentWhatsapp || property?.agentNumber;
+  const agentName = property?.agentId?.username || "Property Agent";
+
   return (
     <div className="tf-sidebar sticky-sidebar">
       <form
         className="form-contact-seller mb-30"
         onSubmit={(e) => e.preventDefault()}
       >
-        <h4 className="heading-title mb-30">Contact Sellers</h4>
+        <h4 className="heading-title mb-30">Contact Agent</h4>
         <div className="seller-info">
           <div className="avartar">
             <Image
-              alt=""
+              alt={agentName}
               src="/images/avatar/seller.jpg"
               width={200}
               height={200}
             />
           </div>
           <div className="content">
-            <h6 className="name">Shara Conner</h6>
+            <h6 className="name">{agentName}</h6>
             <ul className="contact">
-              <li>
-                <i className="icon-phone-1" />
-                <span>1-333-345-6868</span>
-              </li>
-              <li>
-                <i className="icon-mail" />
-                <a href="#">themesflat@gmail.com</a>
-              </li>
+              {agentNumber && agentNumber !== "Not provided" && (
+                <li>
+                  <i className="icon-phone-1" />
+                  <span>{agentNumber}</span>
+                </li>
+              )}
+              {agentEmail && (
+                <li>
+                  <i className="icon-mail" />
+                  <a href={`mailto:${agentEmail}`}>{agentEmail}</a>
+                </li>
+              )}
+              {agentWhatsapp && agentWhatsapp !== "Not provided" && (
+                <li>
+                  <i className="icon-whatsapp" />
+                  <a 
+                    href={`https://wa.me/${agentWhatsapp.replace(/[^0-9]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

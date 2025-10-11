@@ -2,6 +2,14 @@ import Image from "next/image";
 import React from "react";
 
 export default function Reviews() {
+  // Toggle this to show/hide reviews section
+  const showReviews = false; // Set to true when you want to show reviews
+
+  // Return null to hide the entire section
+  if (!showReviews) {
+    return null;
+  }
+
   return (
     <section className="section-review tf-spacing-1">
       <div className="tf-container">

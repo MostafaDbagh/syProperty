@@ -13,6 +13,7 @@ export default function Property() {
   const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState('All');
   const [approvalFilter, setApprovalFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -163,10 +164,34 @@ export default function Property() {
   const filteredListings = listings.filter((listing) => {
     const matchesSearch = listing.propertyKeyword?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           listing.address?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || statusFilter === 'Select';
+    
+    // Fix Property Type filter logic
+    const matchesStatus = statusFilter === 'All' || 
+                         (statusFilter === 'For Sale' && listing.status === 'sale') ||
+                         (statusFilter === 'For Rent' && listing.status === 'rent');
+    
     const matchesApproval = approvalFilter === 'All' || 
                            listing.approvalStatus === approvalFilter.toLowerCase();
-    return matchesSearch && matchesStatus && matchesApproval;
+    
+    const matchesPropertyType = propertyTypeFilter === 'All' || 
+                               listing.propertyType === propertyTypeFilter;
+    
+    // Debug logging
+    console.log('Filter Debug:', {
+      listingTitle: listing.propertyKeyword,
+      listingStatus: listing.status,
+      listingPropertyType: listing.propertyType,
+      statusFilter,
+      propertyTypeFilter,
+      matchesStatus,
+      matchesPropertyType,
+      approvalFilter,
+      matchesApproval,
+      matchesSearch,
+      finalMatch: matchesSearch && matchesStatus && matchesPropertyType && matchesApproval
+    });
+    
+    return matchesSearch && matchesStatus && matchesPropertyType && matchesApproval;
   });
 
   // Pagination calculations
@@ -178,7 +203,7 @@ export default function Property() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, approvalFilter]);
+  }, [searchTerm, statusFilter, propertyTypeFilter, approvalFilter]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -239,7 +264,7 @@ export default function Property() {
           <span className="body-1">Show Dashboard</span>
         </div>
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-2">
             <form onSubmit={(e) => e.preventDefault()}>
               <fieldset className="box-fieldset">
                 <label>
@@ -255,7 +280,23 @@ export default function Property() {
               </fieldset>
             </form>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
+            <form onSubmit={(e) => e.preventDefault()}>
+              <fieldset className="box-fieldset">
+                <label>
+                  {" "}
+                  Status:<span>*</span>{" "}
+                </label>
+
+                <DropdownSelect
+                  options={["All", "For Sale", "For Rent"]}
+                  addtionalParentClass=""
+                  onChange={(value) => setStatusFilter(value)}
+                />
+              </fieldset>
+            </form>
+          </div>
+          <div className="col-md-2">
             <form onSubmit={(e) => e.preventDefault()}>
               <fieldset className="box-fieldset">
                 <label>
@@ -264,9 +305,9 @@ export default function Property() {
                 </label>
 
                 <DropdownSelect
-                  options={["All", "For Sale", "For Rent"]}
+                  options={["All", "Apartment", "Villa", "Studio", "Office", "Townhouse", "Commercial", "Land"]}
                   addtionalParentClass=""
-                  onChange={(value) => setStatusFilter(value)}
+                  onChange={(value) => setPropertyTypeFilter(value)}
                 />
               </fieldset>
             </form>

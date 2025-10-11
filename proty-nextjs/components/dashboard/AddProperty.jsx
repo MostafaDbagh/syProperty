@@ -12,11 +12,11 @@ export default function AddProperty() {
   const [toast, setToast] = useState(null);
   
   const [formData, setFormData] = useState({
-    propertyType: "",
+    propertyType: "Apartment",
     propertyKeyword: "",
     propertyDesc: "",
     propertyPrice: "",
-    status: "",
+    status: "rent",
     rentType: "monthly",
     bedrooms: "",
     bathrooms: "",
@@ -27,9 +27,9 @@ export default function AddProperty() {
     garageSize: "",
     yearBuilt: "",
     address: "",
-    country: "",
-    state: "",
-    neighborhood: "",
+    country: "United States",
+    state: "Texas",
+    neighborhood: "Little Italy",
     agent: "",
     agentId: "",
     amenities: [],
@@ -222,6 +222,10 @@ export default function AddProperty() {
         approvalStatus: "pending",
         isSold: false,
         isDeleted: false,
+        // Auto-embed agent contact info from user profile
+        agentEmail: user?.email || "",
+        agentNumber: user?.phone || "",
+        agentWhatsapp: user?.phone || "",
         images: images,
         imageNames: images.map(img => img.name)
       };
@@ -237,13 +241,13 @@ export default function AddProperty() {
         message: "Property created successfully! Redirecting to properties..." 
       });
       
-      // Reset form
+      // Reset form with default values
       setFormData({
-        propertyType: "",
+        propertyType: "Apartment",
         propertyKeyword: "",
         propertyDesc: "",
         propertyPrice: "",
-        status: "",
+        status: "rent",
         rentType: "monthly",
         bedrooms: "",
         bathrooms: "",
@@ -254,9 +258,9 @@ export default function AddProperty() {
         garageSize: "",
         yearBuilt: "",
         address: "",
-        country: "",
-        state: "",
-        neighborhood: "",
+        country: "United States",
+        state: "Texas",
+        neighborhood: "Little Italy",
         agent: user?.email || "",
         agentId: user?._id || "",
         amenities: [],

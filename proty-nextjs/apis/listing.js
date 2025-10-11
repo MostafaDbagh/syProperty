@@ -107,11 +107,12 @@ export const listingAPI = {
     }
   },
 
-  // Get listings by agent
-  getListingsByAgent: async (agentId) => {
+  // Get listings by agent with pagination and filtering
+  getListingsByAgent: async (agentId, params = {}) => {
     try {
       const token = localStorage.getItem('token');
       const response = await Axios.get(`/listing/agent/${agentId}`, {
+        params,
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

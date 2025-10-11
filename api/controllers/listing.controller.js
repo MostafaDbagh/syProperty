@@ -254,18 +254,49 @@ const getListingsByAgent = async (req, res, next) => {
       return next(errorHandler(400, 'Agent ID is required'));
     }
 
-    // Support both legacy 'agent' field and new 'agentId' field
-    const listings = await Listing.find({ 
+    // Get pagination and filter parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6; // Default to 6 items per page
+    const skip = (page - 1) * limit;
+    const status = req.query.status; // 'rent' or 'sale' filter
+
+    // Build filter object
+    let filter = { 
       $or: [
         { agent: agentId }, // Legacy field (string)
         { agentId: agentId } // New field (ObjectId)
       ],
       isDeleted: { $ne: true } // Exclude deleted listings
-    })
+    };
+
+    // Add status filter if provided
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+
+    // Get listings with pagination
+    const listings = await Listing.find(filter)
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate('agentId', 'username email avatar'); // Populate agent details if available
 
-    res.status(200).json(listings);
+    // Get total count for pagination
+    const total = await Listing.countDocuments(filter);
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      success: true,
+      data: listings,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalListings: total,
+        limit,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
+    });
   } catch (error) {
     next(error);
   }

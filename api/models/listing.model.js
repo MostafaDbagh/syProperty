@@ -34,6 +34,9 @@ const listingSchema = new mongoose.Schema(
 
     agent: { type: String, required: true }, // Legacy field - keep for backward compatibility
     agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // New field for proper reference
+    agentEmail: { type: String, required: false },
+    agentNumber: { type: String, required: false },
+    agentWhatsapp: { type: String, required: false },
     approvalStatus: { 
       type: String, 
       enum: ['pending', 'approved', 'rejected', 'closed'], 

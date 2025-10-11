@@ -10,5 +10,7 @@ router.post('/send-otp', AuthController.sendOTP);
 router.post('/verify-otp', AuthController.verifyOTP);
 router.post('/reset-password', AuthController.resetPassword);
 router.put('/make-agent/:userId', AuthController.makeAgent);
+router.get('/agents', AuthController.getAgents);
+router.get('/agents/:id', AuthController.getAgentById);
 
 module.exports = router;

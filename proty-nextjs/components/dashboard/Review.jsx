@@ -1,21 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { useQuery } from '@tanstack/react-query';
-import { reviewAPI } from "@/apis/review";
+import { useReviewsByAgent } from "@/apis/hooks";
 
 export default function Review() {
+  const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Fetch reviews with pagination
-  const { data: reviewsData, isLoading, isError } = useQuery({
-    queryKey: ['reviews', currentPage],
-    queryFn: () => reviewAPI.getReviews({ page: currentPage, limit: itemsPerPage }),
-    keepPreviousData: true
-  });
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+    }
+  }, []);
+
+  // Fetch agent's property reviews with pagination
+  const { data: reviewsData, isLoading, isError } = useReviewsByAgent(
+    user?._id,
+    { page: currentPage, limit: itemsPerPage }
+  );
 
   const reviews = reviewsData?.data || [];
+  const stats = reviewsData?.stats || { totalReviews: 0, averageRating: 0, totalProperties: 0 };
   const pagination = reviewsData?.pagination || {};
 
   // Format date helper
@@ -97,9 +105,46 @@ export default function Review() {
         <div className="button-show-hide show-mb">
           <span className="body-1">Show Dashboard</span>
         </div>
+
+        {/* Statistics Cards */}
+        {!isLoading && stats.totalReviews > 0 && (
+          <div className="row mb-4">
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
+                <div className="card-body text-center p-4">
+                  <h3 className="mb-2" style={{ color: '#ff6b35', fontSize: '32px', fontWeight: '700' }}>
+                    {stats.totalReviews}
+                  </h3>
+                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Total Reviews</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
+                <div className="card-body text-center p-4">
+                  <h3 className="mb-2" style={{ color: '#FFB800', fontSize: '32px', fontWeight: '700' }}>
+                    {stats.averageRating.toFixed(1)} <i className="icon-star" style={{ fontSize: '24px' }} />
+                  </h3>
+                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Average Rating</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
+                <div className="card-body text-center p-4">
+                  <h3 className="mb-2" style={{ color: '#28a745', fontSize: '32px', fontWeight: '700' }}>
+                    {stats.totalProperties}
+                  </h3>
+                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Properties with Reviews</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="widget-box-2 mess-box">
           <h3 className="title">
-            Recent Reviews 
+            My Property Reviews
             {pagination.totalReviews > 0 && (
               <span style={{ fontSize: '14px', fontWeight: 'normal', marginLeft: '10px', color: '#666' }}>
                 ({pagination.totalReviews} total reviews)

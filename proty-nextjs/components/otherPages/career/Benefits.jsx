@@ -2,6 +2,14 @@ import Image from "next/image";
 import React from "react";
 
 export default function Benefits() {
+  // Toggle this to show/hide benefits section
+  const showBenefits = false; // Set to true when you want to show benefits
+
+  // Return null to hide the entire section
+  if (!showBenefits) {
+    return null;
+  }
+
   return (
     <section className="section-benefits">
       <div className="tf-container">

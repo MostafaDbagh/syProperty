@@ -1,64 +1,130 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Listings from "./Listings";
 import Link from "next/link";
 import Image from "next/image";
 import { properties4 } from "@/data/properties";
+import { useAgent } from "@/apis/hooks";
 
-export default function AgentDetails({ agent }) {
+export default function AgentDetails({ agentId }) {
+  const [showMoreDetails, setShowMoreDetails] = useState(false);
+  
+  // Fetch agent data from API
+  const { data: agentData, isLoading, isError, error } = useAgent(agentId);
+  const agent = agentData?.data;
+
+  if (isLoading) {
+    return (
+      <section className="section-agents-details tf-spacing-4">
+        <div className="tf-container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading agent details...</span>
+              </div>
+              <p className="mt-3">Loading agent details...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !agent) {
+    return (
+      <section className="section-agents-details tf-spacing-4">
+        <div className="tf-container">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <div className="alert alert-danger">
+                <h4>Agent Not Found</h4>
+                <p>{error?.message || "The requested agent could not be found."}</p>
+                <Link href="/agents" className="btn btn-primary">
+                  Back to Agents
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="section-agents-details tf-spacing-4">
       <div className="tf-container">
         <div className="row">
           <div className="col-lg-8">
-            <div className="agent-details hover-img effec-overlay mb-48">
-              <div className="image-wrap">
-                <Link href={`/agents-details/1`}>
+              <div className="agent-details hover-img effec-overlay" style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-start', marginBottom: '132px' }}>
+              <div className="image-wrap" style={{ flex: '0 0 auto', width: '400px', height: '400px' }}>
+                <Link href={`/agents-details/${agent._id}`}>
                   <Image
                     className="lazyload"
-                    data-src="/images/section/agent-details.jpg"
-                    alt=""
-                    width={522}
-                    height={701}
-                    src="/images/section/agent-details.jpg"
+                    alt={agent.fullName || "Agent"}
+                    width={400}
+                    height={400}
+                    src={agent.avatar || "/images/section/agent-details.jpg"}
+                    style={{ 
+                      objectFit: 'cover',
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '12px'
+                    }}
                   />
                 </Link>
                 <ul className="tf-social style-3">
                   <li>
-                    <a href="#">
+                    <a 
+                      href={agent.facebook || "#"} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      title={agent.facebook ? "Facebook" : "Facebook (Coming Soon)"}
+                    >
                       <i className="icon-fb" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a 
+                      href={agent.twitter || "#"} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      title={agent.twitter ? "Twitter" : "Twitter (Coming Soon)"}
+                    >
                       <i className="icon-X" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a 
+                      href={agent.linkedin || "#"} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      title={agent.linkedin ? "LinkedIn" : "LinkedIn (Coming Soon)"}
+                    >
                       <i className="icon-linked" />
                     </a>
                   </li>
                   <li>
-                    <a href="#">
+                    <a href="#" title="Instagram (Coming Soon)">
                       <i className="icon-ins" />
                     </a>
                   </li>
                 </ul>
               </div>
-              <div className="content-inner">
+              <div className="content-inner" style={{ flex: '1 1 auto', width: 'auto' }}>
                 <div className="author">
                   <h4 className="name">
-                    <Link href={`/agents-details/1`}>{agent.name}</Link>
+                    <Link href={`/agents-details/${agent._id}`}>
+                      {agent.fullName || "Agent Name"}
+                    </Link>
                   </h4>
                   <p className="font-poppins">
-                    Company Agent at{" "}
+                    {agent.position || agent.job || "Real Estate Agent"} at{" "}
                     <a href="#" className="fw-7">
-                      Themesflat
+                      {agent.companyName || "Proty Real Estate"}
                     </a>
                   </p>
                 </div>
                 <ul className="info">
+                  {agent.phone && (
                   <li>
                     <svg
                       width={16}
@@ -74,8 +140,12 @@ export default function AgentDetails({ agent }) {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="font-mulish fw-7">+7-445-556-8337</span>
+                      <a href={`tel:${agent.phone}`} className="font-mulish fw-7">
+                        {agent.phone}
+                      </a>
                   </li>
+                  )}
+                  {agent.email && (
                   <li>
                     <svg
                       width={16}
@@ -91,8 +161,10 @@ export default function AgentDetails({ agent }) {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <a href="#">themesflat@gmail.com</a>
+                      <a href={`mailto:${agent.email}`}>{agent.email}</a>
                   </li>
+                  )}
+                  {agent.location && (
                   <li>
                     <svg
                       width={16}
@@ -114,26 +186,210 @@ export default function AgentDetails({ agent }) {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    1901 Thornridge Cir. Shiloh, Hawaii 81063
+                      {agent.location}
                   </li>
+                  )}
                 </ul>
                 <div className="content">
-                  <h6 className="title">About Cameron Williamson</h6>
+                  <h6 className="title">About {agent.fullName || "This Agent"}</h6>
                   <p className="text-1">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aliquam risus leo, blandit vitae diam a, vestibulum viverra
-                    nisi. Vestibulum ullamcorper velit eget mattis aliquam.
-                    Proin dapibus luctus pulvinar. Integer et libero ut purus
-                    bibendum
+                    {agent.description || 
+                      "Experienced real estate professional dedicated to helping clients achieve their property goals. With a deep understanding of the local market and a commitment to exceptional service, I'm here to guide you through every step of your real estate journey."
+                    }
                   </p>
-                  <a href="#" className="tf-btn-link">
-                    <span> Read More </span>
+                  
+                  {/* Additional Details Section */}
+                  {showMoreDetails && (
+                    <div className="additional-details" style={{ marginTop: '20px' }}>
+                      {/* Professional Details */}
+                      <div className="details-section" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', marginBottom: '20px' }}>
+                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Professional Details</h6>
+                        
+                        <div className="details-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Company:</strong>
+                            <span style={{ color: '#666' }}>
+                              {agent.companyName || "Proty Real Estate"}
+                            </span>
+                          </div>
+                          
+                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Position:</strong>
+                            <span style={{ color: '#666' }}>
+                              {agent.position || agent.job || "Real Estate Agent"}
+                            </span>
+                          </div>
+                          
+                          {agent.officeNumber && (
+                            <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                              <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Office Phone:</strong>
+                              <span style={{ color: '#666' }}>
+                                {agent.officeNumber}
+                              </span>
+                            </div>
+                          )}
+                          
+                          {agent.officeAddress && (
+                            <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                              <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Office Address:</strong>
+                              <span style={{ color: '#666' }}>
+                                {agent.officeAddress}
+                              </span>
+                            </div>
+                          )}
+                          
+                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Member Since:</strong>
+                            <span style={{ color: '#666' }}>
+                              {new Date(agent.createdAt).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long' 
+                              })}
+                            </span>
+                          </div>
+                          
+                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Specialization:</strong>
+                            <span style={{ color: '#666' }}>
+                              Residential & Commercial Properties
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Services & Expertise */}
+                      <div className="services-section" style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #e9ecef', borderRadius: '8px', marginBottom: '20px' }}>
+                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Services & Expertise</h6>
+                        
+                        <div className="services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏠</div>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Property Sales</strong>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Residential & Commercial</span>
+                          </div>
+                          
+                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔑</div>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Property Rentals</strong>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Long & Short Term</span>
+                          </div>
+                          
+                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>📊</div>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Market Analysis</strong>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Price & Trend Reports</span>
+                          </div>
+                          
+                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🤝</div>
+                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Negotiation</strong>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Expert Deal Making</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Professional Summary */}
+                      <div className="professional-summary" style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #e9ecef', borderRadius: '8px', marginBottom: '20px' }}>
+                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Professional Summary</h6>
+                        <p className="text-1" style={{ color: '#666', lineHeight: '1.6', marginBottom: '15px' }}>
+                          {agent.fullName || "This agent"} brings extensive experience in real estate transactions, 
+                          market analysis, and client relations. With a proven track record of successful property 
+                          sales and satisfied clients, {agent.fullName?.split(' ')[0] || "they"} are committed to 
+                          providing personalized service and expert guidance throughout the buying and selling process.
+                        </p>
+                        
+                        <div className="achievements" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', marginTop: '15px' }}>
+                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
+                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>50+</div>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Properties Sold</span>
+                          </div>
+                          
+                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
+                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>5+</div>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Years Experience</span>
+                          </div>
+                          
+                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
+                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>98%</div>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Client Satisfaction</span>
+                          </div>
+                          
+                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
+                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>24/7</div>
+                            <span style={{ color: '#666', fontSize: '14px' }}>Availability</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Contact Information */}
+                      <div className="contact-info" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Contact Information</h6>
+                        
+                        <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                          <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📧</div>
+                            <div>
+                              <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Email</strong>
+                              <span style={{ color: '#666', fontSize: '14px' }}>{agent.email || 'contact@property.com'}</span>
+                            </div>
+                          </div>
+                          
+                          {agent.phone && (
+                            <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                              <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📞</div>
+                              <div>
+                                <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Phone</strong>
+                                <span style={{ color: '#666', fontSize: '14px' }}>{agent.phone}</span>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {agent.location && (
+                            <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                              <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📍</div>
+                              <div>
+                                <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Location</strong>
+                                <span style={{ color: '#666', fontSize: '14px' }}>{agent.location}</span>
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
+                            <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>⏰</div>
+                            <div>
+                              <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Response Time</strong>
+                              <span style={{ color: '#666', fontSize: '14px' }}>Within 2 hours</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={() => setShowMoreDetails(!showMoreDetails)}
+                    className="tf-btn-link"
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      marginTop: '15px'
+                    }}
+                  >
+                    <span>{showMoreDetails ? 'Show Less' : 'Read More'}</span>
                     <svg
                       width={20}
                       height={20}
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      style={{ 
+                        transform: showMoreDetails ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.3s ease'
+                      }}
                     >
                       <g clipPath="url(#clip0_2450_13860)">
                         <path
@@ -164,35 +420,11 @@ export default function AgentDetails({ agent }) {
                         </clipPath>
                       </defs>
                     </svg>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
-            <Listings />
-            <ul className="wg-pagination">
-              <li className="arrow">
-                <a href="#">
-                  <i className="icon-arrow-left" />
-                </a>
-              </li>
-              <li>
-                <a href="#">1</a>
-              </li>
-              <li className="active">
-                <a href="#">2</a>
-              </li>
-              <li>
-                <a href="#">...</a>
-              </li>
-              <li>
-                <a href="#">20</a>
-              </li>
-              <li className="arrow">
-                <a href="#">
-                  <i className="icon-arrow-right" />
-                </a>
-              </li>
-            </ul>
+            <Listings agentId={agentId} />
           </div>
           <div className="col-lg-4">
             <div className="tf-sidebar">
@@ -243,7 +475,7 @@ export default function AgentDetails({ agent }) {
                   />
                 </fieldset>
                 <div className="wrap-btn">
-                  <a href="#" className="tf-btn bg-color-primary w-full">
+                  <a href={`mailto:${agent.email || 'contact@proty.com'}`} className="tf-btn bg-color-primary w-full">
                     <svg
                       width={20}
                       height={20}
@@ -261,7 +493,8 @@ export default function AgentDetails({ agent }) {
                     </svg>
                     Send message
                   </a>
-                  <a href="#" className="tf-btn style-border pd-24">
+                  {agent.phone && (
+                    <a href={`tel:${agent.phone}`} className="tf-btn style-border pd-24">
                     <svg
                       width={21}
                       height={20}
@@ -279,86 +512,10 @@ export default function AgentDetails({ agent }) {
                     </svg>
                     Call
                   </a>
+                  )}
                 </div>
               </form>
-              <div className="sidebar-item sidebar-featured style-2 pb-36 mb-28">
-                <h4 className="sidebar-title mb-28">Featured Listings</h4>
-                <ul>
-                  {properties4.map((listing, i) => (
-                    <li key={i} className="box-listings style-2 hover-img">
-                      <div className="image-wrap">
-                        <Image
-                          className="lazyload"
-                          data-src={listing.imageSrc}
-                          alt=""
-                          width={224}
-                          height={160}
-                          src={listing.imageSrc}
-                        />
-                      </div>
-                      <div className="content">
-                        <div className="text-1 title fw-5 lh-20">
-                          <Link href={`/property-detail/${listing.id}`}>
-                            {listing.title}
-                          </Link>
-                        </div>
-                        <ul className="meta-list flex">
-                          <li className="text-1 flex">
-                            <span>{listing.beds}</span>Bed
-                          </li>
-                          <li className="text-1 flex">
-                            <span>{listing.baths}</span>Bath
-                          </li>
-                          <li className="text-1 flex">
-                            <span>{listing.sqft}</span>Sqft
-                          </li>
-                        </ul>
-                        <div className="price text-1 lh-20 fw-6">
-                          {listing.price.toLocaleString()}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="sidebar-ads">
-                <div className="image-wrap">
-                  <Image
-                    className="lazyload"
-                    data-src="/images/blog/ads.jpg"
-                    alt=""
-                    width={400}
-                    height={470}
-                    src="/images/blog/ads.jpg"
-                  />
-                </div>
-                <div className="logo relative z-5">
-                  <Image
-                    alt=""
-                    width={272}
-                    height={85}
-                    src="/images/logo/logo-2@2x.png"
-                  />
-                </div>
-                <div className="box-ads relative z-5">
-                  <div className="content">
-                    <h4 className="title">
-                      <a href="#">
-                        We can help you find a local real estate agent
-                      </a>
-                    </h4>
-                    <div className="text-addres">
-                      <p>
-                        Connect with a trusted agent who knows the market inside
-                        out - whether you’re buying or selling.
-                      </p>
-                    </div>
-                  </div>
-                  <a href="#" className="tf-btn fw-6 bg-color-primary w-full">
-                    Connect with an agent
-                  </a>
-                </div>
-              </div>
+        
             </div>
           </div>
         </div>

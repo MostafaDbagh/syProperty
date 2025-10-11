@@ -33,9 +33,9 @@ export const reviewAPI = {
   },
 
   // Get reviews by agent ID
-  getReviewsByAgent: async (agentId) => {
+  getReviewsByAgent: async (agentId, params = {}) => {
     try {
-      const response = await Axios.get(`/review/agent/${agentId}`);
+      const response = await Axios.get(`/review/agent/${agentId}`, { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

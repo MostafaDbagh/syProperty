@@ -32,7 +32,7 @@ export const agentAPI = {
   // Get all agents
   getAgents: async (params = {}) => {
     try {
-      const response = await Axios.get('/agents', { params });
+      const response = await Axios.get('/auth/agents', { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -42,7 +42,7 @@ export const agentAPI = {
   // Get agent by ID
   getAgentById: async (id) => {
     try {
-      const response = await Axios.get(`/agents/${id}`);
+      const response = await Axios.get(`/auth/agents/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

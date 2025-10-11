@@ -11,10 +11,17 @@ export default function DropdownSelect({
 }) {
   const selectRef = useRef();
   const optionsRef = useRef();
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState(selectedValue || options[0]);
   const toggleDropdown = () => {
     selectRef.current.classList.toggle("open");
   };
+  useEffect(() => {
+    // Update selected state when selectedValue changes
+    if (selectedValue) {
+      setSelected(selectedValue);
+    }
+  }, [selectedValue]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!selectRef.current.contains(event.target)) {

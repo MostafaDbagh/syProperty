@@ -182,45 +182,7 @@ export default function AgencyDetails({ agency }) {
                   </a>
                 </div>
               </form>
-              <div className="sidebar-item sidebar-featured style-2 mb-28 pb-36">
-                <h4 className="sidebar-title mb-28">Featured Listings</h4>
-                <ul>
-                  {properties4.map((property, i) => (
-                    <li key={i} className="box-listings style-2 hover-img">
-                      <div className="image-wrap">
-                        <Image
-                          className="lazyload"
-                          alt=""
-                          width={224}
-                          height={160}
-                          src={property.imageSrc}
-                        />
-                      </div>
-                      <div className="content">
-                        <div className="text-1 title fw-5 lh-20">
-                          <Link href={`/property-detail/${property.id}`}>
-                            {property.title}
-                          </Link>
-                        </div>
-                        <ul className="meta-list flex">
-                          <li className="text-1 flex">
-                            <span>{property.beds}</span>Bed
-                          </li>
-                          <li className="text-1 flex">
-                            <span>{property.baths}</span>Bath
-                          </li>
-                          <li className="text-1 flex">
-                            <span>{property.sqft}</span>Sqft
-                          </li>
-                        </ul>
-                        <div className="price text-1 lh-20 fw-6">
-                          ${property.price.toLocaleString()}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          
               <div className="sidebar-ads">
                 <div className="image-wrap">
                   <Image

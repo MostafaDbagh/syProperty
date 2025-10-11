@@ -119,6 +119,15 @@ export const useReviewsByProperty = (propertyId) => {
   });
 };
 
+export const useReviewsByAgent = (agentId, params = {}) => {
+  return useQuery({
+    queryKey: ['reviews', 'agent', agentId, params],
+    queryFn: () => reviewAPI.getReviewsByAgent(agentId, params),
+    enabled: !!agentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
 export const useCreateReview = () => {
   const queryClient = useQueryClient();
 
@@ -192,6 +201,16 @@ export const useAgent = (id) => {
     queryKey: ['agent', id],
     queryFn: () => agentAPI.getAgentById(id),
     enabled: !!id,
+  });
+};
+
+// Get listings by agent with pagination and filtering
+export const useListingsByAgent = (agentId, params = {}) => {
+  return useQuery({
+    queryKey: ['listings', 'agent', agentId, params],
+    queryFn: () => listingAPI.getListingsByAgent(agentId, params),
+    enabled: !!agentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 

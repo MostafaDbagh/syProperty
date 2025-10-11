@@ -358,6 +358,84 @@ const makeAgent = async (req, res, next) => {
   }
 };
 
+// Get all users with agent role
+const getAgents = async (req, res, next) => {
+  try {
+    const agents = await User.find({ role: 'agent' }).select('-password');
+    
+    // Transform the data to match the expected format
+    const transformedAgents = agents.map(user => ({
+      _id: user._id,
+      fullName: user.username,
+      email: user.email,
+      avatar: user.avatar,
+      description: user.description,
+      companyName: user.company,
+      position: user.position,
+      officeNumber: user.officeNumber,
+      officeAddress: user.officeAddress,
+      job: user.job,
+      phone: user.phone,
+      location: user.location,
+      facebook: user.facebook,
+      twitter: user.twitter,
+      linkedin: user.linkedin,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: transformedAgents
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get single agent by ID
+const getAgentById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const agent = await User.findOne({ _id: id, role: 'agent' }).select('-password');
+    
+    if (!agent) {
+      return res.status(404).json({
+        success: false,
+        message: 'Agent not found'
+      });
+    }
+
+    // Transform the data to match the expected format
+    const transformedAgent = {
+      _id: agent._id,
+      fullName: agent.username,
+      email: agent.email,
+      avatar: agent.avatar,
+      description: agent.description,
+      companyName: agent.company,
+      position: agent.position,
+      officeNumber: agent.officeNumber,
+      officeAddress: agent.officeAddress,
+      job: agent.job,
+      phone: agent.phone,
+      location: agent.location,
+      facebook: agent.facebook,
+      twitter: agent.twitter,
+      linkedin: agent.linkedin,
+      createdAt: agent.createdAt,
+      updatedAt: agent.updatedAt
+    };
+
+    res.status(200).json({
+      success: true,
+      data: transformedAgent
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -367,4 +445,6 @@ module.exports = {
   verifyOTP,
   resetPassword,
   makeAgent,
+  getAgents,
+  getAgentById,
 };

@@ -30,7 +30,7 @@ export default function Details3({ property }) {
             </div>
           </div>
           <div className="col-xl-4 col-lg-5">
-            <Sidebar />
+            <Sidebar property={property} />
           </div>
         </div>
       </div>

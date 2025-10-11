@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { useSearchListings } from "@/apis/hooks";
+import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import SplitTextAnimation from "./SplitTextAnimation";
+import { listingAPI } from "@/apis/listing";
 
 export default function Categories({
   parentClass = "tf-spacing-1 section-categories pb-0",
@@ -12,18 +13,37 @@ export default function Categories({
   onSearchChange,
   setCategory
 }) {
-  const { data: searchResponse } = useSearchListings({});
-  const listings = searchResponse?.data || [];
+  // Get all properties for accurate counting (no pagination)
+  const { data: allListingsResponse } = useQuery({
+    queryKey: ['listings', 'all-count'],
+    queryFn: () => listingAPI.searchListings({ limit: 1000 }), // Get up to 1000 properties for counting
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
+  
+  const allListings = allListingsResponse?.data || [];
 
-  // Create categories from API data
+  // Debug: Log total listings and counts
+  console.log('Categories Debug:', {
+    totalListings: allListings.length,
+    apartmentCount: allListings.filter(p => p.propertyType === 'Apartment').length,
+    villaCount: allListings.filter(p => p.propertyType === 'Villa').length,
+    studioCount: allListings.filter(p => p.propertyType === 'Studio').length,
+    propertyTypes: [...new Set(allListings.map(p => p.propertyType))],
+    sampleProperties: allListings.slice(0, 5).map(p => ({ 
+      title: p.propertyKeyword, 
+      type: p.propertyType 
+    }))
+  });
+
+  // Create categories from API data with accurate counts
   const categories = [
-    { name: "Apartment", icon: "icon-apartment1", count: listings.filter(p => p.propertyType === 'Apartment').length },
-    { name: "Villa", icon: "icon-villa", count: listings.filter(p => p.propertyType === 'Villa').length },
-    { name: "Studio", icon: "icon-studio", count: listings.filter(p => p.propertyType === 'Studio').length },
-    { name: "Office", icon: "icon-office1", count: listings.filter(p => p.propertyType === 'Office').length },
-    { name: "Townhouse", icon: "icon-townhouse", count: listings.filter(p => p.propertyType === 'Townhouse').length },
-    { name: "Commercial", icon: "icon-commercial", count: listings.filter(p => p.propertyType === 'Commercial').length },
-    { name: "Land/Plot", icon: "icon-land", count: listings.filter(p => p.propertyType === 'Land').length }
+    { name: "Apartment", icon: "icon-apartment1", count: allListings.filter(p => p.propertyType === 'Apartment').length },
+    { name: "Villa", icon: "icon-villa", count: allListings.filter(p => p.propertyType === 'Villa').length },
+    { name: "Studio", icon: "icon-studio", count: allListings.filter(p => p.propertyType === 'Studio').length },
+    { name: "Office", icon: "icon-office1", count: allListings.filter(p => p.propertyType === 'Office').length },
+    { name: "Townhouse", icon: "icon-townhouse", count: allListings.filter(p => p.propertyType === 'Townhouse').length },
+    { name: "Commercial", icon: "icon-commercial", count: allListings.filter(p => p.propertyType === 'Commercial').length },
+    { name: "Land/Plot", icon: "icon-land", count: allListings.filter(p => p.propertyType === 'Land').length }
   ];
 
   const handleCategoryClick = (categoryName) => {
