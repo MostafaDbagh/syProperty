@@ -4,6 +4,29 @@
 1. Install Heroku CLI: https://devcenter.heroku.com/articles/heroku-cli
 2. Create a Heroku account: https://heroku.com
 3. Login to Heroku: `heroku login`
+4. Node.js version: 18.20.4 or higher (specified in .nvmrc and package.json engines)
+5. npm version: 9.0.0 or higher
+
+## Node.js Version Management
+
+The project specifies Node.js version 18.20.4. You can manage versions using:
+
+### Using nvm (Node Version Manager):
+```bash
+# Install the specified Node.js version
+nvm install 18.20.4
+nvm use 18.20.4
+
+# Verify versions
+node --version  # Should show v18.20.4
+npm --version   # Should show 9.x.x or higher
+```
+
+### Using n (Node.js version manager):
+```bash
+# Install and use the specified version
+n 18.20.4
+```
 
 ## Deployment Options
 
