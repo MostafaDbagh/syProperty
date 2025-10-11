@@ -158,7 +158,9 @@ export default function Properties2() {
                   1200: { slidesPerView: 3, spaceBetween: 30 },
                 }}
               >
-                {listings.slice(0, 6).map((property) => (
+                {listings.slice(0, 6).map((property) => {
+                  const imageSrc = getImageSource(property);
+                  return (
                   <SwiperSlide key={property._id}>
                     <div className={`box-house hover-img style-list ${styles.propertyCard}`}>
                       <div className="image-wrap" style={{ minWidth: '36%' }}>
@@ -166,7 +168,7 @@ export default function Properties2() {
                           <Image
                             className="lazyload"
                             alt={property.propertyKeyword || property.propertyType || "Property"}
-                            src={getImageSource(property)}
+                            src={imageSrc}
                             width={435}
                             height={408}
                           />
@@ -234,7 +236,8 @@ export default function Properties2() {
                       </div>
                     </div>
                   </SwiperSlide>
-                ))}
+                  );
+                })}
               </Swiper>
               
               {/* Pagination dots */}

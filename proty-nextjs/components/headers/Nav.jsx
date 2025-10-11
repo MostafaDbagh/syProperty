@@ -20,7 +20,7 @@ export default function Nav() {
     );
   return (
     <>
-      <li
+      <li style={{ padding: '12px 8px' }}
         className={`${
           homes.some((elm) => elm.href == pathname) ? "current-menu" : ""
         }`}

@@ -7,6 +7,7 @@ import Breadcumb from "@/components/common/Breadcumb";
 import Cta from "@/components/common/Cta";
 import Details3 from "@/components/propertyDetails/Details3";
 import RelatedProperties from "@/components/propertyDetails/RelatedProperties";
+import LocationLoader from "@/components/common/LocationLoader";
 
 export default function PropertyDetailClient({ id }) {
   const { data: property, isLoading, isError, error } = useListing(id);
@@ -21,13 +22,19 @@ export default function PropertyDetailClient({ id }) {
 
   if (isLoading) {
     return (
-      <div className="container mt-5">
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3">Loading property details...</p>
-        </div>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#f8f9fa',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999
+      }}>
+        <LocationLoader />
       </div>
     );
   }
