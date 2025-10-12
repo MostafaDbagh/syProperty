@@ -329,14 +329,17 @@ export default function OTPVerification({
     </div>
   );
 
-  // Use React Portal to render at document body level
+  // Use React Portal to render at document body level only on client-side
   if (typeof window === 'undefined') return null;
   
-  // Ensure document.body exists before rendering
-  if (!document.body) {
-    console.error('Document body not available for OTP modal');
-    return null;
+  try {
+    if (document?.body) {
+      return createPortal(modalContent, document.body);
+    }
+  } catch (error) {
+    console.error('Error creating portal for OTP modal:', error);
   }
   
-  return createPortal(modalContent, document.body);
+  // Fallback: render directly if portal fails
+  return modalContent;
 }
