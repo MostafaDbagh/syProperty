@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Cta from "@/components/common/Cta";
 
 import Footer1 from "@/components/footers/Footer1";
@@ -8,7 +7,7 @@ import FilterTop from "@/components/properties/FilterTop";
 import Properties4 from "@/components/properties/Properties4";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria Property Grid with Filters - Lattakia Real Estate Listings",
   description: "Browse Syria and Lattakia property listings with advanced filters. Find your perfect home, apartment, or holiday rental with our comprehensive property search grid. Expert real estate guidance in Syria.",
   keywords: [

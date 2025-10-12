@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Breadcumb from "@/components/common/Breadcumb";
 import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
@@ -7,7 +6,7 @@ import Faqs from "@/components/otherPages/faq/Faqs";
 
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria Real Estate FAQ - Common Questions About Property in Lattakia",
   description: "Find answers to frequently asked questions about buying, selling, and renting properties in Syria and Lattakia. Expert guidance on real estate transactions, property investment, and legal requirements.",
   keywords: [

@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Agents from "@/components/agents/Agents";
 import Breadcumb from "@/components/common/Breadcumb";
 import Cta from "@/components/common/Cta";
@@ -6,7 +5,7 @@ import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria & Lattakia Real Estate Agents - Expert Property Professionals",
   description: "Meet our team of experienced real estate agents and property professionals in Syria and Lattakia. Get personalized guidance for buying, selling, or renting properties with expert local market knowledge.",
   keywords: [

@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Cta from "@/components/common/Cta";
 
 import Footer1 from "@/components/footers/Footer1";
@@ -8,7 +7,7 @@ import FilterTop from "@/components/properties/FilterTop";
 import Properties3 from "@/components/properties/Properties3";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria Property Search with Right Filters - Lattakia Real Estate",
   description: "Advanced property search for Syria and Lattakia with right sidebar filters. Find homes, apartments, and holiday rentals with detailed search options. Premium real estate service in Syria.",
   keywords: [

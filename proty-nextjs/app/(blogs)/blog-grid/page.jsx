@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Blogs2 from "@/components/blogs/Blogs2";
 
 import Breadcumb from "@/components/common/Breadcumb";
@@ -7,7 +6,7 @@ import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria Real Estate Blog - Property News & Tips in Lattakia",
   description: "Stay updated with the latest Syria and Lattakia real estate news, property investment tips, market trends, and buying guides. Expert insights for property buyers and sellers in Syria.",
   keywords: [
