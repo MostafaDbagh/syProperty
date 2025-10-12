@@ -1,76 +1,70 @@
-"use client";
+import { Metadata } from 'next'
 
-import { useEffect, useState } from "react";
-import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
-import Hero from "@/components/homes/home-1/Hero";
-import Categories from "@/components/common/Categories";
-import Properties from "@/components/homes/home-1/Properties";
-import Cities from "@/components/homes/home-1/Cities";
-import Properties2 from "@/components/homes/home-1/Properties2";
-import { useSearchListings } from "@/apis/hooks";
-import { cleanParams } from "@/utlis/cleanedParams";
+export const metadata: Metadata = {
+  title: 'Syria & Lattakia Real Estate - Premium Properties for Sale & Rent',
+  description: 'Discover luxury homes, apartments, and holiday homes for sale and rent in Syria and Lattakia. Expert real estate guidance with Proty Real Estate - your trusted property partner in Syria.',
+  keywords: [
+    'syria real estate',
+    'lattakia real estate',
+    'syria properties for sale',
+    'syria properties for rent',
+    'lattakia properties for sale',
+    'lattakia properties for rent',
+    'syria holiday homes',
+    'lattakia holiday homes',
+    'syria vacation rentals',
+    'lattakia vacation rentals',
+    'syria luxury homes',
+    'lattakia luxury homes',
+    'syria apartments',
+    'lattakia apartments',
+    'syria houses',
+    'lattakia houses',
+    'syria commercial properties',
+    'lattakia commercial properties',
+    'syria property listings',
+    'lattakia property listings',
+    'syria real estate agent',
+    'lattakia real estate agent',
+    'syria property search',
+    'lattakia property search',
+    'syria beach properties',
+    'lattakia beach properties',
+    'syria coastal properties',
+    'lattakia coastal properties',
+    'syria villas',
+    'lattakia villas',
+    'syria property investment',
+    'lattakia property investment',
+    'syria land for sale',
+    'lattakia land for sale'
+  ],
+  openGraph: {
+    title: 'Syria & Lattakia Real Estate - Premium Properties for Sale & Rent',
+    description: 'Discover luxury homes, apartments, and holiday homes for sale and rent in Syria and Lattakia. Expert real estate guidance with Proty Real Estate.',
+    url: 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com',
+    images: [
+      {
+        url: '/images/section/hero-bg.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Premium Real Estate Properties',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Premium Real Estate Properties - Find Your Dream Home',
+    description: 'Discover luxury homes, apartments, and commercial properties for sale and rent.',
+    images: ['/images/section/hero-bg.jpg'],
+  },
+  alternates: {
+    canonical: 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com',
+  },
+}
+
+import HomePageClient from './HomePageClient'
 
 export default function Home() {
-  const [searchParams, setSearchParams] = useState({
-    status: "",
-    keyword: "",
-    priceMin: "",
-    priceMax: "",
-    sizeMin: "",
-    sizeMax: "",
-    state: "",
-    bedrooms: "",
-    bathrooms: "",
-    amenities: [],
-    propertyType: "",
-    furnished: ""
-  });
-
-  const [triggerSearch, setTriggerSearch] = useState(false);
-  const [category, setCategory] = useState("");
-  const [params, setParams] = useState(null);
-
-  useEffect(() => {
-    if (triggerSearch || category) {
-      const cleaned = cleanParams(searchParams);
-      setParams(cleaned);
-    }
-  }, [searchParams, triggerSearch, category]);
-
-  const {
-    data: listings = [],
-    isLoading,
-    isError,
-  } = useSearchListings(params);
-
-  const handleSearchChange = (newParams) =>
-    setSearchParams((prev) => ({ ...prev, ...newParams }));
-
-  return (
-    <>
-      <Header1 />
-      <Hero
-        searchParams={searchParams}
-        onSearchChange={handleSearchChange}
-        setTriggerSearch={setTriggerSearch}
-      />
-      <main className="main-content">
-        <Categories
-          searchParams={searchParams}
-          onSearchChange={handleSearchChange}
-          setTriggerSearch={setTriggerSearch}
-          setCategory={setCategory}
-        />
-        <Properties
-          listings={listings}
-          isLoading={isLoading}
-          isError={isError}
-        />
-        <Cities />
-        <Properties2 />
-      </main>
-      <Footer1 />
-    </>
-  );
+  return <HomePageClient />
 }
