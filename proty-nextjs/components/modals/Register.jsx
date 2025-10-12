@@ -22,8 +22,8 @@ export default function Register({ isOpen, onClose }) {
   // Use GlobalModal context for other modals
   const { showLoginModal, showOTPModal } = useGlobalModal();
 
-  const closeModal = useCallback(() => {
-    // Reset form when closing
+  // Function to completely reset form data (call this after successful registration)
+  const resetFormData = useCallback(() => {
     setFormData({
       username: "",
       email: "",
@@ -31,6 +31,19 @@ export default function Register({ isOpen, onClose }) {
       confirmPassword: "",
       role: "user"
     });
+    setFieldErrors({});
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setError('');
+  }, []);
+
+  const closeModal = useCallback(() => {
+    // Keep form data persistent - only clear password fields for security
+    setFormData(prev => ({
+      ...prev,
+      password: "",
+      confirmPassword: ""
+    }));
     setFieldErrors({});
     setShowPassword(false);
     setShowConfirmPassword(false);
@@ -329,23 +342,43 @@ export default function Register({ isOpen, onClose }) {
               </div>
             )}
 
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={!isFormValid() || isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className={styles.spinner} />
-                  Creating Account...
-                </>
-              ) : (
-                <>
-                  <i className="icon-user-plus" />
-                  Create Account
-                </>
-              )}
-            </button>
+            {/* Data persistence notice */}
+            {(formData.username || formData.email) && (
+              <div className={styles.persistenceNotice}>
+                <i className="icon-info" />
+                <span>Your username and email are saved. Only passwords are cleared for security.</span>
+              </div>
+            )}
+
+            <div className={styles.buttonGroup}>
+              <button
+                type="button"
+                className={styles.clearButton}
+                onClick={resetFormData}
+                disabled={isLoading}
+              >
+                <i className="icon-refresh" />
+                Clear Form
+              </button>
+              
+              <button
+                type="submit"
+                className={styles.submitButton}
+                disabled={!isFormValid() || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className={styles.spinner} />
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    <i className="icon-user-plus" />
+                    Create Account
+                  </>
+                )}
+              </button>
+            </div>
 
             <div className={styles.signInLink}>
               Already have an account?{" "}
