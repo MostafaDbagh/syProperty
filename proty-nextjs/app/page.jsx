@@ -1,6 +1,4 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Syria & Lattakia Real Estate - Premium Properties for Sale & Rent',
   description: 'Discover luxury homes, apartments, and holiday homes for sale and rent in Syria and Lattakia. Expert real estate guidance with Proty Real Estate - your trusted property partner in Syria.',
   keywords: [

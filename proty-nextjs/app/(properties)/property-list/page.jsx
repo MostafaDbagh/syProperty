@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Breadcumb from "@/components/common/Breadcumb";
 import Cta from "@/components/common/Cta";
 
@@ -7,7 +6,7 @@ import Header1 from "@/components/headers/Header1";
 import Properties1 from "@/components/properties/Properties1";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Syria & Lattakia Property Listings - Browse Properties for Sale & Rent",
   description: "Browse our comprehensive collection of properties for sale and rent in Syria and Lattakia. Find your perfect home, apartment, holiday home, or commercial property with advanced search filters.",
   keywords: [

@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Brands from "@/components/common/Brands";
 import Cta from "@/components/common/Cta";
 import About from "@/components/contact/About";
@@ -7,7 +6,7 @@ import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import React from "react";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Contact Proty Real Estate - Syria & Lattakia Property Experts",
   description: "Contact Proty Real Estate for expert guidance on buying, selling, or renting properties in Syria and Lattakia. Our experienced agents are here to help you find your dream home or investment property.",
   keywords: [

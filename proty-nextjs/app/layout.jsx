@@ -1,11 +1,10 @@
-import { Metadata } from 'next'
 import ClientLayout from './ClientLayout'
 import StructuredData from '@/components/seo/StructuredData'
 import KeywordOptimization from '@/components/seo/KeywordOptimization'
 import AdvancedSEO from '@/components/seo/AdvancedSEO'
 import PerformanceOptimization from '@/components/seo/PerformanceOptimization'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: {
     default: 'Proty Real Estate - Find Your Dream Property',
     template: '%s | Proty Real Estate'
