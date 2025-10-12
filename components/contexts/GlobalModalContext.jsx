@@ -183,22 +183,6 @@ export const GlobalModalProvider = ({ children }) => {
         email={otpModalState.email}
         type={otpModalState.type}
       />
-      {/* Debug indicator for production */}
-      {process.env.NODE_ENV === 'production' && otpModalState.isOpen && (
-        <div style={{
-          position: 'fixed',
-          top: '10px',
-          right: '10px',
-          background: 'red',
-          color: 'white',
-          padding: '10px',
-          zIndex: 10000,
-          fontSize: '12px',
-          borderRadius: '4px'
-        }}>
-          OTP Modal Should Be Visible
-        </div>
-      )}
     </GlobalModalContext.Provider>
   );
 };
