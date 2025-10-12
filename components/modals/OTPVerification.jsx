@@ -19,8 +19,14 @@ export default function OTPVerification({
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const inputRefs = useRef([]);
   const { showSuccessModal, showWarningModal } = useGlobalModal();
+
+  // Handle client-side mounting
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Clear OTP and auto-focus first input when modal opens
   useEffect(() => {
@@ -202,7 +208,7 @@ export default function OTPVerification({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isMounted) return null;
 
   const modalContent = (
     <div 
@@ -326,6 +332,11 @@ export default function OTPVerification({
   // Use React Portal to render at document body level
   if (typeof window === 'undefined') return null;
   
+  // Ensure document.body exists before rendering
+  if (!document.body) {
+    console.error('Document body not available for OTP modal');
+    return null;
+  }
   
   return createPortal(modalContent, document.body);
 }

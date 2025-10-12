@@ -108,6 +108,7 @@ export const GlobalModalProvider = ({ children }) => {
   };
 
   const showOTPModal = (userData, email, type = 'signup') => {
+    console.log('🔄 GlobalModalContext: showOTPModal called with:', { userData, email, type });
     setOtpModalState({
       isOpen: true,
       userData,
@@ -183,6 +184,21 @@ export const GlobalModalProvider = ({ children }) => {
         email={otpModalState.email}
         type={otpModalState.type}
       />
+      {/* Debug info for production */}
+      {process.env.NODE_ENV === 'production' && otpModalState.isOpen && (
+        <div style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          background: 'red',
+          color: 'white',
+          padding: '10px',
+          zIndex: 10000,
+          fontSize: '12px'
+        }}>
+          OTP Modal State: {JSON.stringify(otpModalState)}
+        </div>
+      )}
     </GlobalModalContext.Provider>
   );
 };
