@@ -128,9 +128,7 @@ export default function Register({ isOpen, onClose }) {
       closeModal();
       
       // Show OTP modal after a short delay using GlobalModalContext
-      console.log('🔄 Register: About to show OTP modal with data:', userDataForRegistration);
       setTimeout(() => {
-        console.log('🔄 Register: Showing OTP modal now');
         showOTPModal(userDataForRegistration, formData.email, 'signup');
       }, 300);
       

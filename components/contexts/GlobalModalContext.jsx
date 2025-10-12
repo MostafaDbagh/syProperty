@@ -108,7 +108,6 @@ export const GlobalModalProvider = ({ children }) => {
   };
 
   const showOTPModal = (userData, email, type = 'signup') => {
-    console.log('🔄 GlobalModalContext: showOTPModal called with:', { userData, email, type });
     setOtpModalState({
       isOpen: true,
       userData,
