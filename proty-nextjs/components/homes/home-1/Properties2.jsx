@@ -35,7 +35,7 @@ export default function Properties2() {
     }
     
     // Return default image
-    return "/images/section/property-1.jpg";
+    return "/images/section/box-house-1.jpg";
   };
   
   // Show loading state
@@ -139,12 +139,12 @@ export default function Properties2() {
             <div className="wrap-properties-sw">
               <Swiper
                 dir="ltr"
-                className="swiper style-pagination sw-properties"
+                className=" style-pagination sw-properties"
                 slidesPerView={1}
                 spaceBetween={15}
                 loop={true}
                 autoplay={{
-                  delay: 3500,
+                  delay: 34444500,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }}
@@ -162,77 +162,96 @@ export default function Properties2() {
                   const imageSrc = getImageSource(property);
                   return (
                   <SwiperSlide key={property._id}>
-                    <div className={`box-house hover-img style-list ${styles.propertyCard}`}>
-                      <div className="image-wrap" style={{ minWidth: '36%' }}>
-                        <Link href={`/property-detail/${property._id}`}>
-                          <Image
-                            className="lazyload"
-                            alt={property.propertyKeyword || property.propertyType || "Property"}
-                            src={imageSrc}
-                            width={435}
-                            height={408}
-                          />
-                        </Link>
-                        <ul className="box-tag flex gap-8">
-                          <li className="flat-tag text-4 bg-main fw-6 text_white">
-                            {property.status === 'sale' ? 'For Sale' : 'For Rent'}
-                          </li>
-                        </ul>
-                        <div className="list-btn flex gap-8">
-                          <FavoriteButton 
-                            propertyId={property._id}
-                            showLabel={true}
-                          />
-                          <a href="#" className="btn-icon find hover-tooltip">
-                            <i className="icon-find-plus" />
-                            <span className="tooltip">Quick View</span>
-                          </a>
-                        </div>
-                      </div>
-                      <div className="content">
-                        <h5 className="title">
+                    <div className={`${styles.propertyCard}`}>
+                      {/* Left Image Section - 300px x 220px */}
+                      <div className={styles.leftSection}>
+                        <div className={styles.imageSection}>
                           <Link href={`/property-detail/${property._id}`}>
-                            {property.propertyKeyword || property.propertyType || 'Property'}
+                            <Image
+                              className="lazyload"
+                              alt={property.propertyKeyword || property.propertyType || "Property"}
+                              src={imageSrc || "/images/section/box-house-1.jpg"}
+                              width={300}
+                              height={220}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                              onError={(e) => {
+                                e.target.src = "/images/section/box-house-1.jpg";
+                              }}
+                            />
                           </Link>
-                        </h5>
-                        <p className="location text-1 line-clamp-1">
-                          <i className="icon-location" /> {property.address}, {property.state}
-                        </p>
-                        <ul className="meta-list flex">
-                          <li className="meta-item">
-                            <div className="text-9 flex">
-                              <i className="icon-bed" />
-                              Beds<span>{property.bedrooms}</span>
-                            </div>
-                            <div className="text-9 flex">
-                              <i className="icon-sqft" />
-                              Sqft<span>{property.size}</span>
-                            </div>
-                          </li>
-                          <li className="meta-item">
-                            <div className="text-9 flex">
-                              <i className="icon-bath" />
-                              Baths<span>{property.bathrooms}</span>
-                            </div>
-                            <div className="text-9 flex">
-                              <i className="icon-garage" />
-                              Garage<span>{property.garages ? 'Yes' : 'No'}</span>
-                            </div>
-                          </li>
-                        </ul>
-                        <div className="bot flex justify-between items-center">
-                          <h5 className="price" style={{ fontSize: '17px', fontWeight: '700', }}>
-                            ${property.propertyPrice?.toLocaleString() || '0'}
-                          </h5>
-                          <div className="wrap-btn flex">
-                            <Link
-                              href={`/property-detail/${property._id}`}
-                              className="tf-btn style-border pd-4"
-                            >
-                              Details
-                            </Link>
+                          
+                          {/* Badges */}
+                          <div className={styles.badges}>
+                            <span className={styles.badgeRent}>
+                              {property.status === 'sale' ? 'For Sale' : 'For Rent'}
+                            </span>
+                            {property.propertyType === 'Holiday Homes' && (
+                              <span className={styles.badgeHoliday}>
+                                🏖️ Holiday
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Action Buttons */}
+                          <div className={styles.actionButtons}>
+                            <FavoriteButton propertyId={property._id} showLabel={false} />
+                            <a href="#" className={styles.quickViewBtn}>
+                              <i className="icon-find-plus" />
+                            </a>
                           </div>
                         </div>
+                        
+                        {/* Title and Location below image */}
+                        <div className={styles.titleSection}>
+                          <h6 className={styles.propertyTitle}>
+                            {property.propertyKeyword || property.propertyType || 'Property'}
+                          </h6>
+                          <p className={styles.propertyLocation}>
+                            <i className="icon-location" />
+                            {property.address}, {property.state}
+                          </p>
+                        </div>
+                        
+                        {/* Price and Details below text */}
+                        <div className={styles.priceDetailsSection}>
+                          <div className={styles.price}>
+                            ${property.propertyPrice?.toLocaleString() || '0'}
+                          </div>
+                          <Link href={`/property-detail/${property._id}`} className={styles.detailsBtn}>
+                            Details
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      {/* Right Content Section */}
+                      <div className={styles.contentSection}>
+                        
+                        {/* Details Grid */}
+                        <div className={styles.detailsSection}>
+                          <div className={styles.detailsGrid}>
+                            <div className={styles.detailItem}>
+                              <i className="icon-bed" />
+                              <span>Beds <strong>{property.bedrooms}</strong></span>
+                            </div>
+                            <div className={styles.detailItem}>
+                              <i className="icon-bath" />
+                              <span>Baths <strong>{property.bathrooms}</strong></span>
+                            </div>
+                            <div className={styles.detailItem}>
+                              <i className="icon-sqft" />
+                              <span>Sqft <strong>{property.size}</strong></span>
+                            </div>
+                            <div className={styles.detailItem}>
+                              <i className="icon-garage" />
+                              <span>Garage <strong>{property.garages ? 'Yes' : 'No'}</strong></span>
+                            </div>
+                          </div>
+                        </div>
+                        
                       </div>
                     </div>
                   </SwiperSlide>

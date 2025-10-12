@@ -12,9 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "heroku-postbuild": "npm run build",
-    "deploy": "npm run build && npm run start:full",
-    "start:full": "concurrently \"npm start\" \"cd ../api && npm start\"",
-    "dev:full": "concurrently \"npm run dev\" \"cd ../api && npm run dev\""
+    "deploy": "npm run build && npm run start"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
@@ -23,7 +21,6 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.7",
-    "concurrently": "^8.2.2",
     "gsap": "^3.12.7",
     "gsap-trial": "^3.12.7",
     "next": "15.1.7",

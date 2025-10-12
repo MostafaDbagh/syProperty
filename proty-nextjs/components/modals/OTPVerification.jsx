@@ -1,9 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
-import styles from "./OTPVerification.module.css";
 
 export default function OTPVerification({ 
   isOpen, 
@@ -19,18 +17,22 @@ export default function OTPVerification({
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const inputRefs = useRef([]);
   const { showSuccessModal, showWarningModal } = useGlobalModal();
+
+  // Handle client-side mounting
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Clear OTP and auto-focus first input when modal opens
   useEffect(() => {
     if (isOpen) {
-      // Clear OTP boxes when modal opens
       setOtp(['', '', '', '', '', '']);
       setError('');
       setOtpVerified(false);
       
-      // Focus first input
       if (inputRefs.current[0]) {
         setTimeout(() => {
           inputRefs.current[0].focus();
@@ -38,7 +40,6 @@ export default function OTPVerification({
       }
     }
   }, [isOpen]);
-
 
   // Resend cooldown timer
   useEffect(() => {
@@ -59,46 +60,22 @@ export default function OTPVerification({
   }, [otp, otpVerified, isLoading]);
 
   const handleOTPChange = (index, value) => {
-    // Only allow single digit
     if (value.length > 1) return;
-    
-    // Only allow digits
     if (value && !/^\d$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    setError(''); // Clear error when user types
+    setError('');
 
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
-    // Handle backspace
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
-    }
-    
-    // Handle paste
-    if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      navigator.clipboard.readText().then(text => {
-        const digits = text.replace(/\D/g, '').slice(0, 6);
-        const newOtp = ['', '', '', '', '', ''];
-        digits.split('').forEach((digit, i) => {
-          if (i < 6) newOtp[i] = digit;
-        });
-        setOtp(newOtp);
-        setError('');
-        
-        // Focus the last filled input or first empty
-        const lastFilledIndex = digits.length - 1;
-        const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : lastFilledIndex;
-        inputRefs.current[focusIndex]?.focus();
-      });
     }
   };
 
@@ -115,28 +92,22 @@ export default function OTPVerification({
     setError('');
 
     try {
-      // Verify OTP API call
       const verifyResult = await authAPI.verifyOTP(email, otpString, type);
       
       if (verifyResult.success) {
         setOtpVerified(true);
         
         if (type === 'signup') {
-          // Call the actual signup API
           const result = await authAPI.signup(userData);
           
           if (result.success) {
-            // Show global success modal
             showSuccessModal(
               "Registration Successful!",
               "Your account has been created successfully. You can now login with your credentials.",
               userData?.email
             );
-            // Close the OTP verification modal immediately
             onClose();
-            // Don't call onSuccess immediately - let the success modal handle the flow
           } else {
-            // Show global warning modal for signup failure
             showWarningModal(
               "Registration Failed",
               result.message || "Registration failed. Please try again.",
@@ -144,18 +115,14 @@ export default function OTPVerification({
             );
           }
         } else if (type === 'forgot_password') {
-          // For forgot password, just call onSuccess with OTP code, don't close modal
-          console.log("🔄 Forgot password OTP verified, calling onSuccess");
           onSuccess(otpString);
         }
       } else {
         setError('Invalid OTP. Please try again.');
-        // Clear OTP and focus first input
         setOtp(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
       }
     } catch (error) {
-      // More specific error handling
       if (error.message) {
         setError(error.message);
       } else if (error.error) {
@@ -166,7 +133,6 @@ export default function OTPVerification({
         setError('OTP verification failed. Please try again.');
       }
       
-      // Clear OTP and focus first input
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
@@ -181,12 +147,8 @@ export default function OTPVerification({
     setError('');
 
     try {
-      // Send OTP API call
       await authAPI.sendOTP(email, type);
-      
-      // Set cooldown timer (30 seconds)
       setResendCooldown(30);
-      
     } catch (error) {
       setError('Failed to resend OTP. Please try again.');
     } finally {
@@ -202,130 +164,227 @@ export default function OTPVerification({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isMounted) return null;
 
-  const modalContent = (
+  return (
     <div 
-      className={`modal fade show ${styles.modalBackdrop}`}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)'
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
         }
       }}
     >
-      <div className={`modal-dialog modal-dialog-centered ${styles.modalDialog}`}>
-        <div className="modal-content">
-          <div className="flat-account">
-            <form className="form-account" onSubmit={handleVerifyOTP}>
-              <div className={`title-box ${type === 'forgot_password' ? styles.titleCenter : ''}`}>
-                <h4>
-                  {type === 'forgot_password' 
-                    ? 'Email Verification for Reset Password' 
-                    : 'Verify Your Email'}
-                </h4>
-                <span
-                  className="close-modal icon-close"
-                  onClick={handleClose}
-                  style={{ cursor: 'pointer' }}
-                />
-              </div>
-              
-              <div className="box">
-            <div className={styles.emailSection}>
-              <div className={styles.emailIcon}>
-                📧
-              </div>
-              <p className={styles.mainMessage}>
-                {type === 'forgot_password' 
-                  ? 'We\'ve sent a password reset code to'
-                  : 'We\'ve sent a 6-digit code to'}
-              </p>
-              <p className={styles.emailAddress}>
-                {email}
-              </p>
-              
-              {/* OTP Expiration Warning */}
-              <div className={styles.otpWarning}>
-                <p className={styles.warningText}>
-                  <span>⏰</span>
-                  OTP will expire after 5 minutes
-                </p>
-              </div>
-            </div>
-
-                <fieldset className="box-fieldset">
-                  <label className={styles.otpLabel}>
-                    Enter verification code
-                  </label>
-                  
-                  <div className={styles.otpContainer}>
-                    {otp.map((digit, index) => (
-                      <input
-                        key={index}
-                        ref={(el) => inputRefs.current[index] = el}
-                        type="text"
-                        value={digit}
-                        onChange={(e) => handleOTPChange(index, e.target.value)}
-                        onKeyDown={(e) => handleKeyDown(index, e)}
-                        maxLength="1"
-                        className={`form-control ${styles.otpInput}`}
-                      />
-                    ))}
-                  </div>
-
-                  {error && (
-                    <div className={styles.errorMessage}>
-                      {error}
-                    </div>
-                  )}
-                </fieldset>
-              </div>
-
-              <div className="box box-btn">
-                <button
-                  type="submit"
-                  className="tf-btn bg-color-primary w-full"
-                  disabled={otp.join('').length !== 6 || isLoading}
-                  style={{
-                    opacity: (otp.join('').length === 6 && !isLoading) ? 1 : 0.6,
-                    cursor: (otp.join('').length === 6 && !isLoading) ? 'pointer' : 'not-allowed',
-                    border: 'none'
-                  }}
-                >
-                  {type === 'forgot_password' 
-                    ? (isLoading ? 'Verifying...' : 'Verify & Reset Password')
-                    : (isLoading ? 'Verifying...' : otpVerified ? 'Completing Registration...' : 'Verify & Complete Registration')
-                  }
-                </button>
-              </div>
-
-              <div className="box">
-                <div className={styles.resendContainer}>
-                  <p className={styles.resendText}>
-                    Didn't receive the code?
-                  </p>
-                  <button
-                    type="button"
-                    onClick={handleResendOTP}
-                    disabled={resendCooldown > 0 || isSendingOTP}
-                    className={`text-color-primary ${styles.resendButton}`}
-                  >
-                    {isSendingOTP ? 'Sending...' : 
-                     resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 
-                     'Resend Code'}
-                  </button>
-                </div>
-              </div>
-            </form>
+      
+      {/* Modal content */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '30px',
+        maxWidth: '480px',
+        width: '90%',
+        maxHeight: '90vh',
+        overflow: 'auto',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+      }}>
+        {/* Header */}
+        <div style={{ position: 'relative', marginBottom: '24px' }}>
+          <h4 style={{ 
+            margin: 0, 
+            fontSize: '24px', 
+            fontWeight: '600', 
+            color: 'var(--Heading)',
+            textAlign: 'center'
+          }}>
+            {type === 'forgot_password' ? 'Email Verification for Reset Password' : 'Verify Your Email'}
+          </h4>
+          <span
+            onClick={handleClose}
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              cursor: 'pointer', 
+              fontSize: '24px', 
+              color: 'var(--Note)',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ×
+          </span>
+        </div>
+        
+        {/* Email section */}
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            backgroundColor: 'var(--Sub-primary-1)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 16px',
+            fontSize: '28px',
+            color: 'var(--Primary)'
+          }}>
+            📧
+          </div>
+          <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '16px' }}>
+            {type === 'forgot_password' ? 'We\'ve sent a password reset code to' : 'We\'ve sent a 6-digit code to'}
+          </p>
+          <p style={{ margin: '0 0 16px 0', color: 'var(--Primary)', fontSize: '16px', fontWeight: '600' }}>
+            {email}
+          </p>
+          
+          {/* OTP Warning */}
+          <div style={{
+            backgroundColor: 'var(--Sub-primary-1)',
+            border: '1px solid var(--Sub-primary-2)',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            marginBottom: '8px',
+            display: 'inline-block'
+          }}>
+            <p style={{ margin: 0, color: 'var(--Primary)', fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <span>⏰</span>
+              OTP will expire after 5 minutes
+            </p>
           </div>
         </div>
+
+        {/* OTP Input */}
+        <form onSubmit={handleVerifyOTP}>
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '600', color: 'var(--Heading)' }}>
+              Enter verification code
+            </label>
+            
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '16px' }}>
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => inputRefs.current[index] = el}
+                  type="text"
+                  value={digit}
+                  onChange={(e) => handleOTPChange(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  maxLength="1"
+                  style={{
+                    width: '48px',
+                    height: '56px',
+                    border: '2px solid var(--Line)',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    fontSize: '24px',
+                    fontWeight: '600',
+                    backgroundColor: 'var(--White)',
+                    outline: 'none',
+                    color: 'var(--Heading)',
+                    transition: 'border-color 0.2s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--Primary)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--Line)';
+                  }}
+                />
+              ))}
+            </div>
+
+            {error && (
+              <div style={{
+                backgroundColor: '#fee',
+                color: '#c33',
+                padding: '12px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                textAlign: 'center',
+                marginBottom: '16px'
+              }}>
+                {error}
+              </div>
+            )}
+          </div>
+
+          {/* Submit button */}
+          <div style={{ marginBottom: '24px' }}>
+            <button
+              type="submit"
+              disabled={otp.join('').length !== 6 || isLoading}
+              style={{
+                width: '100%',
+                padding: '14px',
+                backgroundColor: otp.join('').length === 6 && !isLoading ? 'var(--Primary)' : 'var(--Note)',
+                color: 'var(--White)',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: otp.join('').length === 6 && !isLoading ? 'pointer' : 'not-allowed',
+                transition: 'all 0.2s'
+              }}
+            >
+              {type === 'forgot_password' 
+                ? (isLoading ? 'Verifying...' : 'Verify & Reset Password')
+                : (isLoading ? 'Verifying...' : otpVerified ? 'Completing Registration...' : 'Verify & Complete Registration')
+              }
+            </button>
+          </div>
+
+          {/* Resend section */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '14px' }}>
+              Didn't receive the code?
+            </p>
+            <button
+              type="button"
+              onClick={handleResendOTP}
+              disabled={resendCooldown > 0 || isSendingOTP}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--Primary)',
+                cursor: resendCooldown > 0 || isSendingOTP ? 'not-allowed' : 'pointer',
+                fontSize: '14px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                if (resendCooldown === 0 && !isSendingOTP) {
+                  e.target.style.backgroundColor = 'var(--Sub-primary-1)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+              }}
+            >
+              {isSendingOTP ? 'Sending...' : 
+               resendCooldown > 0 ? 'Resend in ' + resendCooldown + 's' : 
+               'Resend Code'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-
-  // Use React Portal to render at document body level
-  if (typeof window === 'undefined') return null;
-  
-  
-  return createPortal(modalContent, document.body);
 }
