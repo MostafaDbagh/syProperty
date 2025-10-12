@@ -210,22 +210,19 @@ export default function OTPVerification({
 
   if (!isOpen || !isMounted) return null;
 
-  // Temporary debug indicator for production
-  if (typeof window !== 'undefined') {
-    console.log('🔄 OTPVerification rendering with isOpen:', isOpen);
-  }
+  // Debug logging for production
+  console.log('🔄 OTPVerification: Rendering modal with isOpen:', isOpen, 'isMounted:', isMounted);
 
   const modalContent = (
     <div 
-      className={`modal fade show ${styles.modalBackdrop}`}
+      className={`modal-dialog modal-dialog-centered ${styles.modalDialog}`}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
         }
       }}
     >
-      <div className={`modal-dialog modal-dialog-centered ${styles.modalDialog}`}>
-        <div className="modal-content">
+      <div className="modal-content">
           <div className="flat-account">
             <form className="form-account" onSubmit={handleVerifyOTP}>
               <div className={`title-box ${type === 'forgot_password' ? styles.titleCenter : ''}`}>
@@ -334,17 +331,21 @@ export default function OTPVerification({
     </div>
   );
 
-  // Use React Portal to render at document body level only on client-side
-  if (typeof window === 'undefined') return null;
-  
-  try {
-    if (document?.body) {
-      return createPortal(modalContent, document.body);
-    }
-  } catch (error) {
-    console.error('Error creating portal for OTP modal:', error);
-  }
-  
-  // Fallback: render directly if portal fails
-  return modalContent;
+  // Force direct rendering without portal for production stability
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      zIndex: 999999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    }}>
+      {modalContent}
+    </div>
+  );
 }
