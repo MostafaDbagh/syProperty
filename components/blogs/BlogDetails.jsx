@@ -117,45 +117,92 @@ export default function BlogDetails({ blog }) {
                   Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
                 </p>
               </div>
-              <div className="tags flex align-center">
-                <span className="text-1 fw-6">Tags:</span>
-                <div className="tags-list flex align-center">
-                  <a href="#" className="tags-item">
+              <div className="tags" style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #e5e7eb' }}>
+                <span style={{ 
+                  display: 'block', 
+                  fontSize: '16px', 
+                  fontWeight: '600', 
+                  color: '#374151', 
+                  marginBottom: '16px' 
+                }}>
+                  Tags:
+                </span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <a href="#" style={{
+                    display: 'inline-block',
+                    padding: '6px 12px',
+                    backgroundColor: '#f3f4f6',
+                    color: '#374151',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    borderRadius: '20px',
+                    textDecoration: 'none',
+                    border: '1px solid #e5e7eb',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#3b82f6';
+                    e.target.style.color = '#ffffff';
+                    e.target.style.borderColor = '#3b82f6';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#f3f4f6';
+                    e.target.style.color = '#374151';
+                    e.target.style.borderColor = '#e5e7eb';
+                  }}>
                     Property
                   </a>
-                  <a href="#" className="tags-item">
+                  <a href="#" style={{
+                    display: 'inline-block',
+                    padding: '6px 12px',
+                    backgroundColor: '#f3f4f6',
+                    color: '#374151',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    borderRadius: '20px',
+                    textDecoration: 'none',
+                    border: '1px solid #e5e7eb',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#3b82f6';
+                    e.target.style.color = '#ffffff';
+                    e.target.style.borderColor = '#3b82f6';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#f3f4f6';
+                    e.target.style.color = '#374151';
+                    e.target.style.borderColor = '#e5e7eb';
+                  }}>
                     Real Estate
                   </a>
-                  <a href="#" className="tags-item">
+                  <a href="#" style={{
+                    display: 'inline-block',
+                    padding: '6px 12px',
+                    backgroundColor: '#f3f4f6',
+                    color: '#374151',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    borderRadius: '20px',
+                    textDecoration: 'none',
+                    border: '1px solid #e5e7eb',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#3b82f6';
+                    e.target.style.color = '#ffffff';
+                    e.target.style.borderColor = '#3b82f6';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#f3f4f6';
+                    e.target.style.color = '#374151';
+                    e.target.style.borderColor = '#e5e7eb';
+                  }}>
                     Investment
                   </a>
-                </div>
-              </div>
-              <div className="social-share flex align-center justify-between">
-                <div className="social-list flex align-center">
-                  <span className="text-1 fw-6">Share:</span>
-                  <ul className="list-social flex align-center">
-                    <li>
-                      <a href="#">
-                        <i className="icon-fb" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="icon-tw" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="icon-linked" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="icon-ins" />
-                      </a>
-                    </li>
-                  </ul>
                 </div>
               </div>
             </div>
