@@ -218,13 +218,31 @@ export default function OTPVerification({
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
       }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h4 style={{ margin: 0, fontSize: '24px', fontWeight: '600', color: '#333' }}>
+        <div style={{ position: 'relative', marginBottom: '24px' }}>
+          <h4 style={{ 
+            margin: 0, 
+            fontSize: '24px', 
+            fontWeight: '600', 
+            color: 'var(--Heading)',
+            textAlign: 'center'
+          }}>
             {type === 'forgot_password' ? 'Email Verification for Reset Password' : 'Verify Your Email'}
           </h4>
           <span
             onClick={handleClose}
-            style={{ cursor: 'pointer', fontSize: '24px', color: '#666' }}
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              cursor: 'pointer', 
+              fontSize: '24px', 
+              color: 'var(--Note)',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
           >
             ×
           </span>
@@ -235,33 +253,34 @@ export default function OTPVerification({
           <div style={{
             width: '64px',
             height: '64px',
-            backgroundColor: '#f0f8ff',
+            backgroundColor: 'var(--Sub-primary-1)',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 16px',
-            fontSize: '28px'
+            fontSize: '28px',
+            color: 'var(--Primary)'
           }}>
             📧
           </div>
-          <p style={{ margin: '0 0 8px 0', color: '#666', fontSize: '16px' }}>
+          <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '16px' }}>
             {type === 'forgot_password' ? 'We\'ve sent a password reset code to' : 'We\'ve sent a 6-digit code to'}
           </p>
-          <p style={{ margin: '0 0 16px 0', color: '#007bff', fontSize: '16px', fontWeight: '600' }}>
+          <p style={{ margin: '0 0 16px 0', color: 'var(--Primary)', fontSize: '16px', fontWeight: '600' }}>
             {email}
           </p>
           
           {/* OTP Warning */}
           <div style={{
-            backgroundColor: '#fff3cd',
-            border: '1px solid #ffeaa7',
+            backgroundColor: 'var(--Sub-primary-1)',
+            border: '1px solid var(--Sub-primary-2)',
             borderRadius: '8px',
             padding: '12px 16px',
             marginBottom: '8px',
             display: 'inline-block'
           }}>
-            <p style={{ margin: 0, color: '#856404', fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <p style={{ margin: 0, color: 'var(--Primary)', fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
               <span>⏰</span>
               OTP will expire after 5 minutes
             </p>
@@ -271,7 +290,7 @@ export default function OTPVerification({
         {/* OTP Input */}
         <form onSubmit={handleVerifyOTP}>
           <div style={{ marginBottom: '24px' }}>
-            <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '600', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '600', color: 'var(--Heading)' }}>
               Enter verification code
             </label>
             
@@ -288,13 +307,21 @@ export default function OTPVerification({
                   style={{
                     width: '48px',
                     height: '56px',
-                    border: '2px solid #ddd',
+                    border: '2px solid var(--Line)',
                     borderRadius: '8px',
                     textAlign: 'center',
                     fontSize: '24px',
                     fontWeight: '600',
-                    backgroundColor: '#fff',
-                    outline: 'none'
+                    backgroundColor: 'var(--White)',
+                    outline: 'none',
+                    color: 'var(--Heading)',
+                    transition: 'border-color 0.2s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--Primary)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--Line)';
                   }}
                 />
               ))}
@@ -323,8 +350,8 @@ export default function OTPVerification({
               style={{
                 width: '100%',
                 padding: '14px',
-                backgroundColor: otp.join('').length === 6 && !isLoading ? '#007bff' : '#ccc',
-                color: 'white',
+                backgroundColor: otp.join('').length === 6 && !isLoading ? 'var(--Primary)' : 'var(--Note)',
+                color: 'var(--White)',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '16px',
@@ -342,7 +369,7 @@ export default function OTPVerification({
 
           {/* Resend section */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 8px 0', color: '#666', fontSize: '14px' }}>
+            <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '14px' }}>
               Didn't receive the code?
             </p>
             <button
@@ -352,7 +379,7 @@ export default function OTPVerification({
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#007bff',
+                color: 'var(--Primary)',
                 cursor: resendCooldown > 0 || isSendingOTP ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
                 fontWeight: '600',
@@ -360,6 +387,14 @@ export default function OTPVerification({
                 padding: '8px 16px',
                 borderRadius: '6px',
                 transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                if (resendCooldown === 0 && !isSendingOTP) {
+                  e.target.style.backgroundColor = 'var(--Sub-primary-1)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
               }}
             >
               {isSendingOTP ? 'Sending...' : 
