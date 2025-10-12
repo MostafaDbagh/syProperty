@@ -218,12 +218,39 @@ export default function OTPVerification({
   const modalContent = (
     <div 
       className={`modal fade show ${styles.modalBackdrop}`}
+      style={{
+        position: 'fixed !important',
+        top: '0 !important',
+        left: '0 !important',
+        width: '100vw !important',
+        height: '100vh !important',
+        zIndex: '999999 !important',
+        display: 'flex !important',
+        alignItems: 'center !important',
+        justifyContent: 'center !important',
+        backgroundColor: 'rgba(0, 0, 0, 0.5) !important'
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
         }
       }}
     >
+      {/* Temporary visible indicator */}
+      <div style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        background: 'lime',
+        color: 'black',
+        padding: '10px',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        zIndex: '1000000',
+        borderRadius: '4px'
+      }}>
+        OTP MODAL IS RENDERING
+      </div>
       <div className={`modal-dialog modal-dialog-centered ${styles.modalDialog}`}>
         <div className="modal-content">
           <div className="flat-account">
