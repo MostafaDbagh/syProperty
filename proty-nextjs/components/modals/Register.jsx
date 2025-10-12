@@ -342,43 +342,23 @@ export default function Register({ isOpen, onClose }) {
               </div>
             )}
 
-            {/* Data persistence notice */}
-            {(formData.username || formData.email) && (
-              <div className={styles.persistenceNotice}>
-                <i className="icon-info" />
-                <span>Your username and email are saved. Only passwords are cleared for security.</span>
-              </div>
-            )}
-
-            <div className={styles.buttonGroup}>
-              <button
-                type="button"
-                className={styles.clearButton}
-                onClick={resetFormData}
-                disabled={isLoading}
-              >
-                <i className="icon-refresh" />
-                Clear Form
-              </button>
-              
-              <button
-                type="submit"
-                className={styles.submitButton}
-                disabled={!isFormValid() || isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <span className={styles.spinner} />
-                    Creating Account...
-                  </>
-                ) : (
-                  <>
-                    <i className="icon-user-plus" />
-                    Create Account
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={!isFormValid() || isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className={styles.spinner} />
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <i className="icon-user-plus" />
+                  Create Account
+                </>
+              )}
+            </button>
 
             <div className={styles.signInLink}>
               Already have an account?{" "}
