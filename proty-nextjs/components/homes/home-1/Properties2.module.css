@@ -1,8 +1,8 @@
 /* Holiday Homes Card - Clean Layout */
 .propertyCard {
   display: flex;
-  width: 400px;
-  min-height: 30px;
+  width: 460px;
+  min-height: 440px;
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -10,6 +10,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   flex-shrink: 0;
+  margin: 0 10px;
 }
 
 .propertyCard:hover {
@@ -131,6 +132,7 @@
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -231,6 +233,62 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(241, 145, 61, 0.3);
+}
+
+/* Swiper Container and Slide Styling */
+.wrap-properties-sw .swiper {
+  padding: 0 20px !important;
+  margin: 0 !important;
+}
+
+.swiper-slide {
+  width: 480px !important;
+  margin-right: 0 !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure proper spacing between slides */
+.swiper-slide + .swiper-slide {
+  margin-left: 20px !important;
+}
+
+/* Pagination Dots Styling */
+.spd-properties {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-top: 30px !important;
+  gap: 8px !important;
+  width: 100% !important;
+  text-align: center !important;
+  position: relative !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.swiper-pagination {
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.spd-properties .swiper-pagination-bullet {
+  width: 12px !important;
+  height: 12px !important;
+  background: #e5e7eb !important;
+  opacity: 1 !important;
+  margin: 0 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+.spd-properties .swiper-pagination-bullet-active {
+  background: #f1913d !important;
+  transform: scale(1.2) !important;
+}
+
+.spd-properties .swiper-pagination-bullet:hover {
+  background: #f1913d !important;
+  opacity: 0.7 !important;
 }
 
 /* Responsive */

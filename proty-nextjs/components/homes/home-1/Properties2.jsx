@@ -139,26 +139,31 @@ export default function Properties2() {
             <div className="wrap-properties-sw">
               <Swiper
                 dir="ltr"
-                className=" style-pagination sw-properties"
-                slidesPerView={1}
-                spaceBetween={15}
+                className="swiper style-pagination sw-properties"
+                slidesPerView={2}
+                spaceBetween={60}
                 loop={true}
                 autoplay={{
-                  delay: 34444500,
+                  delay: 5000,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }}
                 modules={[Pagination, Autoplay]}
-                pagination={{ el: ".spd-properties", clickable: true }}
+                pagination={{ 
+                  el: ".spd-properties", 
+                  clickable: true,
+                  dynamicBullets: true,
+                  type: 'bullets'
+                }}
                 breakpoints={{
-                  0: { slidesPerView: 1, spaceBetween: 15 },
-                  576: { slidesPerView: 1, spaceBetween: 15 },
-                  768: { slidesPerView: 2, spaceBetween: 20 },
-                  992: { slidesPerView: 2, spaceBetween: 30 },
-                  1200: { slidesPerView: 3, spaceBetween: 30 },
+                  0: { slidesPerView: 1, spaceBetween: 30 },
+                  576: { slidesPerView: 1, spaceBetween: 40 },
+                  768: { slidesPerView: 2, spaceBetween: 50 },
+                  992: { slidesPerView: 2, spaceBetween: 60 },
+                  1200: { slidesPerView: 2, spaceBetween: 60 },
                 }}
               >
-                {listings.slice(0, 6).map((property) => {
+                {listings.map((property) => {
                   const imageSrc = getImageSource(property);
                   return (
                   <SwiperSlide key={property._id}>
@@ -171,8 +176,8 @@ export default function Properties2() {
                               className="lazyload"
                               alt={property.propertyKeyword || property.propertyType || "Property"}
                               src={imageSrc || "/images/section/box-house-1.jpg"}
-                              width={300}
-                              height={220}
+                              width={370}
+                              height={260}
                               style={{
                                 width: '100%',
                                 height: '100%',
@@ -199,9 +204,6 @@ export default function Properties2() {
                           {/* Action Buttons */}
                           <div className={styles.actionButtons}>
                             <FavoriteButton propertyId={property._id} showLabel={false} />
-                            <a href="#" className={styles.quickViewBtn}>
-                              <i className="icon-find-plus" />
-                            </a>
                           </div>
                         </div>
                         
