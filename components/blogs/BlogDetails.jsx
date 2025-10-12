@@ -78,13 +78,29 @@ export default function BlogDetails({ blog }) {
                 </div>
               </div>
             </div>
-            <div className="image-wrap">
+            <div className="image-wrap" style={{
+              width: '100%',
+              height: '400px',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              position: 'relative',
+              backgroundColor: '#f8f9fa'
+            }}>
               <Image
                 className="lazyload"
                 alt="Blog detail image"
                 width={900}
-                height={500}
-                src={blog.imageSrc}
+                height={400}
+                src={blog.imageSrc || "/images/blog/blog-1.jpg"}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+                onError={(e) => {
+                  e.target.src = "/images/blog/blog-1.jpg";
+                }}
               />
             </div>
             <div className="content">
