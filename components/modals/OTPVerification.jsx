@@ -166,10 +166,6 @@ export default function OTPVerification({
 
   if (!isOpen || !isMounted) return null;
 
-  // Debug logging for production
-  console.log('🔄 OTPVerification: Rendering modal with isOpen:', isOpen, 'isMounted:', isMounted);
-
-  // Simple inline-styled modal without CSS modules or portals
   return (
     <div 
       style={{
@@ -190,21 +186,6 @@ export default function OTPVerification({
         }
       }}
     >
-      {/* Debug indicator */}
-      <div style={{
-        position: 'absolute',
-        top: '20px',
-        left: '20px',
-        background: 'lime',
-        color: 'black',
-        padding: '10px',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        zIndex: 1000000,
-        borderRadius: '4px'
-      }}>
-        OTP MODAL IS RENDERING
-      </div>
       
       {/* Modal content */}
       <div style={{
