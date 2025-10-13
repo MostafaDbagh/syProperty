@@ -637,7 +637,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
               fontWeight: '600',
               cursor: loading ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',
-              minWidth: '120px'
+              minWidth: window.innerWidth <= 360 ? '100%' : '120px'
             }}
             onMouseEnter={(e) => {
               if (!loading) {

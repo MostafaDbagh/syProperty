@@ -299,8 +299,8 @@ export default function Listings({ agentId }) {
                         <span>{property.size || property.landArea || 0}</span>Sqft
                       </li>
                     </ul>
-                    <div className="bot flex justify-between items-center">
-                      <h5 className="price">${(property.propertyPrice || 0).toLocaleString()}</h5>
+                    {/* Contact Section */}
+                    <div className="contact-section" style={{ marginBottom: '16px' }}>
                       <div className="wrap-btn flex">
                         <div className="call-button-container" style={{ position: 'relative' }}>
                           <button 
@@ -308,30 +308,30 @@ export default function Listings({ agentId }) {
                             className="call flex gap-8 items-center text-1"
                             style={{
                               background: 'white',
-                              border: '1px solid #8B5CF6',
+                              border: '1px solid #F97316',
                               borderRadius: '8px',
                               padding: '8px 12px',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px',
-                              color: '#8B5CF6',
+                              color: '#F97316',
                               fontSize: '14px',
                               fontWeight: '500',
                               transition: 'all 0.2s ease',
-                              minWidth: '120px',
+                              minWidth: window.innerWidth <= 360 ? '100%' : '120px',
                               justifyContent: 'center'
                             }}
                             onMouseEnter={(e) => {
                               if (!showPhoneNumbers[property._id]) {
-                                e.target.style.backgroundColor = '#8B5CF6';
+                                e.target.style.backgroundColor = '#F97316';
                                 e.target.style.color = 'white';
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!showPhoneNumbers[property._id]) {
                                 e.target.style.backgroundColor = 'white';
-                                e.target.style.color = '#8B5CF6';
+                                e.target.style.color = '#F97316';
                               }
                             }}
                           >
@@ -409,13 +409,88 @@ export default function Listings({ agentId }) {
                             </div>
                           )}
                         </div>
+                        
+                        {/* Email Button */}
+                        <button
+                          onClick={() => window.open(`mailto:${property.agentEmail || 'info@example.com'}?subject=Inquiry about ${property.propertyTitle || 'Property'}`)}
+                          style={{
+                            background: 'white',
+                            border: '1px solid #F97316',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            color: '#F97316',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s ease',
+                            minWidth: '120px',
+                            justifyContent: 'center'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#F97316';
+                            e.target.style.color = 'white';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'white';
+                            e.target.style.color = '#F97316';
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          Email
+                        </button>
+
+                        {/* Details Button */}
                         <Link
                           href={`/property-detail/${property._id}`}
-                          className="tf-btn style-border pd-4"
+                          style={{
+                            background: '#F97316',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            color: 'white',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s ease',
+                            minWidth: '120px',
+                            justifyContent: 'center',
+                            textDecoration: 'none'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#EA580C';
+                            e.target.style.color = 'white';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#F97316';
+                            e.target.style.color = 'white';
+                          }}
                         >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <polyline points="14,2 14,8 20,8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <polyline points="10,9 9,9 8,9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
                           Details
                         </Link>
                       </div>
+                    </div>
+
+                    {/* Price Section - Full Width */}
+                    <div className="price-section" style={{ width: '100%', textAlign: 'center', padding: '12px 0', borderTop: '1px solid #e5e7eb' }}>
+                      <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
+                        $ {(property.propertyPrice || 0).toLocaleString()}
+                      </h5>
                     </div>
                   </div>
                 </div>

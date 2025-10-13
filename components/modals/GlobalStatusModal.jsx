@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { createPortal } from "react-dom";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 
 export default function GlobalStatusModal({ 
   isOpen, 
@@ -10,6 +11,8 @@ export default function GlobalStatusModal({
   message,
   userEmail
 }) {
+  // Use GlobalModal context for opening login modal
+  const { showLoginModal } = useGlobalModal();
   if (!isOpen) {
     return null;
   }
@@ -117,26 +120,13 @@ export default function GlobalStatusModal({
                 {isSuccess && (
                   <button
                     onClick={() => {
+                      console.log('🔑 Login Now button clicked - closing success modal and opening login modal');
                       onClose();
                       // Open login modal after a short delay
                       setTimeout(() => {
-                        const loginModal = document.getElementById('modalLogin');
-                        if (loginModal && window.bootstrap?.Modal) {
-                          const modal = window.bootstrap.Modal.getOrCreateInstance(loginModal);
-                          modal.show();
-                        } else {
-                          // Fallback: manually show login modal
-                          if (loginModal) {
-                            loginModal.classList.add('show');
-                            loginModal.style.display = 'block';
-                            document.body.classList.add('modal-open');
-                            
-                            const backdrop = document.createElement('div');
-                            backdrop.className = 'modal-backdrop fade show';
-                            document.body.appendChild(backdrop);
-                          }
-                        }
-                      }, 100);
+                        console.log('🔑 Opening login modal via GlobalModalContext');
+                        showLoginModal();
+                      }, 200);
                     }}
                     className="tf-btn bg-color-primary"
                     style={{
@@ -146,7 +136,7 @@ export default function GlobalStatusModal({
                       fontSize: '16px',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      minWidth: '120px',
+                      minWidth: window.innerWidth <= 360 ? '100%' : '120px',
                       background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                       color: 'white'
                     }}
@@ -165,7 +155,7 @@ export default function GlobalStatusModal({
                     fontSize: '16px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    minWidth: '120px',
+                    minWidth: window.innerWidth <= 360 ? '100%' : '120px',
                     backgroundColor: 'transparent',
                     color: 'var(--Text)'
                   }}

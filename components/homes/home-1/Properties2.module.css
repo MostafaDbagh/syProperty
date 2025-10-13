@@ -1,7 +1,7 @@
 /* Holiday Homes Card - Clean Layout */
 .propertyCard {
   display: flex;
-  width: 460px;
+  width: 480px;
   min-height: 440px;
   background: white;
   border-radius: 12px;
@@ -233,6 +233,83 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(241, 145, 61, 0.3);
+}
+
+/* Action Buttons Section - Tab Style */
+.actionButtonsSection {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.actionButtonsVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Action Tab - Same style as detailItem tabs */
+.actionTab {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  white-space: nowrap;
+  width: 100%;
+  min-height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  color: #4b5563;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.actionTab:hover {
+  background: #f1913d;
+  color: white;
+  transform: translateY(-2px);
+  border: 2px solid #f1913d;
+  box-shadow: 0 4px 12px rgba(241, 145, 61, 0.3);
+}
+
+.actionTab i {
+  color: #f1913d;
+  font-size: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.actionTab:hover i {
+  color: white;
+}
+
+.actionTab span {
+  font-size: 12px;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  transition: color 0.3s ease;
+}
+
+.actionTab:hover span {
+  color: white;
+}
+
+.actionTab strong {
+  color: #f1913d;
+  font-weight: 700;
+  font-size: 14px;
+  margin-left: 4px;
+  transition: color 0.3s ease;
+}
+
+.actionTab:hover strong {
+  color: white;
 }
 
 /* Swiper Container and Slide Styling */
