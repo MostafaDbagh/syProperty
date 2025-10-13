@@ -39,11 +39,9 @@ export default function Login({ isOpen, onClose }) {
   }, [isOpen]);
 
   const handleForgotPasswordClick = () => {
-    console.log('🔑 Forgot password clicked - closing login modal first');
     // Close login modal first, then open forgot password flow
     closeModal();
     setTimeout(() => {
-      console.log('🔑 Opening forgot password flow');
       showForgotPasswordModal();
     }, 200);
   };

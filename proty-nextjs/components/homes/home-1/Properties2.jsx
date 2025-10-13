@@ -139,12 +139,12 @@ export default function Properties2() {
             <div className="wrap-properties-sw">
               <Swiper
                 dir="ltr"
-                className="swiper style-pagination sw-properties"
+                className=" style-pagination sw-properties"
                 slidesPerView={2}
-                spaceBetween={60}
+                spaceBetween={30}
                 loop={true}
                 autoplay={{
-                  delay: 5000,
+                  delay:5000,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }}
@@ -251,6 +251,38 @@ export default function Properties2() {
                               <i className="icon-garage" />
                               <span>Garage <strong>{property.garages ? 'Yes' : 'No'}</strong></span>
                             </div>
+                          </div>
+                        </div>
+                        
+                        {/* Action Buttons - Tab Style */}
+                        <div className={styles.actionButtonsSection}>
+                          <div className={styles.actionButtonsVertical}>
+                            <button 
+                              className={`${styles.actionTab} ${styles.callTab}`}
+                              onClick={() => {
+                                if (property.agentNumber) {
+                                  window.open(`tel:${property.agentNumber}`, '_self');
+                                } else {
+                                  alert('Phone number not available');
+                                }
+                              }}
+                            >
+                              <i className="icon-phone-1" />
+                              <span ><strong style={{marginLeft: 0}}>+963949112178</strong></span>
+                            </button>
+                            <button 
+                              className={`${styles.actionTab} ${styles.emailTab}`}
+                              onClick={() => {
+                                if (property.agentEmail) {
+                                  window.open(`mailto:${property.agentEmail}`, '_self');
+                                } else {
+                                  alert('Email not available');
+                                }
+                              }}
+                            >
+                              <i className="icon-mail" />
+                              <span><strong>Agent</strong></span>
+                            </button>
                           </div>
                         </div>
                         

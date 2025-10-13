@@ -25,10 +25,10 @@
 
 /* Grid view - Force fixed dimensions - FIX HEIGHT ISSUE */
 .box-house.property-image-fix .image-wrap {
-  width: 400px !important;
+  width: 424px !important;
   height: 280px !important;
-  min-width: 400px !important;
-  max-width: 400px !important;
+  min-width: 424px !important;
+  max-width: 424px !important;
   min-height: 280px !important;
   max-height: 280px !important;
   flex-shrink: 0 !important;
@@ -113,7 +113,7 @@
 /* Additional override for any parent containers that might be forcing full width */
 .tf-grid-layout .box-house.property-image-fix {
   width: auto !important;
-  max-width: 400px !important;
+  max-width: 424px !important;
 }
 
 .tf-grid-layout .box-house.property-list-image-fix {
@@ -124,9 +124,9 @@
 /* More specific grid layout overrides - FULL HEIGHT IMAGES */
 .tf-grid-layout.lg-col-3 .box-house.property-image-fix .image-wrap,
 .tf-grid-layout.md-col-2 .box-house.property-image-fix .image-wrap {
-  width: 400px !important;
+  width: 424px !important;
   height: 280px !important;
-  max-width: 400px !important;
+  max-width: 424px !important;
   max-height: 280px !important;
   flex-shrink: 0 !important;
 }
@@ -141,13 +141,13 @@
 
 /* Fix box-house container taking full width - Most aggressive override - WIDER CARDS */
 .box-house.property-image-fix {
-  width: 400px !important;
-  max-width: 400px !important;
-  min-width: 400px !important;
+  width: 424px !important;
+  max-width: 424px !important;
+  min-width: 424px !important;
   display: block !important;
   flex-shrink: 0 !important;
   flex-grow: 0 !important;
-  flex-basis: 400px !important;
+  flex-basis: 424px !important;
   box-sizing: border-box !important;
 }
 
@@ -173,8 +173,8 @@
 .tf-grid-layout.lg-col-3 .box-house.property-image-fix,
 .tf-grid-layout.md-col-2 .box-house.property-image-fix {
   grid-column: auto !important;
-  width: 400px !important;
-  max-width: 400px !important;
+  width: 424px !important;
+  max-width: 424px !important;
   justify-self: start !important;
   align-self: start !important;
 }
@@ -195,8 +195,8 @@
 
 /* Ensure the entire card doesn't stretch - WIDER CARDS */
 .tf-grid-layout .box-house.property-image-fix {
-  width: 400px !important;
-  max-width: 400px !important;
+  width: 424px !important;
+  max-width: 424px !important;
   justify-self: start !important;
   align-self: start !important;
   flex: none !important;
