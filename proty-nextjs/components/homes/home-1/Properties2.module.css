@@ -110,7 +110,7 @@
 /* Right Content Section */
 .contentSection {
   flex-shrink: 0;
-  padding: 20px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
