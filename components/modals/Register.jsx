@@ -22,8 +22,8 @@ export default function Register({ isOpen, onClose }) {
   // Use GlobalModal context for other modals
   const { showLoginModal, showOTPModal } = useGlobalModal();
 
-  const closeModal = useCallback(() => {
-    // Reset form when closing
+  // Function to completely reset form data (call this after successful registration)
+  const resetFormData = useCallback(() => {
     setFormData({
       username: "",
       email: "",
@@ -31,6 +31,19 @@ export default function Register({ isOpen, onClose }) {
       confirmPassword: "",
       role: "user"
     });
+    setFieldErrors({});
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setError('');
+  }, []);
+
+  const closeModal = useCallback(() => {
+    // Keep form data persistent - only clear password fields for security
+    setFormData(prev => ({
+      ...prev,
+      password: "",
+      confirmPassword: ""
+    }));
     setFieldErrors({});
     setShowPassword(false);
     setShowConfirmPassword(false);

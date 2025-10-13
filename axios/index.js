@@ -1,7 +1,8 @@
 import axios from 'axios'
-
+const localhost = 'http://localhost:5500/api'
+const heroku = 'https://proty-api-mostafa-56627d8ca9aa.herokuapp.com/api'
 export const Axios = axios.create({
-  baseURL: 'http://localhost:5500/api', 
+  baseURL: heroku, 
   timeout: 10000, // Request timeout in milliseconds
   headers: {
     'Content-Type': 'application/json',

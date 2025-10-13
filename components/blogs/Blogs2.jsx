@@ -179,59 +179,7 @@ export default function Blogs2() {
                   </div>
                 </div>
 
-              {/* CTA Button */}
-              <div style={{
-                display: 'flex',
-                gap: '16px',
-                flexWrap: 'wrap',
-                justifyContent: 'center'
-              }}>
-                <button style={{
-                  padding: '12px 24px',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#2563eb';
-                  e.target.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#3b82f6';
-                  e.target.style.transform = 'translateY(0)';
-                }}>
-                  Notify Me When Ready
-                </button>
-                
-                <button style={{
-                  padding: '12px 24px',
-                  backgroundColor: 'transparent',
-                  color: '#3b82f6',
-                  border: '2px solid #3b82f6',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#3b82f6';
-                  e.target.style.color = 'white';
-                  e.target.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                  e.target.style.color = '#3b82f6';
-                  e.target.style.transform = 'translateY(0)';
-                }}>
-                  Explore Properties
-                </button>
-              </div>
+          
             </div>
           </div>
         </div>
