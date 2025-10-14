@@ -9,6 +9,7 @@ import agentAPI from './agent';
 import pointAPI from './points';
 import { messageAPI } from './message';
 import { newsletterAPI } from './newsletter';
+import dashboardAPI from './dashboard';
 
 // Export all APIs
 export {
@@ -21,7 +22,8 @@ export {
   agentAPI,
   pointAPI,
   messageAPI,
-  newsletterAPI
+  newsletterAPI,
+  dashboardAPI
 };
 
 // Default export with all APIs
@@ -35,7 +37,8 @@ export default {
   agent: agentAPI,
   points: pointAPI,
   message: messageAPI,
-  newsletter: newsletterAPI
+  newsletter: newsletterAPI,
+  dashboard: dashboardAPI
 };
 
 // Individual exports for convenience
@@ -49,3 +52,4 @@ export const agent = agentAPI;
 export const points = pointAPI;
 export const message = messageAPI;
 export const newsletter = newsletterAPI;
+export const dashboard = dashboardAPI;

@@ -4,7 +4,7 @@ import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
 import { properties5 } from "@/data/properties";
-import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings } from "@/apis/hooks";
+import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics, useDashboardNotifications } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
 
 export default function Dashboard() {
@@ -39,9 +39,35 @@ export default function Dashboard() {
     error: mostVisitedError 
   } = useMostVisitedListings(userData?.id, { limit: 5 });
 
+  // Fetch dashboard stats from API
+  const { 
+    data: dashboardStats, 
+    isLoading: statsLoading, 
+    error: statsError 
+  } = useDashboardStats();
+
+  // Fetch dashboard analytics
+  const { 
+    data: dashboardAnalytics, 
+    isLoading: analyticsLoading, 
+    error: analyticsError 
+  } = useDashboardAnalytics('30d');
+
+  // Fetch dashboard notifications
+  const { 
+    data: dashboardNotifications, 
+    isLoading: notificationsLoading, 
+    error: notificationsError 
+  } = useDashboardNotifications();
+
   const recentMessages = messagesData?.data || [];
   const recentReviews = reviewsData?.data || [];
   const mostVisitedListings = mostVisitedData?.data || [];
+  
+  // Extract dashboard data
+  const stats = dashboardStats?.data || {};
+  const analytics = dashboardAnalytics?.data || {};
+  const notifications = dashboardNotifications?.data || {};
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -62,10 +88,27 @@ export default function Dashboard() {
   };
   return (
     <div className="main-content w-100">
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
       <div className="main-content-inner">
         <div className="button-show-hide show-mb">
           <span className="body-1">Show Dashboard</span>
         </div>
+        
+        {/* Error handling for dashboard stats */}
+        {statsError && (
+          <div className="alert alert-danger" style={{ marginBottom: '20px', borderRadius: '8px' }}>
+            <strong>Error loading dashboard data:</strong> {statsError.message || 'Failed to load dashboard statistics'}
+          </div>
+        )}
         {/* First Row - 3 Cards */}
         <div className="row" style={{ marginBottom: '24px' }}>
           <div className="col-lg-4 col-md-6 mb-3">
@@ -109,8 +152,19 @@ export default function Dashboard() {
               <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Balance</div>
                 <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>$2,450</div>
-                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>Available</span>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                        ${stats.balance?.toLocaleString() || '0'}
+                      </div>
+                      <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>Available</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -183,8 +237,21 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Your listing</div>
               <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>32</div>
-                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>/50 remaining</span>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                        {stats.totalListings || 0}
+                      </div>
+                      <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>
+                        /{stats.listingLimit || 50} remaining
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -243,7 +310,16 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Pending</div>
               <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>02</div>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                      {String(stats.pendingListings || 0).padStart(2, '0')}
+                    </div>
+                  )}
                 </div>
               </div>
               </div>
@@ -299,7 +375,16 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Favorites</div>
               <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>06</div>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                      {String(stats.totalFavorites || 0).padStart(2, '0')}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -351,7 +436,16 @@ export default function Dashboard() {
               <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Reviews</div>
                 <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>1.483</div>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                      {stats.totalReviews ? stats.totalReviews.toFixed(3) : '0.000'}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -410,8 +504,23 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Messages</div>
               <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>8</div>
-                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>New</span>
+                  {statsLoading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.3)', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+                      <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
+                        {stats.totalMessages || 0}
+                      </div>
+                      {stats.unreadMessages > 0 && (
+                        <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>
+                          {stats.unreadMessages} New
+                        </span>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
