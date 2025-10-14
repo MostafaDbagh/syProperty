@@ -1,16 +1,28 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuthState } from "@/store/hooks/useAuth";
 import React from "react";
 import FavoritesCount from "@/components/common/FavoritesCount";
 import ReviewsCount from "@/components/common/ReviewsCount";
 import MessagesCount from "@/components/common/MessagesCount";
 import PropertiesCount from "@/components/common/PropertiesCount";
+import { useAuthState } from "@/store/hooks/useAuth";
+import { authAPI } from "@/apis/auth";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { isAgent } = useAuthState();
+  const { isAgent, logout: logoutUser } = useAuthState();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      await authAPI.signout();
+      logoutUser(); // This will handle the redirect to home page
+    } catch (error) {
+      // Still logout and redirect even if API call fails
+      logoutUser(); // This will handle the redirect to home page
+    }
+  };
   return (
     <div className="wrap-sidebar">
       <div className="sidebar-menu-dashboard">
@@ -238,7 +250,17 @@ export default function Sidebar() {
               </li>
             )}
             <li className={`nav-menu-item `}>
-              <Link className="nav-menu-link" href={`/`}>
+              <button 
+                className="nav-menu-link" 
+                onClick={handleLogout}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  width: '100%', 
+                  textAlign: 'left',
+                  cursor: 'pointer'
+                }}
+              >
                 <svg width={20}
                   height={20}
                   viewBox="0 0 20 20"
@@ -268,7 +290,7 @@ export default function Sidebar() {
                   />
                 </svg>
                 Logout
-              </Link>
+              </button>
             </li>
           </ul>
         </div>

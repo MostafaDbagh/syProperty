@@ -68,9 +68,11 @@ export default function DashboardNav({ color = "" }) {
     e.preventDefault();
     try {
       await authAPI.signout();
+      logoutUser(); // This will handle the redirect to home page
       setIsDDOpen(false);
     } catch (error) {
-      // Still close dropdown even if API call fails
+      // Still logout and redirect even if API call fails
+      logoutUser(); // This will handle the redirect to home page
       setIsDDOpen(false);
     }
   };

@@ -47,9 +47,9 @@ Axios.interceptors.response.use(
         localStorage.removeItem('token');
         document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         
-        // Redirect to login page
+        // Redirect to home page
         if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+          window.location.href = '/';
         }
       }
     }
