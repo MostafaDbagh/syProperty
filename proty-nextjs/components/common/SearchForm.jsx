@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
 import Slider from "rc-slider";
+import { provinceOptions } from "@/data/provinces";
 
 export default function SearchForm({
   parentClass = "wd-search-form",
@@ -164,18 +165,9 @@ export default function SearchForm({
           </label>
           <DropdownSelect
             id="provinceSelect"
-            options={[
-              "Province / States",
-              "California",
-              "Texas",
-              "Florida",
-              "New York",
-              "Illinois",
-              "Washington",
-              "Pennsylvania",
-            ]}
+            options={provinceOptions}
             addtionalParentClass=""
-            value={searchParams.province || "Province / States"}
+            value={searchParams.province || "All"}
             onChange={(value) => handleChange("state", value)}
           />
         </div>
