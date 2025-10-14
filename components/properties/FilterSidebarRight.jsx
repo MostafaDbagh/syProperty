@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import DropdownSelect from "../common/DropdownSelect";
 import Slider from "rc-slider";
+import { provinceOptions } from "@/data/provinces";
 
 export default function FilterSidebarRight() {
   const [priceRange, setPriceRange] = useState([100, 700]);
@@ -171,16 +172,7 @@ export default function FilterSidebarRight() {
           <div className="group-select">
             <div className="box-select">
               <DropdownSelect
-                options={[
-                  "Province / States",
-                  "California",
-                  "Texas",
-                  "Florida",
-                  "New York",
-                  "Illinois",
-                  "Washington",
-                  "Pennsylvania",
-                ]}
+                options={provinceOptions}
                 addtionalParentClass=""
               />
             </div>

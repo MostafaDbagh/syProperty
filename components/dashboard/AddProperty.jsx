@@ -5,6 +5,7 @@ import DropdownSelect from "../common/DropdownSelect";
 import { useCreateListing } from "@/apis/hooks";
 import Toast from "../common/Toast";
 import { useRouter } from "next/navigation";
+import { syrianProvinces } from "@/data/provinces";
 
 export default function AddProperty() {
   const router = useRouter();
@@ -27,9 +28,9 @@ export default function AddProperty() {
     garageSize: "",
     yearBuilt: "",
     address: "",
-    country: "United States",
-    state: "Texas",
-    neighborhood: "Little Italy",
+    country: "Syria",
+    state: "Aleppo",
+    neighborhood: "Downtown",
     agent: "",
     agentId: "",
     amenities: [],
@@ -258,9 +259,9 @@ export default function AddProperty() {
         garageSize: "",
         yearBuilt: "",
         address: "",
-        country: "United States",
-        state: "Texas",
-        neighborhood: "Little Italy",
+        country: "Syria",
+        state: "Aleppo",
+        neighborhood: "Downtown",
         agent: user?.email || "",
         agentId: user?._id || "",
         amenities: [],
@@ -430,7 +431,7 @@ export default function AddProperty() {
                   </label>
                   <DropdownSelect
                     name="country"
-                    options={["United States", "United Kingdom", "UAE", "Canada", "Australia"]}
+                    options={["Syria", "United States", "United Kingdom", "UAE", "Canada", "Australia"]}
                     selectedValue={formData.country}
                     onChange={(value) => handleDropdownChange('country', value)}
                     addtionalParentClass=""
@@ -446,7 +447,7 @@ export default function AddProperty() {
                   </label>
                   <DropdownSelect
                     name="state"
-                    options={["Texas", "New York", "California", "Florida", "Damascus"]}
+                    options={syrianProvinces}
                     selectedValue={formData.state}
                     onChange={(value) => handleDropdownChange('state', value)}
                     addtionalParentClass=""
