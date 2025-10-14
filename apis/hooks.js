@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI, messageAPI, newsletterAPI } from './index';
+import { authAPI, listingAPI, reviewAPI, contactAPI, favoriteAPI, agentAPI, pointAPI, messageAPI, newsletterAPI, dashboardAPI } from './index';
 
 // Authentication hooks
 export const useAuth = () => {
@@ -414,5 +414,47 @@ export const useNewsletterStats = () => {
     queryFn: newsletterAPI.getStats,
     staleTime: 10 * 60 * 1000, // 10 minutes
     enabled: false, // Only fetch when explicitly called (admin only)
+  });
+};
+
+// Dashboard hooks
+export const useDashboardStats = () => {
+  return useQuery({
+    queryKey: ['dashboard', 'stats'],
+    queryFn: dashboardAPI.getDashboardStats,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+
+export const useDashboardAnalytics = (period = '30d') => {
+  return useQuery({
+    queryKey: ['dashboard', 'analytics', period],
+    queryFn: () => dashboardAPI.getDashboardAnalytics(period),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: true,
+    retry: 2,
+  });
+};
+
+export const useDashboardNotifications = () => {
+  return useQuery({
+    queryKey: ['dashboard', 'notifications'],
+    queryFn: dashboardAPI.getDashboardNotifications,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
+    retry: 2,
+  });
+};
+
+export const useDashboardHealth = () => {
+  return useQuery({
+    queryKey: ['dashboard', 'health'],
+    queryFn: dashboardAPI.getDashboardHealth,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // Refetch every minute
+    retry: 1,
   });
 };

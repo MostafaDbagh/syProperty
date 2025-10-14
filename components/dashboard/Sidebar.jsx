@@ -4,6 +4,9 @@ import { usePathname } from "next/navigation";
 import { useAuthState } from "@/store/hooks/useAuth";
 import React from "react";
 import FavoritesCount from "@/components/common/FavoritesCount";
+import ReviewsCount from "@/components/common/ReviewsCount";
+import MessagesCount from "@/components/common/MessagesCount";
+import PropertiesCount from "@/components/common/PropertiesCount";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -157,34 +160,6 @@ export default function Sidebar() {
               } `}
             >
               <Link className="nav-menu-link" href={`/my-favorites`}>
-                <svg width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-                  <path
-                    d="M3.33203 18.3333H14.9987C15.4407 18.3333 15.8646 18.1577 16.1772 17.8451C16.4898 17.5326 16.6654 17.1087 16.6654 16.6666V5.83329L12.4987 1.66663H4.9987C4.55667 1.66663 4.13275 1.84222 3.82019 2.15478C3.50763 2.46734 3.33203 2.89127 3.33203 3.33329V4.99996"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M11.668 1.66663V4.99996C11.668 5.44199 11.8436 5.86591 12.1561 6.17847C12.4687 6.49103 12.8926 6.66663 13.3346 6.66663H16.668"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M8.574 8.91662C8.28934 8.63239 7.92648 8.43938 7.53169 8.3622C7.1369 8.28503 6.72807 8.32718 6.35733 8.48329C6.11566 8.58329 5.89066 8.73329 5.70733 8.92496L5.41566 9.20829L5.124 8.92496C4.84097 8.641 4.48002 8.44744 4.08689 8.36882C3.69376 8.29019 3.28613 8.33003 2.91566 8.48329C2.66566 8.58329 2.449 8.73329 2.25733 8.92496C1.46566 9.70829 1.424 11.0333 2.424 12.0416L5.41566 15L8.41566 12.0416C9.41566 11.0333 9.36566 9.70829 8.574 8.92496V8.91662Z"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
                 <FavoritesCount />
               </Link>
             </li>
@@ -195,35 +170,7 @@ export default function Sidebar() {
               } `}
             >
               <Link className="nav-menu-link" href={`/review`}>
-                <svg width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-                  <path
-                    d="M17.5 12.5C17.5 12.942 17.3244 13.366 17.0118 13.6785C16.6993 13.9911 16.2754 14.1667 15.8333 14.1667H5.83333L2.5 17.5V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H15.8333C16.2754 2.5 16.6993 2.67559 17.0118 2.98816C17.3244 3.30072 17.5 3.72464 17.5 4.16667V12.5Z"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M6.66797 9.99996C7.11 9.99996 7.53392 9.82436 7.84648 9.5118C8.15904 9.19924 8.33464 8.77532 8.33464 8.33329V6.66663H6.66797"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M11.668 9.99996C12.11 9.99996 12.5339 9.82436 12.8465 9.5118C13.159 9.19924 13.3346 8.77532 13.3346 8.33329V6.66663H11.668"
-                    stroke="#A8ABAE"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                Reviews
+                <ReviewsCount />
               </Link>
             </li>
             {/* Messages - Only for agents */}
@@ -234,35 +181,7 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/messages`}>
-                  <svg width={20}
-                    height={20}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                   aria-hidden="true">
-                    <path
-                      d="M17.5 4.16667H2.5C2.05833 4.16667 1.63441 4.34226 1.32185 4.65482C1.00929 4.96738 0.833694 5.3913 0.833694 5.83333V14.1667C0.833694 14.6087 1.00929 15.0326 1.32185 15.3452C1.63441 15.6577 2.05833 15.8333 2.5 15.8333H17.5C17.9417 15.8333 18.3656 15.6577 18.6782 15.3452C18.9907 15.0326 19.1663 14.6087 19.1663 14.1667V5.83333C19.1663 5.3913 18.9907 4.96738 18.6782 4.65482C18.3656 4.34226 17.9417 4.16667 17.5 4.16667Z"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M5.83331 8.33333H14.1666"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M5.83331 11.6667H10.8333"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Messages
+                  <MessagesCount />
                 </Link>
               </li>
             )}
@@ -274,91 +193,7 @@ export default function Sidebar() {
                 } `}
               >
                 <Link className="nav-menu-link" href={`/my-property`}>
-                  <svg width={20}
-                    height={20}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                   aria-hidden="true">
-                    <path
-                      d="M15 15C16.3807 15 17.5 13.8807 17.5 12.5C17.5 11.1193 16.3807 10 15 10C13.6193 10 12.5 11.1193 12.5 12.5C12.5 13.8807 13.6193 15 15 15Z"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M7.5013 9.16667C9.34225 9.16667 10.8346 7.67428 10.8346 5.83333C10.8346 3.99238 9.34225 2.5 7.5013 2.5C5.66035 2.5 4.16797 3.99238 4.16797 5.83333C4.16797 7.67428 5.66035 9.16667 7.5013 9.16667Z"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M8.33464 12.5H5.0013C4.11725 12.5 3.2694 12.8512 2.64428 13.4763C2.01916 14.1014 1.66797 14.9493 1.66797 15.8333V17.5"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M18.082 13.6666L17.332 13.4166"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12.668 11.5834L11.918 11.3334"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M13.832 15.5834L14.082 14.8334"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M15.918 10.1666L16.168 9.41663"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16.3333 15.5833L16 14.75"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M14.0013 10.25L13.668 9.41663"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M11.918 13.8333L12.7513 13.5"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M17.25 11.5L18.0833 11.1666"
-                      stroke="#A8ABAE"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  My properties
+                  <PropertiesCount />
                 </Link>
               </li>
             )}
