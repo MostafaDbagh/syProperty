@@ -15,6 +15,7 @@ const pointRoutes = require('./routes/point.route');
 const messageRoutes = require('./routes/message.route');
 const newsletterRoutes = require('./routes/newsletter.route');
 const blogRoutes = require('./routes/blog.route');
+const dashboardRoutes = require('./routes/dashboard.route');
 
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api/points', pointRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 
 
