@@ -67,11 +67,10 @@ export default function DashboardNav({ color = "" }) {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      // Use the logout function from useAuth hook which handles redirect
-      logoutUser();
+      await authAPI.signout();
       setIsDDOpen(false);
     } catch (error) {
-      // Still close dropdown even if logout fails
+      // Still close dropdown even if API call fails
       setIsDDOpen(false);
     }
   };

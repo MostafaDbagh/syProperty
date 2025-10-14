@@ -4,7 +4,7 @@ import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
 import { properties5 } from "@/data/properties";
-import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics } from "@/apis/hooks";
+import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
 
 export default function Dashboard() {
@@ -14,24 +14,9 @@ export default function Dashboard() {
     // Get user data from localStorage
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
-      const userData = JSON.parse(storedUserData);
-      setUserData(userData);
+      setUserData(JSON.parse(storedUserData));
     }
   }, []);
-
-  // Fetch dashboard statistics
-  const { 
-    data: dashboardStats, 
-    isLoading: statsLoading, 
-    error: statsError 
-  } = useDashboardStats();
-
-  // Fetch dashboard analytics
-  const { 
-    data: dashboardAnalytics, 
-    isLoading: analyticsLoading, 
-    error: analyticsError 
-  } = useDashboardAnalytics();
 
   // Fetch recent messages (last 5)
   const { 
@@ -54,20 +39,9 @@ export default function Dashboard() {
     error: mostVisitedError 
   } = useMostVisitedListings(userData?.id, { limit: 5 });
 
-  // Use dashboard analytics data if available, fallback to individual API calls
-  const recentMessages = dashboardAnalytics?.data?.recentMessages || messagesData?.data || [];
-  const recentReviews = dashboardAnalytics?.data?.recentReviews || reviewsData?.data || [];
-  const mostVisitedListings = dashboardAnalytics?.data?.mostVisitedListings || mostVisitedData?.data || [];
-  
-  // Extract real data from dashboard stats
-  const stats = dashboardStats?.data || {};
-  const balance = stats.balance?.amount || 0;
-  const totalListings = stats.listings?.total || 0;
-  const pendingListings = stats.listings?.pending || 0;
-  const remainingListings = stats.listings?.remaining || 0;
-  const totalReviews = stats.reviews?.total || 0;
-  const totalFavorites = stats.favorites?.total || 0;
-  const unreadMessages = stats.messages?.unread || 0;
+  const recentMessages = messagesData?.data || [];
+  const recentReviews = reviewsData?.data || [];
+  const mostVisitedListings = mostVisitedData?.data || [];
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -87,71 +61,14 @@ export default function Dashboard() {
     return text.substring(0, maxLength) + "...";
   };
   return (
-    <>
-      <style jsx>{`
-        @keyframes bounce {
-          0%, 80%, 100% {
-            transform: scale(0);
-          }
-          40% {
-            transform: scale(1);
-          }
-        }
-      `}</style>
-      <div className="main-content w-100">
-        <div className="main-content-inner">
+    <div className="main-content w-100">
+      <div className="main-content-inner">
         <div className="button-show-hide show-mb">
           <span className="body-1">Show Dashboard</span>
         </div>
         {/* First Row - 3 Cards */}
         <div className="row" style={{ marginBottom: '24px' }}>
           <div className="col-lg-4 col-md-6 mb-3">
-            {statsLoading ? (
-              <div className="counter-box" style={{ 
-                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                borderRadius: '16px',
-                padding: '28px 24px',
-                color: 'white',
-                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: 'white',
-                    animation: 'bounce 1.4s ease-in-out infinite both'
-                  }}></div>
-                  <div style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: 'white',
-                    animation: 'bounce 1.4s ease-in-out infinite both',
-                    animationDelay: '-0.16s'
-                  }}></div>
-                  <div style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: 'white',
-                    animation: 'bounce 1.4s ease-in-out infinite both',
-                    animationDelay: '-0.32s'
-                  }}></div>
-                </div>
-                <div style={{ fontSize: '14px', opacity: 0.8 }}>Loading...</div>
-              </div>
-            ) : (
         <div className="counter-box" style={{ 
           background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
           borderRadius: '16px',
@@ -192,14 +109,11 @@ export default function Dashboard() {
               <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Balance</div>
                 <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : `$${balance.toLocaleString()}`}
-                  </div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>$2,450</div>
                   <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>Available</span>
                 </div>
               </div>
             </div>
-            )}
           </div>
           <div className="col-lg-4 col-md-6 mb-3">
         <div className="counter-box" style={{ 
@@ -269,12 +183,8 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Your listing</div>
               <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : totalListings}
-                  </div>
-                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>
-                    /{statsLoading ? '...' : `${remainingListings + totalListings}`} remaining
-                  </span>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>32</div>
+                  <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>/50 remaining</span>
                 </div>
               </div>
             </div>
@@ -333,9 +243,7 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Pending</div>
               <div className="box-count d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : pendingListings.toString().padStart(2, '0')}
-                  </div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>02</div>
                 </div>
               </div>
               </div>
@@ -391,9 +299,7 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Favorites</div>
               <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : totalFavorites.toString().padStart(2, '0')}
-                  </div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>06</div>
                 </div>
               </div>
             </div>
@@ -445,9 +351,7 @@ export default function Dashboard() {
               <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Reviews</div>
                 <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : totalReviews.toLocaleString()}
-                  </div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>1.483</div>
                 </div>
               </div>
             </div>
@@ -506,9 +410,7 @@ export default function Dashboard() {
             <div className="content-box">
                 <div className="title-count" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', fontWeight: '500', marginBottom: '12px' }}>Messages</div>
               <div className="d-flex align-items-end">
-                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>
-                    {statsLoading ? '...' : unreadMessages}
-                  </div>
+                  <div className="number" style={{ color: 'white', fontSize: '36px', fontWeight: '700', lineHeight: '1' }}>8</div>
                   <span className="text" style={{ color: 'rgba(255,255,255,0.8)', marginLeft: '10px', fontSize: '14px', marginBottom: '4px' }}>New</span>
                 </div>
               </div>
@@ -903,6 +805,5 @@ export default function Dashboard() {
       </div>
       <div className="overlay-dashboard" />
     </div>
-    </>
   );
 }
