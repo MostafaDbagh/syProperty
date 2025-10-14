@@ -22,7 +22,6 @@ export default function AddProperty() {
     bedrooms: "",
     bathrooms: "",
     size: "",
-    landArea: "",
     furnished: false,
     garages: false,
     garageSize: "",
@@ -253,7 +252,6 @@ export default function AddProperty() {
         bedrooms: "",
         bathrooms: "",
         size: "",
-        landArea: "",
         furnished: false,
         garages: false,
         garageSize: "",
@@ -429,12 +427,17 @@ export default function AddProperty() {
                   <label htmlFor="country">
                     Country:<span>*</span>
                   </label>
-                  <DropdownSelect
+                  <input
+                    type="text"
                     name="country"
-                    options={["Syria", "United States", "United Kingdom", "UAE", "Canada", "Australia"]}
-                    selectedValue={formData.country}
-                    onChange={(value) => handleDropdownChange('country', value)}
-                    addtionalParentClass=""
+                    className="form-control"
+                    value="Syria"
+                    disabled
+                    style={{ 
+                      backgroundColor: '#f5f5f5', 
+                      cursor: 'not-allowed',
+                      color: '#666'
+                    }}
                   />
                   {errors.country && <span className="text-danger">{errors.country}</span>}
                 </fieldset>
@@ -459,12 +462,13 @@ export default function AddProperty() {
                   <label htmlFor="neighborhood">
                     Neighborhood:<span>*</span>
                   </label>
-                  <DropdownSelect
+                  <input
+                    type="text"
                     name="neighborhood"
-                    options={["Little Italy", "Bedford Park", "Smithbury", "Downtown", "Uptown"]}
-                    selectedValue={formData.neighborhood}
-                    onChange={(value) => handleDropdownChange('neighborhood', value)}
-                    addtionalParentClass=""
+                    className="form-control"
+                    placeholder="Enter neighborhood"
+                    value={formData.neighborhood}
+                    onChange={handleInputChange}
                   />
                   {errors.neighborhood && <span className="text-danger">{errors.neighborhood}</span>}
                 </fieldset>
@@ -555,7 +559,7 @@ export default function AddProperty() {
               </fieldset>
             </div>
             
-            <div className="box grid-layout-3 gap-30">
+            <div className="box grid-layout-2 gap-30">
               <fieldset className="box-fieldset">
                 <label htmlFor="size">
                   Size (SqFt):<span>*</span>
@@ -568,20 +572,6 @@ export default function AddProperty() {
                   onChange={handleInputChange}
                 />
                 {errors.size && <span className="text-danger">{errors.size}</span>}
-              </fieldset>
-              
-              <fieldset className="box-fieldset">
-                <label htmlFor="landArea">
-                  Land Area (SqFt):<span>*</span>
-                </label>
-                <input
-                  type="number"
-                  name="landArea"
-                  className="form-control"
-                  value={formData.landArea}
-                  onChange={handleInputChange}
-                />
-                {errors.landArea && <span className="text-danger">{errors.landArea}</span>}
               </fieldset>
               
               <fieldset className="box-fieldset">
@@ -641,28 +631,28 @@ export default function AddProperty() {
               </fieldset>
             </div>
             
-            <div className="box grid-layout-2 gap-30">
+            <div className="box" style={{ display: 'flex', gap: '30px', marginTop: '20px' }}>
               <fieldset className="box-fieldset">
-                <label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input
                     type="checkbox"
                     name="furnished"
                     checked={formData.furnished}
                     onChange={handleInputChange}
                   />
-                  <span className="ml-2">Furnished</span>
+                  <span>Furnished</span>
                 </label>
               </fieldset>
               
               <fieldset className="box-fieldset">
-                <label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input
                     type="checkbox"
                     name="garages"
                     checked={formData.garages}
                     onChange={handleInputChange}
                   />
-                  <span className="ml-2">Has Garages</span>
+                  <span>Has Garages</span>
                 </label>
               </fieldset>
             </div>
