@@ -48,14 +48,14 @@ const getDashboardStats = async (req, res) => {
       // Pending listings
       Listing.countDocuments({ 
         agentId: userId,
-        status: 'pending',
+        approvalStatus: 'pending',
         isDeleted: { $ne: true }
       }),
       
       // Approved listings
       Listing.countDocuments({ 
         agentId: userId,
-        status: 'approved',
+        approvalStatus: 'approved',
         isDeleted: { $ne: true }
       }),
       
@@ -454,7 +454,7 @@ const getDashboardNotifications = async (req, res) => {
       // Pending listings
       Listing.find({
         agentId: userId,
-        status: 'pending',
+        approvalStatus: 'pending',
         isDeleted: { $ne: true }
       }).select('propertyTitle createdAt').limit(5),
 
