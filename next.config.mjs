@@ -123,28 +123,8 @@ const nextConfig = {
       config.devtool = false
     }
 
-    // Security: Remove console logs in production
-    if (!dev && !isServer) {
-      config.optimization.minimizer.push(
-        new (require('terser-webpack-plugin'))({
-          terserOptions: {
-            compress: {
-              drop_console: true,
-              drop_debugger: true,
-            },
-          },
-        })
-      )
-    }
-
     return config
-  },
-
-  // Experimental security features
-  experimental: {
-    // Enable middleware for additional security
-    middleware: true,
   }
 }
 
-module.exports = nextConfig
+export default nextConfig
