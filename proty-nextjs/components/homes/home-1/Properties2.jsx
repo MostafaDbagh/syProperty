@@ -5,6 +5,7 @@ import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import { usePropertyActions } from "@/hooks/usePropertyActions";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -18,6 +19,7 @@ export default function Properties2() {
     sort: 'newest' // Get newest properties
   });
   const listings = searchResponse?.data || [];
+  const { handleDetailsClick } = usePropertyActions();
 
   // Function to get image source
   const getImageSource = (property) => {
@@ -226,9 +228,34 @@ export default function Properties2() {
                           <div className={styles.price}>
                             ${property.propertyPrice?.toLocaleString() || '0'}
                           </div>
-                          <Link href={`/property-detail/${property._id}`} className={styles.detailsBtn}>
+                          <button 
+                            onClick={() => handleDetailsClick(property._id)}
+                            className={styles.detailsBtn}
+                            style={{ 
+                              background: 'linear-gradient(135deg, #ff6b35, #f7931e)', 
+                              border: 'none', 
+                              borderRadius: '8px',
+                              padding: '10px 20px',
+                              cursor: 'pointer',
+                              textDecoration: 'none',
+                              color: 'white',
+                              fontWeight: '600',
+                              fontSize: '14px',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)',
+                              minWidth: '80px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = '0 2px 8px rgba(255, 107, 53, 0.3)';
+                            }}
+                          >
                             Details
-                          </Link>
+                          </button>
                         </div>
                       </div>
                       
