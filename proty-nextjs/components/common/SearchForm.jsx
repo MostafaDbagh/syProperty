@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
 import Slider from "rc-slider";
 import { provinceOptions } from "@/data/provinces";
+import { amenitiesList } from "@/constants/amenities";
 
 export default function SearchForm({
   parentClass = "wd-search-form",
@@ -225,24 +226,7 @@ export default function SearchForm({
       <div className="group-checkbox">
         <div className="title text-4 fw-6 mb-2">Amenities:</div>
         <div className="group-amenities">
-          {[
-            "Bed linens",
-            "Carbon alarm",
-            "Check-in lockbox",
-            "Coffee maker",
-            "Dishwasher",
-            "Fireplace",
-            "Extra pillows",
-            "First aid kit",
-            "Hangers",
-            "Iron",
-            "Microwave",
-            "Fireplace",
-            "Refrigerator",
-            "Security cameras",
-            "Smoke alarm",
-            "Fireplace",
-          ].map((amenity, idx) => (
+          {amenitiesList.map((amenity, idx) => (
             <fieldset
               className={`checkbox-item style-1${idx > 0 ? " mt-12" : ""}`}
               key={amenity + idx}

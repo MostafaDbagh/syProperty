@@ -2,6 +2,7 @@
 import Slider from "rc-slider";
 import React, { useState, useEffect } from "react";
 import DropdownSelect from "../common/DropdownSelect";
+import { amenitiesList } from "@/constants/amenities";
 
 export default function FilterModal({ onSearchChange, searchParams = {} }) {
   const [priceRange, setPriceRange] = useState([100, 700]);
@@ -178,21 +179,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
             <div className="group-checkbox">
               <div className="title text-4 fw-6">Amenities:</div>
               <div className="group-amenities">
-                {[
-                  "Bed linens",
-                  "Carbon alarm", 
-                  "Check-in lockbox",
-                  "Coffee maker",
-                  "Fireplace",
-                  "Extra pillows",
-                  "First aid kit",
-                  "Hangers",
-                  "Iron",
-                  "Microwave",
-                  "Refrigerator",
-                  "Security cameras",
-                  "Smoke alarm"
-                ].map((amenity, index) => (
+                {amenitiesList.map((amenity, index) => (
                   <fieldset key={amenity} className={`checkbox-item style-1 ${index > 0 ? 'mt-12' : ''}`}>
                     <label>
                       <span className="text-4">{amenity}</span>
