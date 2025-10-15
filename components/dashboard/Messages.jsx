@@ -557,14 +557,14 @@ export default function Messages() {
                               <button
                                 className="btn btn-sm"
                                 style={{
-                                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                  background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
                                   border: 'none',
                                   color: 'white',
                                   borderRadius: '8px',
                                   padding: '8px 16px',
                                   fontSize: '13px',
                                   fontWeight: '500',
-                                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)',
+                                  boxShadow: '0 2px 8px rgba(6, 182, 212, 0.2)',
                                   transition: 'all 0.2s ease',
                                   display: 'flex',
                                   alignItems: 'center',
@@ -577,13 +577,13 @@ export default function Messages() {
                                 onMouseEnter={(e) => {
                                   if (!isMarkingAsRead) {
                                     e.target.style.transform = 'translateY(-1px)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(6, 182, 212, 0.3)';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
                                   if (!isMarkingAsRead) {
                                     e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.2)';
+                                    e.target.style.boxShadow = '0 2px 8px rgba(6, 182, 212, 0.2)';
                                   }
                                 }}
                               >
