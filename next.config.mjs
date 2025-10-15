@@ -21,6 +21,7 @@ const nextConfig = {
               "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
               "img-src 'self' data: blob: https: http:",
               "media-src 'self' data: blob: https:",
+              "connect-src 'self' https://proty-api-mostafa-56627d8ca9aa.herokuapp.com https://api.cloudinary.com https://picsum.photos",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
