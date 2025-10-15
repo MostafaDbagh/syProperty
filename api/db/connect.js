@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 
-mongoURI='mongodb+srv://safi:35064612@cluster0-ags3s.mongodb.net/SyProperties?retryWrites=true&w=majority';
+const mongoURI = process.env.MONGO_URI || 'mongodb+srv://safi:35064612@cluster0-ags3s.mongodb.net/SyProperties?retryWrites=true&w=majority';
 
-mongoose.connect(mongoURI,{useNewUrlParser:true,useUnifiedTopology: true})
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+})
 
 const conn = mongoose.connection;
 conn.on('connected',()=>{

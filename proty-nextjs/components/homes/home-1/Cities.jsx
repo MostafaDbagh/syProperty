@@ -4,7 +4,10 @@ import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
 
 export default function Cities() {
-  const { data: searchResponse, isLoading, isError } = useSearchListings({});
+  const { data: searchResponse, isLoading, isError } = useSearchListings({ 
+    limit: 50, // Limit to 50 for city statistics
+    sort: 'newest' 
+  });
   const listings = searchResponse?.data || [];
 
 

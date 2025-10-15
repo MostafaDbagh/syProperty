@@ -17,7 +17,7 @@ export const securityConfig = {
     'style-src': ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
     'font-src': ["'self'", "https://fonts.gstatic.com"],
     'img-src': ["'self'", "data:", "blob:", "https:", "http:"],
-    'connect-src': ["'self'", "https://proty-api-mostafa-56627d8ca9aa.herokuapp.com"],
+    'connect-src': ["'self'", "https://proty-api-mostafa-56627d8ca9aa.herokuapp.com", "https://api.cloudinary.com", "https://picsum.photos"],
     'frame-src': ["'none'"],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],

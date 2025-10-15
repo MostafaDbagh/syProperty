@@ -16,7 +16,7 @@ export default function Categories({
   // Get all properties for accurate counting (no pagination)
   const { data: allListingsResponse } = useQuery({
     queryKey: ['listings', 'all-count'],
-    queryFn: () => listingAPI.searchListings({ limit: 1000 }), // Get up to 1000 properties for counting
+    queryFn: () => listingAPI.searchListings({ limit: 100 }), // Reduced from 1000 to 100 for better performance
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   });
   

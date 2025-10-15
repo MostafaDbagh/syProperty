@@ -42,8 +42,15 @@ const generalLimiter = createRateLimit(
 
 const strictLimiter = createRateLimit(
   15 * 60 * 1000, // 15 minutes
-  20, // 20 requests per window
+  50, // 50 requests per window (increased from 20)
   'Rate limit exceeded, please slow down'
+);
+
+// Very strict rate limiter for visit endpoint to prevent abuse
+const visitLimiter = createRateLimit(
+  60 * 1000, // 1 minute
+  3, // Only 3 visits per minute per IP
+  'Too many visit requests, please wait before viewing again'
 );
 
 // CORS configuration
@@ -56,7 +63,8 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001',
       'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com',
-      'https://proty-nextjs.vercel.app'
+      'https://proty-nextjs.vercel.app',
+      'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com'
     ];
     
     if (allowedOrigins.includes(origin)) {
@@ -67,7 +75,7 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Referer', 'User-Agent', 'sec-ch-ua', 'sec-ch-ua-mobile', 'sec-ch-ua-platform'],
   maxAge: 86400 // 24 hours
 };
 
@@ -82,7 +90,7 @@ const setupSecurity = (app) => {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", "https://proty-api-mostafa-56627d8ca9aa.herokuapp.com", "https://api.cloudinary.com", "https://picsum.photos"],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: []
@@ -106,9 +114,9 @@ const setupSecurity = (app) => {
   app.use('/api/message', strictLimiter);
   app.use('/api', generalLimiter);
 
-  // Body parsing security
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  // Body parsing security - handled in main index.js
+  // app.use(express.json({ limit: '10mb' }));
+  // app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
   // Data sanitization against NoSQL query injection
   // Temporarily disabled due to compatibility issue
@@ -240,5 +248,6 @@ module.exports = {
   securityLogger,
   authLimiter,
   generalLimiter,
-  strictLimiter
+  strictLimiter,
+  visitLimiter
 };

@@ -26,7 +26,7 @@ router.post('/deduct', deductPoints);
 router.get('/transactions', getTransactionHistory);
 
 // Calculate points needed for a listing
-router.post('/calculate-cost', calculateListingCost);
+router.post('/calculateCost', calculateListingCost);
 
 // Refund points (for deleted listings)
 router.post('/refund', refundPoints);
