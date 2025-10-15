@@ -54,7 +54,7 @@ export default function PropertyGridItems({ listings = [] }) {
     }
     
     // Return default image
-    return "/images/section/box-house-1.jpg";
+    return "/images/section/box-house-2.jpg";
   };
 
   return (
