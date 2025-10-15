@@ -552,7 +552,7 @@ export default function Messages() {
                           <small>{formatDate(message.createdAt)}</small>
                         </td>
                         <td>
-                          <div className="btn-group" role="group">
+                          <div className="btn-group" role="group" style={{ gap: '8px' }}>
                             {message.status === 'unread' && (
                               <button
                                 className="btn btn-sm"
@@ -591,6 +591,42 @@ export default function Messages() {
                                 {isMarkingAsRead ? 'Marking...' : 'Mark as Read'}
                               </button>
                             )}
+                            <button
+                              className="btn btn-sm"
+                              style={{
+                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                border: 'none',
+                                color: 'white',
+                                borderRadius: '8px',
+                                padding: '8px 16px',
+                                fontSize: '13px',
+                                fontWeight: '500',
+                                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.2)',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                              }}
+                              onClick={() => handleDelete(message._id)}
+                              disabled={isDeleting}
+                              title="Delete Message"
+                              aria-label={`Delete message from ${message.senderName}`}
+                              onMouseEnter={(e) => {
+                                if (!isDeleting) {
+                                  e.target.style.transform = 'translateY(-1px)';
+                                  e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isDeleting) {
+                                  e.target.style.transform = 'translateY(0)';
+                                  e.target.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.2)';
+                                }
+                              }}
+                            >
+                              <i className="icon-trash" aria-hidden="true" style={{ fontSize: '14px' }}></i>
+                              {isDeleting ? 'Deleting...' : 'Delete'}
+                            </button>
                           </div>
                         </td>
                       </tr>
