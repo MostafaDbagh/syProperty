@@ -131,8 +131,8 @@ export default function DashboardNav({ color = "" }) {
           </Link>
         )}
 
-        {/* My Profile - Only for logged in agents */}
-        {isLoggedIn && isAgentUser && (
+        {/* My Profile - For ALL logged in users */}
+        {isLoggedIn && (
           <Link 
             className="dropdown-item" 
             href={`/my-profile`}
@@ -175,8 +175,8 @@ export default function DashboardNav({ color = "" }) {
           </Link>
         )}
 
-        {/* Reviews - For ALL logged in users */}
-        {isLoggedIn && (
+        {/* Reviews - Only for logged in agents */}
+        {isLoggedIn && isAgentUser && (
           <Link 
             className="dropdown-item" 
             href={`/review`}

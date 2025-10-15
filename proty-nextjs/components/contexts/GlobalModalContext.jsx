@@ -125,6 +125,31 @@ export const GlobalModalProvider = ({ children }) => {
     });
   };
 
+  // Unified modal show function
+  const showModal = (modalType) => {
+    switch (modalType) {
+      case 'register':
+        showRegisterModal();
+        break;
+      case 'login':
+        showLoginModal();
+        break;
+      case 'forgotPassword':
+        showForgotPasswordModal();
+        break;
+      case 'becomeAgent':
+        // Show a custom modal for becoming an agent
+        showWarningModal(
+          'Become an Agent',
+          'You need to upgrade to an agent account to access this feature. Would you like to become an agent?',
+          ''
+        );
+        break;
+      default:
+        console.warn(`Unknown modal type: ${modalType}`);
+    }
+  };
+
   const value = {
     showSuccessModal,
     showWarningModal,
@@ -141,7 +166,8 @@ export const GlobalModalProvider = ({ children }) => {
     forgotPasswordModalState,
     showOTPModal,
     closeOTPModal,
-    otpModalState
+    otpModalState,
+    showModal // Add the unified showModal function
   };
 
   return (
