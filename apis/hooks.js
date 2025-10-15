@@ -56,7 +56,7 @@ export const useSearchListings = (searchParams = {}) => {
   return useQuery({
     queryKey: ['listings', 'search', searchParams],
     queryFn: () => listingAPI.searchListings(searchParams),
-    enabled: Object.keys(searchParams).length > 0 || searchParams.limit, // Only enable if params exist or limit is set
+    enabled: (searchParams && Object.keys(searchParams).length > 0) || (searchParams && searchParams.limit), // Only enable if params exist or limit is set
     staleTime: 2 * 60 * 1000, // 2 minutes
     refetchOnWindowFocus: false, // Prevent refetch on window focus
   });
