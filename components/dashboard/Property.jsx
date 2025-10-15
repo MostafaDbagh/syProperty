@@ -17,7 +17,7 @@ export default function Property() {
   const [propertyTypeFilter, setPropertyTypeFilter] = useState('All');
   const [approvalFilter, setApprovalFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [confirmationModal, setConfirmationModal] = useState({
@@ -156,17 +156,21 @@ export default function Property() {
 
   // Fetch listings for the logged-in user
   const { data: listingsResponse, isLoading, isError, refetch } = useQuery({
-    queryKey: ['my-listings', user?._id],
+    queryKey: ['my-listings', user?._id, currentPage],
     queryFn: () => {
       console.log('Property.jsx - Fetching listings for user:', user?._id);
-      return listingAPI.getListingsByAgent(user._id);
+      return listingAPI.getListingsByAgent(user._id, {
+        page: currentPage,
+        limit: itemsPerPage
+      });
     },
     enabled: !!user?._id, // Only fetch if user ID exists
   });
 
-  // Extract listings array from the API response
-  // Handle different response structures
+  // Extract listings array and pagination info from the API response
   let listings = [];
+  let totalCount = 0;
+  let totalPages = 1;
   
   // Debug: Log the response structure
   if (listingsResponse) {
@@ -188,12 +192,18 @@ export default function Property() {
   if (Array.isArray(listingsResponse)) {
     // If response is directly an array (old format)
     listings = listingsResponse;
+    totalCount = listings.length;
+    totalPages = Math.ceil(totalCount / itemsPerPage);
   } else if (listingsResponse?.data && Array.isArray(listingsResponse.data)) {
     // If response has data property with array (new format)
     listings = listingsResponse.data;
+    totalCount = listingsResponse.totalCount || listings.length;
+    totalPages = listingsResponse.totalPages || Math.ceil(totalCount / itemsPerPage);
   } else if (listingsResponse && Array.isArray(listingsResponse)) {
     // Fallback for direct array
     listings = listingsResponse;
+    totalCount = listings.length;
+    totalPages = Math.ceil(totalCount / itemsPerPage);
   }
   
   // Ensure listings is always an array
@@ -202,7 +212,7 @@ export default function Property() {
     listings = [];
   }
 
-  // Filter listings based on search, status, and approval
+  // Filter listings based on search (client-side filtering for search only)
   const filteredListings = listings.filter((listing) => {
     const matchesSearch = listing.propertyKeyword?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           listing.address?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -236,16 +246,13 @@ export default function Property() {
     return matchesSearch && matchesStatus && matchesPropertyType && matchesApproval;
   });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedListings = filteredListings.slice(startIndex, endIndex);
+  // Use filtered listings for display
+  const displayListings = filteredListings;
 
-  // Reset to page 1 when filters change
+  // Reset to page 1 when filters change (except search which is client-side)
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, propertyTypeFilter, approvalFilter]);
+  }, [statusFilter, propertyTypeFilter, approvalFilter]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -406,7 +413,7 @@ export default function Property() {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedListings.map((listing) => (
+                    {displayListings.map((listing) => (
                       <tr key={listing._id} className="file-delete">
                         <td>
                           <div className="listing-box">
