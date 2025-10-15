@@ -28,6 +28,11 @@ export default function Messages() {
     response: ''
   });
 
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    message: null
+  });
+
   // Get user from localStorage on component mount
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -149,15 +154,19 @@ export default function Messages() {
 
   // Handle delete
   const handleDelete = async (messageId) => {
-    if (window.confirm('Are you sure you want to delete this message?')) {
-      try {
-        await deleteMessage(messageId);
-        showToast('Message deleted');
-        refetch();
-      } catch (error) {
-        showToast('Failed to delete message', 'error');
-      }
+    try {
+      await deleteMessage(messageId);
+      showToast('Message deleted');
+      setDeleteModal({ isOpen: false, message: null });
+      refetch();
+    } catch (error) {
+      showToast('Failed to delete message', 'error');
     }
+  };
+
+  // Handle delete confirmation
+  const handleDeleteClick = (message) => {
+    setDeleteModal({ isOpen: true, message });
   };
 
   // Format date helper
@@ -607,7 +616,7 @@ export default function Messages() {
                                 alignItems: 'center',
                                 gap: '6px'
                               }}
-                              onClick={() => handleDelete(message._id)}
+                              onClick={() => handleDeleteClick(message)}
                               disabled={isDeleting}
                               title="Delete Message"
                               aria-label={`Delete message from ${message.senderName}`}
@@ -701,6 +710,67 @@ export default function Messages() {
                     disabled={isReplying || !replyModal.response.trim()}
                   >
                     {isReplying ? 'Sending...' : 'Send Reply'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteModal.isOpen && (
+          <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Delete Message</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setDeleteModal({ isOpen: false, message: null })}
+                    aria-label="Close delete modal"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <strong>From:</strong> {deleteModal.message.senderName} ({deleteModal.message.senderEmail})
+                  </div>
+                  <div className="mb-3">
+                    <strong>Subject:</strong> {deleteModal.message.subject}
+                  </div>
+                  <div className="mb-3">
+                    <strong>Message:</strong>
+                    <div className="border p-3 mt-2" style={{ backgroundColor: '#f8f9fa', maxHeight: '150px', overflow: 'auto' }}>
+                      {deleteModal.message.message}
+                    </div>
+                  </div>
+                  <div className="alert alert-warning">
+                    <i className="icon-warning me-2"></i>
+                    Are you sure you want to delete this message? This action cannot be undone.
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setDeleteModal({ isOpen: false, message: null })}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(deleteModal.message._id)}
+                    disabled={isDeleting}
+                    style={{
+                      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 20px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {isDeleting ? 'Deleting...' : 'Confirm Delete'}
                   </button>
                 </div>
               </div>
