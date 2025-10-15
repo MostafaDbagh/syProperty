@@ -733,7 +733,7 @@ export default function Messages() {
                 </div>
                 <div className="modal-body">
                   <div className="mb-3">
-                    <strong>From:</strong> {deleteModal.message.senderName} ({deleteModal.message.senderEmail})
+                    <strong>From:</strong> {deleteModal.message.senderEmail}
                   </div>
                   <div className="mb-3">
                     <strong>Subject:</strong> {deleteModal.message.subject}
