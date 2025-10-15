@@ -9,7 +9,6 @@ const {
   deductPointsAfterListing, 
   refundPointsOnListingDelete 
 } = require('../middleware/pointDeduction.js');
-const { visitLimiter } = require('../middleware/security.js');
 
 router.get('/search', filterListings, ListingController.getFilteredListings);
 // Move point check AFTER multer parses the body
@@ -22,7 +21,7 @@ router.post('/update/:id', verifyToken, ListingController.updateListing);
 router.get('/:id', ListingController.getListingById);
 router.get('/:id/images', ListingController.getListingImages);
 router.get('/agent/:agentId', verifyToken, ListingController.getListingsByAgent);
-router.post('/:id/visit', visitLimiter, ListingController.incrementVisitCount);
+router.post('/:id/visit', ListingController.incrementVisitCount);
 router.get('/agent/:agentId/mostVisited', verifyToken, ListingController.getMostVisitedListings);
 
 
