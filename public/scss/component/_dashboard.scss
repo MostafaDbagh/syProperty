@@ -154,6 +154,13 @@
       svg path {
         @include mixin.transition3;
       }
+      &.logout-btn {
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+      }
     }
   }
   &::-webkit-scrollbar {
