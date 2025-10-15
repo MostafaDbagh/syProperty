@@ -2,12 +2,28 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useReviewsByAgent } from "@/apis/hooks";
+import { reviewAPI } from "@/apis/review";
 import LocationLoader from "../common/LocationLoader";
+import Toast from "../common/Toast";
 
 export default function Review() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [isHiding, setIsHiding] = useState(false);
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
+
+  // Show toast notification
+  const showToast = (message, type = 'success') => {
+    setToast({ isVisible: true, message, type });
+    setTimeout(() => {
+      setToast({ isVisible: false, message: '', type: 'success' });
+    }, 3000);
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -98,6 +114,36 @@ export default function Review() {
     }
     
     return pages;
+  };
+
+  // Handle hide review from dashboard
+  const handleHideFromDashboard = async (reviewId) => {
+    setIsHiding(true);
+    try {
+      await reviewAPI.hideReviewFromDashboard(reviewId, true);
+      showToast('Review hidden from dashboard');
+      // Refresh the reviews
+      window.location.reload();
+    } catch (error) {
+      showToast('Failed to hide review', 'error');
+    } finally {
+      setIsHiding(false);
+    }
+  };
+
+  // Handle hide review from listing
+  const handleHideFromListing = async (reviewId) => {
+    setIsHiding(true);
+    try {
+      await reviewAPI.hideReviewFromListing(reviewId, true);
+      showToast('Review hidden from listing');
+      // Refresh the reviews
+      window.location.reload();
+    } catch (error) {
+      showToast('Failed to hide review', 'error');
+    } finally {
+      setIsHiding(false);
+    }
   };
 
   return (
@@ -208,6 +254,46 @@ export default function Review() {
                     )}
                     <div className="ratings">
                       {renderStars(review.rating || 5)}
+                    </div>
+                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => handleHideFromDashboard(review._id)}
+                        disabled={isHiding}
+                        style={{
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          border: 'none',
+                          color: 'white',
+                          borderRadius: '6px',
+                          padding: '6px 12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          cursor: isHiding ? 'not-allowed' : 'pointer',
+                          opacity: isHiding ? 0.6 : 1,
+                          transition: 'all 0.2s ease'
+                        }}
+                        title="Hide from Dashboard"
+                      >
+                        {isHiding ? 'Hiding...' : 'Hide from Dashboard'}
+                      </button>
+                      <button
+                        onClick={() => handleHideFromListing(review._id)}
+                        disabled={isHiding}
+                        style={{
+                          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                          border: 'none',
+                          color: 'white',
+                          borderRadius: '6px',
+                          padding: '6px 12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          cursor: isHiding ? 'not-allowed' : 'pointer',
+                          opacity: isHiding ? 0.6 : 1,
+                          transition: 'all 0.2s ease'
+                        }}
+                        title="Hide from Listing"
+                      >
+                        {isHiding ? 'Hiding...' : 'Hide from Listing'}
+                      </button>
                     </div>
                   </li>
                 ))}
@@ -324,6 +410,15 @@ export default function Review() {
         {/* .footer-dashboard */}
       </div>
       <div className="overlay-dashboard" />
+      
+      {/* Toast */}
+      {toast.isVisible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ isVisible: false, message: '', type: 'success' })}
+        />
+      )}
     </div>
   );
 }
