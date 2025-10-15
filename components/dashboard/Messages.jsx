@@ -564,32 +564,6 @@ export default function Messages() {
                                 <i className="icon-eye" aria-hidden="true"></i>
                               </button>
                             )}
-                            <button
-                              className="btn btn-sm btn-outline-primary"
-                              onClick={() => setReplyModal({ isOpen: true, message, response: '' })}
-                              title="Reply"
-                              aria-label={`Reply to message from ${message.senderName}`}
-                            >
-                              <i className="icon-reply" aria-hidden="true"></i>
-                            </button>
-                            <button
-                              className="btn btn-sm btn-outline-warning"
-                              onClick={() => handleArchive(message._id)}
-                              disabled={isArchiving}
-                              title="Archive"
-                              aria-label={`Archive message from ${message.senderName}`}
-                            >
-                              <i className="icon-archive" aria-hidden="true"></i>
-                            </button>
-                            <button
-                              className="btn btn-sm btn-outline-danger"
-                              onClick={() => handleDelete(message._id)}
-                              disabled={isDeleting}
-                              title="Delete"
-                              aria-label={`Delete message from ${message.senderName}`}
-                            >
-                              <i className="icon-trash" aria-hidden="true"></i>
-                            </button>
                           </div>
                         </td>
                       </tr>
