@@ -51,13 +51,14 @@ export const useListings = (params = {}) => {
   });
 };
 
-// Search listings hook
+// Search listings hook with debouncing
 export const useSearchListings = (searchParams = {}) => {
   return useQuery({
     queryKey: ['listings', 'search', searchParams],
     queryFn: () => listingAPI.searchListings(searchParams),
-    enabled: true, // Always enabled, even with empty params
+    enabled: Object.keys(searchParams).length > 0 || searchParams.limit, // Only enable if params exist or limit is set
     staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
   });
 };
 

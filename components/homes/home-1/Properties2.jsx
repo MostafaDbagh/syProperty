@@ -12,8 +12,11 @@ import "swiper/css/pagination";
 import styles from "./Properties2.module.css";
 
 export default function Properties2() {
-  // Use search endpoint with empty params to get all listings
-  const { data: searchResponse, isLoading, isError, error } = useSearchListings({});
+  // Use search endpoint with limited params to get featured listings
+  const { data: searchResponse, isLoading, isError, error } = useSearchListings({ 
+    limit: 12, // Only get 12 properties for home page
+    sort: 'newest' // Get newest properties
+  });
   const listings = searchResponse?.data || [];
 
   // Function to get image source
