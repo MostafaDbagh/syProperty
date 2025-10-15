@@ -248,6 +248,10 @@ export default function Property() {
 
   // Use filtered listings for display
   const displayListings = filteredListings;
+  
+  // Calculate display range for pagination info
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, displayListings.length);
 
   // Reset to page 1 when filters change (except search which is client-side)
   useEffect(() => {
