@@ -42,14 +42,14 @@ export default function LoanCalculator() {
                     <label className="text-1 fw-6 mb-12" htmlFor="amount">
                       Total Amount
                     </label>
-                    <input type="number" id="amount" placeholder={1000} />
+                    <input type="number" id="amount" placeholder={1000} min="0" />
                   </fieldset>
                   <div className="wrap-input">
                     <fieldset className="payment">
                       <label className="text-1 fw-6 mb-12" htmlFor="payment">
                         Down Payment
                       </label>
-                      <input type="number" id="payment" placeholder={2000} />
+                      <input type="number" id="payment" placeholder={2000} min="0" />
                     </fieldset>
                     <fieldset className="percent">
                       <input

@@ -30,14 +30,14 @@ export default function LoanCalculator() {
                     <label className=" text-1 fw-6 mb-12" htmlFor="amount">
                       Total Amount
                     </label>
-                    <input type="number" id="amount" placeholder={1000} />
+                    <input type="number" id="amount" placeholder={1000} min="0" />
                   </fieldset>
                   <div className="wrap-input">
                     <fieldset className="payment">
                       <label className="text-1 fw-6 mb-12" htmlFor="payment">
                         Down Payment
                       </label>
-                      <input type="number" id="payment" placeholder={2000} />
+                      <input type="number" id="payment" placeholder={2000} min="0" />
                     </fieldset>
                     <fieldset className="percent">
                       <input
@@ -53,7 +53,7 @@ export default function LoanCalculator() {
                     <label className="text-1 fw-6 mb-12" htmlFor="interestRate">
                       Interest Rate
                     </label>
-                    <input type="number" id="interestRate" placeholder={0} />
+                    <input type="number" id="interestRate" placeholder={0} min="0" />
                   </fieldset>
                   <div className="select">
                     <label className="text-1 fw-6 mb-12">
@@ -78,13 +78,13 @@ export default function LoanCalculator() {
                     <label className=" text-1 fw-6 mb-12" htmlFor="tax">
                       Property Tax
                     </label>
-                    <input type="number" id="tax" placeholder="$3000" />
+                    <input type="number" id="tax" placeholder="$3000" min="0" />
                   </fieldset>
                   <fieldset>
                     <label className=" text-1 fw-6 mb-12" htmlFor="insurance">
                       Home Insurance
                     </label>
-                    <input type="number" id="insurance" placeholder="$3000" />
+                    <input type="number" id="insurance" placeholder="$3000" min="0" />
                   </fieldset>
                 </div>
                 <p className="text-1">
