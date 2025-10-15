@@ -60,6 +60,7 @@ const useRouteProtection = (requiredRole = null) => {
       '/dashboard',
       '/add-property', 
       '/my-properties',
+      '/my-property',
       '/messages',
       '/review'
     ];
@@ -73,6 +74,7 @@ const useRouteProtection = (requiredRole = null) => {
     const guestBlockedRoutes = [
       '/add-property',
       '/my-properties', 
+      '/my-property',
       '/dashboard',
       '/my-profile',
       '/my-favorites',
