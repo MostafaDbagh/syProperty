@@ -35,7 +35,7 @@ export default function Properties2() {
     }
     
     // Return default image
-    return "/images/section/box-house-1.jpg";
+    return "/images/section/box-house-2.jpg";
   };
   
   // Show loading state
@@ -175,7 +175,7 @@ export default function Properties2() {
                             <Image
                               className="lazyload"
                               alt={property.propertyKeyword || property.propertyType || "Property"}
-                              src={imageSrc || "/images/section/box-house-1.jpg"}
+                              src={imageSrc || "/images/section/box-house-2.jpg"}
                               width={370}
                               height={260}
                               style={{
@@ -184,7 +184,7 @@ export default function Properties2() {
                                 objectFit: 'cover'
                               }}
                               onError={(e) => {
-                                e.target.src = "/images/section/box-house-1.jpg";
+                                e.target.src = "/images/section/box-house-2.jpg";
                               }}
                             />
                           </Link>
@@ -256,6 +256,7 @@ export default function Properties2() {
                         
                         {/* Action Buttons - Tab Style */}
                         <div className={styles.actionButtonsSection}>
+                          <p style={{marginBottom: "6px", fontWeight:'600'}}>contact Agent</p>
                           <div className={styles.actionButtonsVertical}>
                             <button 
                               className={`${styles.actionTab} ${styles.callTab}`}

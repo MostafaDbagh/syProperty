@@ -38,6 +38,14 @@ const reviewSchema = new mongoose.Schema(
     },
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 },
+    hiddenFromDashboard: { 
+      type: Boolean, 
+      default: false 
+    },
+    hiddenFromListing: { 
+      type: Boolean, 
+      default: false 
+    },
   },
   { timestamps: true }
 

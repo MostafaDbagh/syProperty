@@ -567,7 +567,7 @@ export default function Dashboard() {
                                   alt={listing.propertyKeyword || listing.propertyTitle || "Property listing"}
                                   width={615}
                                   height={405}
-                                    src={listing.images?.[0]?.url || "/images/section/box-house-1.jpg"}
+                                    src={listing.images?.[0]?.url || "/images/section/box-house-2.jpg"}
                                 />
                               </div>
                               <div className="content">

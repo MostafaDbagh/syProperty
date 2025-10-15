@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user.model');
 const Listing = require('../models/listing.model');
 const Favorite = require('../models/favorite.model');
@@ -64,20 +65,40 @@ const getDashboardStats = async (req, res) => {
         userId: userId
       }),
       
-      // Total reviews for this user's listings
-      Review.countDocuments({ 
+      // Total reviews for this user's listings (need to join with listings)
+      Review.aggregate([
+        {
+          $addFields: {
+            propertyObjectId: { $toObjectId: '$propertyId' }
+          }
+        },
+        {
+          $lookup: {
+            from: 'listings',
+            localField: 'propertyObjectId',
+            foreignField: '_id',
+            as: 'property'
+          }
+        },
+        {
+          $match: {
+            'property.agentId': new mongoose.Types.ObjectId(userId)
+          }
+        },
+        {
+          $count: 'total'
+        }
+      ]).then(result => result[0]?.total || 0),
+      
+      // Unread messages for this agent
+      Message.countDocuments({ 
+        agentId: userId,
+        status: 'unread'
+      }),
+      
+      // Total messages for this agent
+      Message.countDocuments({ 
         agentId: userId
-      }),
-      
-      // Unread messages
-      Message.countDocuments({ 
-        recipientId: userId,
-        isRead: false
-      }),
-      
-      // Total messages
-      Message.countDocuments({ 
-        recipientId: userId
       }),
       
       // Point balance
@@ -103,16 +124,41 @@ const getDashboardStats = async (req, res) => {
         createdAt: { $gte: sevenDaysAgo }
       }),
       Message.countDocuments({
-        recipientId: userId,
+        agentId: userId,
         createdAt: { $gte: sevenDaysAgo }
       })
     ]);
 
-    // Calculate average rating
-    const reviews = await Review.find({ agentId: userId }).select('rating');
-    const averageRating = reviews.length > 0 
-      ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(3)
-      : 0;
+    // Calculate average rating for agent's properties
+    const reviewsForAgent = await Review.aggregate([
+      {
+        $addFields: {
+          propertyObjectId: { $toObjectId: '$propertyId' }
+        }
+      },
+      {
+        $lookup: {
+          from: 'listings',
+          localField: 'propertyObjectId',
+          foreignField: '_id',
+          as: 'property'
+        }
+      },
+      {
+        $match: {
+          'property.agentId': new mongoose.Types.ObjectId(userId)
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    const averageRating = reviewsForAgent.length > 0 ? reviewsForAgent[0].averageRating : 0;
 
     // Prepare response data
     const dashboardData = {
@@ -122,7 +168,8 @@ const getDashboardStats = async (req, res) => {
       pendingListings,
       approvedListings,
       totalFavorites,
-      totalReviews: parseFloat(averageRating),
+      totalReviews: reviewsForAgent.length > 0 ? reviewsForAgent[0].totalReviews : 0,
+      averageRating: parseFloat(averageRating.toFixed(2)),
       unreadMessages,
       totalMessages,
       

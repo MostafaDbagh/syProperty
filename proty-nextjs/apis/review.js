@@ -60,6 +60,26 @@ export const reviewAPI = {
     } catch (error) {
       throw error.response?.data || error.message;
     }
+  },
+
+  // Hide review from dashboard
+  hideReviewFromDashboard: async (reviewId, hidden = true) => {
+    try {
+      const response = await Axios.patch(`/review/${reviewId}/hide-dashboard`, { hidden });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Hide review from listing
+  hideReviewFromListing: async (reviewId, hidden = true) => {
+    try {
+      const response = await Axios.patch(`/review/${reviewId}/hide-listing`, { hidden });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
   }
 };
 

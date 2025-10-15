@@ -10,6 +10,8 @@ router.get('/agent/:agentId', reviewController.getReviewsByAgent);
 router.get('/user/:userId', reviewController.getReviewsByUser); // NEW: Get reviews by user
 router.post('/like', reviewController.likeReview);
 router.post('/dislike', reviewController.dislikeReview);
+router.patch('/:reviewId/hide-dashboard', reviewController.hideReviewFromDashboard);
+router.patch('/:reviewId/hide-listing', reviewController.hideReviewFromListing);
 
 
 module.exports = router;

@@ -134,7 +134,11 @@ const getReviewsByProperty = async (req, res) => {
         return res.status(400).json({ message: 'propertyId is required' });
       }
   
-      const reviews = await Review.find({ propertyId }).sort({ createdAt: -1 });
+      // Filter out reviews hidden from listing
+      const reviews = await Review.find({ 
+        propertyId,
+        hiddenFromListing: { $ne: true }
+      }).sort({ createdAt: -1 });
   
       res.status(200).json(reviews);
     } catch (error) {
@@ -188,15 +192,17 @@ const getReviewsByProperty = async (req, res) => {
         });
       }
   
-      // Step 2: Get total count for pagination
+      // Step 2: Get total count for pagination (excluding hidden from dashboard)
       const totalReviews = await Review.countDocuments({ 
-        propertyId: { $in: propertyIds } 
+        propertyId: { $in: propertyIds },
+        hiddenFromDashboard: { $ne: true }
       });
       const totalPages = Math.ceil(totalReviews / limit);
 
-      // Step 3: Find all reviews for those properties with pagination
+      // Step 3: Find all reviews for those properties with pagination (excluding hidden from dashboard)
       const reviews = await Review.find({ 
-        propertyId: { $in: propertyIds } 
+        propertyId: { $in: propertyIds },
+        hiddenFromDashboard: { $ne: true }
       })
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -204,9 +210,10 @@ const getReviewsByProperty = async (req, res) => {
         .populate('userId', 'username email avatar')
         .populate('propertyId', 'propertyKeyword address propertyPrice images');
 
-      // Step 4: Calculate statistics
+      // Step 4: Calculate statistics (excluding hidden from dashboard)
       const allReviews = await Review.find({ 
-        propertyId: { $in: propertyIds } 
+        propertyId: { $in: propertyIds },
+        hiddenFromDashboard: { $ne: true }
       });
       
       const averageRating = allReviews.length > 0
@@ -267,6 +274,60 @@ const getReviewsByProperty = async (req, res) => {
     }
   };
 
+  // Hide review from dashboard
+  const hideReviewFromDashboard = async (req, res) => {
+    try {
+      const { reviewId } = req.params;
+      const { hidden } = req.body; // true to hide, false to show
+
+      const review = await Review.findByIdAndUpdate(
+        reviewId,
+        { hiddenFromDashboard: hidden },
+        { new: true }
+      );
+
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: hidden ? 'Review hidden from dashboard' : 'Review shown on dashboard',
+        data: review
+      });
+    } catch (error) {
+      console.error('Error hiding review from dashboard:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
+  // Hide review from listing
+  const hideReviewFromListing = async (req, res) => {
+    try {
+      const { reviewId } = req.params;
+      const { hidden } = req.body; // true to hide, false to show
+
+      const review = await Review.findByIdAndUpdate(
+        reviewId,
+        { hiddenFromListing: hidden },
+        { new: true }
+      );
+
+      if (!review) {
+        return res.status(404).json({ message: 'Review not found' });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: hidden ? 'Review hidden from listing' : 'Review shown on listing',
+        data: review
+      });
+    } catch (error) {
+      console.error('Error hiding review from listing:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
   module.exports ={
     getReviews,
     getReviewsByProperty,
@@ -274,6 +335,8 @@ const getReviewsByProperty = async (req, res) => {
     getReviewsByAgent,
     getReviewsByUser,
     likeReview,
-    dislikeReview
+    dislikeReview,
+    hideReviewFromDashboard,
+    hideReviewFromListing
   }
   

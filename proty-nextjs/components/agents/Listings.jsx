@@ -131,7 +131,7 @@ export default function Listings({ agentId }) {
   const getImageSource = (property) => {
     // Check if property exists
     if (!property) {
-      return "/images/section/box-house-1.jpg";
+      return "/images/section/box-house-2.jpg";
     }
 
     // Check images array first
@@ -153,7 +153,7 @@ export default function Listings({ agentId }) {
     }
     
     // Always return a valid default image
-    return "/images/section/box-house-1.jpg";
+    return "/images/section/box-house-2.jpg";
   };
 
   if (isLoading) {
@@ -248,7 +248,7 @@ export default function Listings({ agentId }) {
                         alt={property.propertyKeyword || property.propertyTitle || 'Property'}
                         width={600}
                         height={401}
-                        src={getImageSource(property) || "/images/section/box-house-1.jpg"}
+                        src={getImageSource(property) || "/images/section/box-house-2.jpg"}
                         style={{ 
                           width: '100%', 
                           height: '100%', 
@@ -256,7 +256,7 @@ export default function Listings({ agentId }) {
                           display: 'block'
                         }}
                         onError={(e) => {
-                          e.target.src = "/images/section/box-house-1.jpg";
+                          e.target.src = "/images/section/box-house-2.jpg";
                         }}
                       />
                     </Link>

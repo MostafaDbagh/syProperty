@@ -488,6 +488,7 @@ export default function AddProperty() {
                     placeholder="Example: 250000"
                     value={formData.propertyPrice}
                     onChange={handleInputChange}
+                    min="0"
                   />
                   {errors.propertyPrice && <span className="text-danger">{errors.propertyPrice}</span>}
                 </fieldset>
@@ -566,6 +567,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.size}
                   onChange={handleInputChange}
+                  min="0"
                 />
                 {errors.size && <span className="text-danger">{errors.size}</span>}
               </fieldset>
@@ -580,6 +582,8 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.yearBuilt}
                   onChange={handleInputChange}
+                  min="1800"
+                  max={new Date().getFullYear()}
                 />
               </fieldset>
             </div>
@@ -595,6 +599,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.bedrooms}
                   onChange={handleInputChange}
+                  min="1"
                 />
                 {errors.bedrooms && <span className="text-danger">{errors.bedrooms}</span>}
               </fieldset>
@@ -609,6 +614,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.bathrooms}
                   onChange={handleInputChange}
+                  min="1"
                 />
                 {errors.bathrooms && <span className="text-danger">{errors.bathrooms}</span>}
               </fieldset>
@@ -623,6 +629,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.garageSize}
                   onChange={handleInputChange}
+                  min="0"
                 />
               </fieldset>
             </div>

@@ -52,7 +52,7 @@ export default function PropertyListItems({ listings = [] }) {
     }
     
     console.log('Using default image');
-    return "/images/section/box-house-1.jpg";
+    return "/images/section/box-house-2.jpg";
   };
 
   return (
@@ -75,7 +75,7 @@ export default function PropertyListItems({ listings = [] }) {
                 }}
                 onError={(e) => {
                   console.log('Image failed to load:', e.target.src);
-                  e.target.src = "/images/section/box-house-1.jpg";
+                  e.target.src = "/images/section/box-house-2.jpg";
                 }}
               />
             </Link>

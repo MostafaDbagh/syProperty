@@ -145,8 +145,9 @@ const markAsRead = async (req, res, next) => {
     const message = await Message.findByIdAndUpdate(
       messageId,
       { 
-        status: 'read',
-        readAt: new Date()
+        status: 'replied',
+        readAt: new Date(),
+        respondedAt: new Date()
       },
       { new: true }
     );
