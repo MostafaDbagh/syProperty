@@ -78,7 +78,8 @@ const useRouteProtection = (requiredRole = null) => {
       '/dashboard',
       '/my-profile',
       '/my-favorites',
-      '/messages'
+      '/messages',
+      '/review'
     ];
 
     // Check if current path is an agent route
