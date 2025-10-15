@@ -38,7 +38,12 @@ export const FavoritesProvider = ({ children }) => {
       setFavoritesCount(totalCount);
     } catch (error) {
       console.error('Error loading favorites count:', error);
-      setFavoritesCount(0);
+      // Don't reset to 0 on timeout - keep previous count
+      if (error.message?.includes('timeout')) {
+        console.warn('Favorites API timeout - keeping previous count');
+      } else {
+        setFavoritesCount(0);
+      }
     } finally {
       setIsLoading(false);
     }
