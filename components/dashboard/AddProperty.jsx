@@ -6,6 +6,7 @@ import { useCreateListing } from "@/apis/hooks";
 import Toast from "../common/Toast";
 import { useRouter } from "next/navigation";
 import { syrianProvinces } from "@/data/provinces";
+import { amenitiesList } from "@/constants/amenities";
 
 export default function AddProperty() {
   const router = useRouter();
@@ -301,12 +302,7 @@ export default function AddProperty() {
     }
   };
 
-  const amenityOptions = [
-    "Shared Gym", "Smart Controls", "BBQ Area", "Private Garden", "Children's Play Area",
-    "Smoke alarm", "Self check-in with lockbox", "Carbon monoxide alarm", "Security cameras",
-    "Hangers", "Extra pillows & blankets", "Bed linens", "TV with standard cable",
-    "Refrigerator", "Dishwasher", "Microwave", "Coffee maker"
-  ];
+  const amenityOptions = amenitiesList;
 
   return (
     <div className="main-content w-100">
