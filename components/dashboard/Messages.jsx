@@ -559,9 +559,10 @@ export default function Messages() {
                                 onClick={() => handleMarkAsRead(message._id)}
                                 disabled={isMarkingAsRead}
                                 title="Mark as Read"
-                                aria-label={`Mark message from ${message.senderName} as read`}
+                                aria-label={`Mark message as read`}
                               >
-                                <i className="icon-eye" aria-hidden="true"></i>
+                                <i className="icon-eye me-1" aria-hidden="true"></i>
+                                Mark as Read
                               </button>
                             )}
                           </div>
