@@ -555,14 +555,40 @@ export default function Messages() {
                           <div className="btn-group" role="group">
                             {message.status === 'unread' && (
                               <button
-                                className="btn btn-sm btn-outline-info"
+                                className="btn btn-sm"
+                                style={{
+                                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                  border: 'none',
+                                  color: 'white',
+                                  borderRadius: '8px',
+                                  padding: '8px 16px',
+                                  fontSize: '13px',
+                                  fontWeight: '500',
+                                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)',
+                                  transition: 'all 0.2s ease',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '6px'
+                                }}
                                 onClick={() => handleMarkAsRead(message._id)}
                                 disabled={isMarkingAsRead}
                                 title="Mark as Read"
                                 aria-label={`Mark message as read`}
+                                onMouseEnter={(e) => {
+                                  if (!isMarkingAsRead) {
+                                    e.target.style.transform = 'translateY(-1px)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!isMarkingAsRead) {
+                                    e.target.style.transform = 'translateY(0)';
+                                    e.target.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.2)';
+                                  }
+                                }}
                               >
-                                <i className="icon-eye me-1" aria-hidden="true"></i>
-                                Mark as Read
+                                <i className="icon-eye" aria-hidden="true" style={{ fontSize: '14px' }}></i>
+                                {isMarkingAsRead ? 'Marking...' : 'Mark as Read'}
                               </button>
                             )}
                           </div>
