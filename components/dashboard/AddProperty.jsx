@@ -599,7 +599,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.bedrooms}
                   onChange={handleInputChange}
-                  min="0"
+                  min="1"
                 />
                 {errors.bedrooms && <span className="text-danger">{errors.bedrooms}</span>}
               </fieldset>
@@ -614,8 +614,7 @@ export default function AddProperty() {
                   className="form-control"
                   value={formData.bathrooms}
                   onChange={handleInputChange}
-                  min="0"
-                  step="0.5"
+                  min="1"
                 />
                 {errors.bathrooms && <span className="text-danger">{errors.bathrooms}</span>}
               </fieldset>
