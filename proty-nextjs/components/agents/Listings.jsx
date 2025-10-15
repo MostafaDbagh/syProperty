@@ -4,12 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import { useListingsByAgent } from "@/apis/hooks";
+import { usePropertyActions } from "@/hooks/usePropertyActions";
 import LocationLoader from "../common/LocationLoader";
 
 export default function Listings({ agentId }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'rent', 'sale'
   const [showPhoneNumbers, setShowPhoneNumbers] = useState({});
+  const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();
   const itemsPerPage = 6;
 
   const togglePhoneNumber = (propertyId) => {
@@ -273,10 +275,6 @@ export default function Listings({ agentId }) {
                         propertyId={property._id}
                         showLabel={true}
                       />
-                      <a href="#" className="btn-icon find hover-tooltip">
-                        <i className="icon-find-plus" />
-                        <span className="tooltip">Quick View</span>
-                      </a>
                     </div>
                   </div>
                   <div className="content">
@@ -446,8 +444,8 @@ export default function Listings({ agentId }) {
                         </button>
 
                         {/* Details Button */}
-                        <Link
-                          href={`/property-detail/${property._id}`}
+                        <button
+                          onClick={() => handleDetailsClick(property._id)}
                           style={{
                             background: '#F97316',
                             border: 'none',
@@ -482,7 +480,7 @@ export default function Listings({ agentId }) {
                             <polyline points="10,9 9,9 8,9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                           Details
-                        </Link>
+                        </button>
                       </div>
                     </div>
 

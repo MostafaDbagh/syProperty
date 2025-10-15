@@ -1,12 +1,27 @@
 const Listing = require('../models/listing.model');
 const Favorite = require('../models/favorite.model')
 const { errorHandler } = require('../utils/error');
+const jwt = require('jsonwebtoken');
+
+// Helper function to get user ID from token
+const getUserIdFromToken = (req) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.slice(7);
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || '5345jkj5kl34j5kl34j5');
+      return decoded.id;
+    } catch (error) {
+      return null;
+    }
+  }
+  return null;
+};
 
 const addFavorite = async (req, res, next) => {
   try {
     const { propertyId } = req.body;
-    // Get user ID from req.user (could be req.user.id or req.user._id)
-    const userId = req.user.id || req.user._id?.toString();
+    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
@@ -31,8 +46,7 @@ const addFavorite = async (req, res, next) => {
 
 const removeFavorite = async (req, res, next) => {
   try {
-    // Get user ID from req.user (could be req.user.id or req.user._id)
-    const userId = req.user.id || req.user._id?.toString();
+    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
     const propertyId = req.params.propertyId;
 
     if (!userId) {
@@ -50,8 +64,7 @@ const removeFavorite = async (req, res, next) => {
 
 const getFavorites = async (req, res, next) => {
   try {
-    // Get user ID from req.user (could be req.user.id or req.user._id)
-    const userId = req.user.id || req.user._id?.toString();
+    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
@@ -93,7 +106,7 @@ const getFavorites = async (req, res, next) => {
 const isFavorited = async (req, res, next) => {
   try {
     const { propertyId } = req.params;
-    const userId = req.user.id || req.user._id?.toString();
+    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));

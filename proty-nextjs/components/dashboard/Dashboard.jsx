@@ -6,6 +6,7 @@ import Image from "next/image";
 import { properties5 } from "@/data/properties";
 import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics, useDashboardNotifications } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
+import MostVisitedTest from "./MostVisitedTest";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -14,7 +15,22 @@ export default function Dashboard() {
     // Get user data from localStorage
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
-      setUserData(JSON.parse(storedUserData));
+      const parsedData = JSON.parse(storedUserData);
+      setUserData(parsedData);
+      console.log('Dashboard userData loaded:', parsedData);
+    } else {
+      // Fallback: try to get user ID from token
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const fallbackUserData = { id: payload.id };
+          setUserData(fallbackUserData);
+          console.log('Dashboard fallback userData:', fallbackUserData);
+        } catch (error) {
+          console.error('Error parsing token:', error);
+        }
+      }
     }
   }, []);
 
@@ -37,7 +53,7 @@ export default function Dashboard() {
     data: mostVisitedData, 
     isLoading: mostVisitedLoading, 
     error: mostVisitedError 
-  } = useMostVisitedListings(userData?.id, { limit: 5 });
+  } = useMostVisitedListings(userData?.id || '68ef776e8cd8a7ccd23eedbd', { limit: 5 });
 
   // Fetch dashboard stats from API
   const { 
@@ -64,6 +80,15 @@ export default function Dashboard() {
   const recentReviews = reviewsData?.data || [];
   const mostVisitedListings = mostVisitedData?.data || [];
   
+  // Debug logging
+  console.log('Dashboard Debug:', {
+    userData,
+    mostVisitedData,
+    mostVisitedListings,
+    mostVisitedLoading,
+    mostVisitedError
+  });
+  
   // Extract dashboard data
   const stats = dashboardStats?.data || {};
   const analytics = dashboardAnalytics?.data || {};
@@ -88,6 +113,7 @@ export default function Dashboard() {
   };
   return (
     <div className="main-content w-100">
+      <MostVisitedTest />
       <style jsx>{`
         @keyframes pulse {
           0%, 100% {

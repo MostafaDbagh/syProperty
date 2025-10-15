@@ -7,11 +7,9 @@ const {
   isFavorited
 } = require('../controllers/favorite.controller');
 
-const verifyToken = require('../utils/verifyUser')
-
-router.post('/', verifyToken, addFavorite);
-router.delete('/:propertyId', verifyToken, removeFavorite);
-router.get('/', verifyToken, getFavorites);
-router.get('/check/:propertyId', verifyToken, isFavorited);
+router.post('/', addFavorite);
+router.delete('/:propertyId', removeFavorite);
+router.get('/', getFavorites);
+router.get('/check/:propertyId', isFavorited);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import { useListing, useIncrementVisitCount } from "@/apis/hooks";
+import React from "react";
+import { useListing } from "@/apis/hooks";
 import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import Breadcumb from "@/components/common/Breadcumb";
@@ -11,14 +11,8 @@ import LocationLoader from "@/components/common/LocationLoader";
 
 export default function PropertyDetailClient({ id }) {
   const { data: property, isLoading, isError, error } = useListing(id);
-  const incrementVisitCount = useIncrementVisitCount();
 
-  // Increment visit count when property loads
-  useEffect(() => {
-    if (property && id) {
-      incrementVisitCount.mutate(id);
-    }
-  }, [property, id, incrementVisitCount]);
+  // Removed automatic visit count increment - now only called on user actions
 
   if (isLoading) {
     return (

@@ -218,9 +218,9 @@ export const useListingsByAgent = (agentId, params = {}) => {
 // Get most visited listings by agent
 export const useMostVisitedListings = (agentId, params = {}) => {
   return useQuery({
-    queryKey: ['listings', 'most-visited', agentId, params],
+    queryKey: ['listings', 'mostVisited', agentId, params],
     queryFn: () => listingAPI.getMostVisitedListings(agentId, params),
-    enabled: !!agentId,
+    enabled: true, // Always enabled, will use fallback agentId if needed
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -234,7 +234,7 @@ export const useIncrementVisitCount = () => {
     onSuccess: (data, variables) => {
       // Invalidate related queries to refresh data
       queryClient.invalidateQueries(['listings']);
-      queryClient.invalidateQueries(['listings', 'most-visited']);
+      queryClient.invalidateQueries(['listings', 'mostVisited']);
     },
   });
 };

@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import FavoriteButton from "../common/FavoriteButton";
+import { usePropertyActions } from "@/hooks/usePropertyActions";
 import "./PropertyImageFix.css";
 
 export default function PropertyListItems({ listings = [] }) {
+  const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();
   if (!listings || listings.length === 0) {
     return (
       <div style={{ 
@@ -103,10 +105,6 @@ export default function PropertyListItems({ listings = [] }) {
                 propertyId={property._id}
                 showLabel={true}
               />
-              <a href="#" className="btn-icon find hover-tooltip">
-                <i className="icon-find-plus" />
-                <span className="tooltip">Quick View</span>
-              </a>
             </div>
           </div>
           <div className="content">
@@ -132,12 +130,13 @@ export default function PropertyListItems({ listings = [] }) {
             <div className="bot flex justify-between items-center">
               <h5 className="price">${property.propertyPrice?.toLocaleString() || '0'}</h5>
               <div className="wrap-btn flex">
-                <Link
-                  href={`/property-detail/${property._id}`}
+                <button
+                  onClick={() => handleDetailsClick(property._id)}
                   className="tf-btn style-border pd-4"
+                  style={{ background: 'none', border: '1px solid #F97316', color: '#F97316', cursor: 'pointer' }}
                 >
                   Details
-                </Link>
+                </button>
               </div>
             </div>
           </div>
