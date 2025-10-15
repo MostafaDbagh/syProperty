@@ -17,14 +17,24 @@ const newsletterRoutes = require('./routes/newsletter.route');
 const blogRoutes = require('./routes/blog.route');
 const dashboardRoutes = require('./routes/dashboard.route');
 
+// Security middleware
+const { 
+  setupSecurity, 
+  securityLogger, 
+  sanitizeTextInput 
+} = require('./middleware/security');
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+// Apply security middleware first
+setupSecurity(app);
+app.use(securityLogger);
+app.use(sanitizeTextInput);
+
+// Trust proxy for accurate IP addresses (important for rate limiting)
+app.set('trust proxy', 1);
 
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
