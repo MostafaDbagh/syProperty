@@ -197,8 +197,8 @@ export default function Property() {
   } else if (listingsResponse?.data && Array.isArray(listingsResponse.data)) {
     // If response has data property with array (new format)
     listings = listingsResponse.data;
-    totalCount = listingsResponse.totalCount || listings.length;
-    totalPages = listingsResponse.totalPages || Math.ceil(totalCount / itemsPerPage);
+    totalCount = listingsResponse.pagination?.totalListings || listingsResponse.totalCount || listings.length;
+    totalPages = listingsResponse.pagination?.totalPages || listingsResponse.totalPages || Math.ceil(totalCount / itemsPerPage);
   } else if (listingsResponse && Array.isArray(listingsResponse)) {
     // Fallback for direct array
     listings = listingsResponse;
