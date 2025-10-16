@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
@@ -18,11 +18,14 @@ export default function Properties2() {
     limit: 12, // Only get 12 properties for home page
     sort: 'newest' // Get newest properties
   });
-  const listings = searchResponse?.data || [];
+  
+  // Memoize listings data to prevent unnecessary re-renders
+  const listings = useMemo(() => searchResponse?.data || [], [searchResponse?.data]);
+  
   const { handleDetailsClick } = usePropertyActions();
 
-  // Function to get image source
-  const getImageSource = (property) => {
+  // Memoize the image source function to prevent recreation on every render
+  const getImageSource = useCallback((property) => {
     // Try different possible image sources
     if (property.images && property.images.length > 0) {
       const firstImage = property.images[0];
@@ -41,7 +44,23 @@ export default function Properties2() {
     
     // Return default image
     return "/images/section/box-house-2.jpg";
-  };
+  }, []);
+
+  // Memoize swiper breakpoints to prevent recreation
+  const swiperBreakpoints = useMemo(() => ({
+    0: {
+      slidesPerView: 1,
+      spaceBetween: 20,
+    },
+    768: {
+      slidesPerView: 2,
+      spaceBetween: 30,
+    },
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 40,
+    },
+  }), []);
   
   // Show loading state
   if (isLoading) {

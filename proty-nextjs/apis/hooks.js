@@ -47,7 +47,12 @@ export const useListings = (params = {}) => {
   return useQuery({
     queryKey: ['listings', params],
     queryFn: () => listingAPI.getListings(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - increased for better performance
+    gcTime: 15 * 60 * 1000, // 15 minutes garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: false, // Prevent refetch on component mount if data exists
+    retry: 1, // Reduce retry attempts
+    retryDelay: 1000, // 1 second delay between retries
   });
 };
 
@@ -57,8 +62,12 @@ export const useSearchListings = (searchParams = {}) => {
     queryKey: ['listings', 'search', searchParams],
     queryFn: () => listingAPI.searchListings(searchParams),
     enabled: true, // Always enabled for now to avoid build issues
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes - increased for better performance
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
     refetchOnWindowFocus: false, // Prevent refetch on window focus
+    refetchOnMount: false, // Prevent refetch on component mount if data exists
+    retry: 1, // Reduce retry attempts
+    retryDelay: 1000, // 1 second delay between retries
   });
 };
 
@@ -67,6 +76,10 @@ export const useListing = (id) => {
     queryKey: ['listing', id],
     queryFn: () => listingAPI.getListingById(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    retry: 1, // Reduce retry attempts
   });
 };
 

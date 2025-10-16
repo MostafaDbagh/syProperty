@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
@@ -80,21 +80,13 @@ export default function Dashboard() {
   const recentReviews = reviewsData?.data || [];
   const mostVisitedListings = mostVisitedData?.data || [];
   
-  // Debug logging
-  console.log('Dashboard Debug:', {
-    userData,
-    mostVisitedData,
-    mostVisitedListings,
-    mostVisitedLoading,
-    mostVisitedError
-  });
-  
-  // Extract dashboard data
-  const stats = dashboardStats?.data || {};
-  const analytics = dashboardAnalytics?.data || {};
-  const notifications = dashboardNotifications?.data || {};
+  // Memoize dashboard data to prevent unnecessary re-renders
+  const stats = useMemo(() => dashboardStats?.data || {}, [dashboardStats?.data]);
+  const analytics = useMemo(() => dashboardAnalytics?.data || {}, [dashboardAnalytics?.data]);
+  const notifications = useMemo(() => dashboardNotifications?.data || {}, [dashboardNotifications?.data]);
 
-  const formatDate = (dateString) => {
+  // Memoize utility functions to prevent recreation on every render
+  const formatDate = useCallback((dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
@@ -105,12 +97,12 @@ export default function Dashboard() {
     if (diffDays < 14) return "1 week ago";
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
     return `${Math.ceil(diffDays / 30)} months ago`;
-  };
+  }, []);
 
-  const truncateText = (text, maxLength = 80) => {
+  const truncateText = useCallback((text, maxLength = 80) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
-  };
+  }, []);
   return (
     <div className="main-content w-100">
       <MostVisitedTest />

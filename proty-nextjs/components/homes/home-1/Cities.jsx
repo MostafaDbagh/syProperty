@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
@@ -8,29 +8,33 @@ export default function Cities() {
     limit: 50, // Limit to 50 for city statistics
     sort: 'newest' 
   });
-  const listings = searchResponse?.data || [];
+  
+  // Memoize listings data to prevent unnecessary re-renders
+  const listings = useMemo(() => searchResponse?.data || [], [searchResponse?.data]);
 
+  // Memoize state counts calculation to prevent recalculation on every render
+  const stateCounts = useMemo(() => {
+    return listings.reduce((acc, listing) => {
+      const state = listing.state;
+      if (state) {
+        acc[state] = (acc[state] || 0) + 1;
+      }
+      return acc;
+    }, {});
+  }, [listings]);
 
-
-  // Dynamically create locations from API data
-  const stateCounts = listings.reduce((acc, listing) => {
-    const state = listing.state;
-    if (state) {
-      acc[state] = (acc[state] || 0) + 1;
-    }
-    return acc;
-  }, {});
-
-  // Convert state counts to locations array
-  const locations = Object.entries(stateCounts).map(([state, count], index) => ({
-    id: index + 1,
-    city: state,
-    properties: `${count} Properties`,
-    imageSrc: `/images/section/location-${(index % 6) + 9}.jpg`, // Cycle through images 9-14
-    alt: state,
-    width: index === 5 ? 1395 : 689, // Last item gets wider image
-    height: 467
-  }));
+  // Memoize locations array to prevent recreation on every render
+  const locations = useMemo(() => {
+    return Object.entries(stateCounts).map(([state, count], index) => ({
+      id: index + 1,
+      city: state,
+      properties: `${count} Properties`,
+      imageSrc: `/images/section/location-${(index % 6) + 9}.jpg`, // Cycle through images 9-14
+      alt: state,
+      width: index === 5 ? 1395 : 689, // Last item gets wider image
+      height: 467
+    }));
+  }, [stateCounts]);
 
   // Show loading state
   if (isLoading) {
