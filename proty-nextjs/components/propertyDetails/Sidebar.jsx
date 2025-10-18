@@ -1,23 +1,57 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import ContactAgentModal from "../modals/ContactAgentModal";
 import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
+import { useCreateMessage } from "@/apis/hooks";
 
 export default function Sidebar({ property }) {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    senderName: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  
+  const createMessageMutation = useCreateMessage();
   
   // Extract agent contact information from property
   const agentEmail = property?.agentEmail || property?.agent || "contact@property.com";
   const agentNumber = property?.agentNumber || "Not provided";
   const agentWhatsapp = property?.agentWhatsapp || property?.agentNumber;
   const agentName = property?.agentId?.username || "Property Agent";
-  const agent = property?.agentId || { 
-    fullName: agentName, 
-    username: agentName, 
-    email: agentEmail,
-    avatar: "/images/avatar/seller.jpg"
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      await createMessageMutation.mutateAsync({
+        propertyId: property._id,
+        agentId: property.agent || property.agentId,
+        senderName: formData.senderName,
+        senderEmail: 'user@example.com', // Default email since we don't have email field
+        subject: `Contact Agent - ${property.propertyKeyword}`,
+        message: formData.message,
+        messageType: 'contact_agent'
+      });
+
+      setSubmitMessage('Message sent successfully!');
+      setFormData({ senderName: '', message: '' });
+    } catch (error) {
+      setSubmitMessage(`Failed to send message: ${error.message || 'Unknown error'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -25,7 +59,7 @@ export default function Sidebar({ property }) {
       <div className="tf-sidebar sticky-sidebar">
         <form
           className="form-contact-seller mb-30"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
         >
           <h4 className="heading-title mb-30">Contact Agent</h4>
           <div className="seller-info">
@@ -67,13 +101,32 @@ export default function Sidebar({ property }) {
               </ul>
             </div>
           </div>
+          
+          {/* Submit Message */}
+          {submitMessage && (
+            <div className={`alert ${submitMessage.includes('successfully') ? 'alert-success' : 'alert-danger'} mb-3`} style={{
+              padding: '12px 16px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              marginBottom: '20px',
+              backgroundColor: submitMessage.includes('successfully') ? '#fef7f1' : '#fee2e2',
+              color: submitMessage.includes('successfully') ? '#f1913d' : '#991b1b',
+              border: `1px solid ${submitMessage.includes('successfully') ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
+            }}>
+              {submitMessage}
+            </div>
+          )}
+          
           <fieldset className="mb-12">
             <input
               type="text"
               className="form-control"
               placeholder="Full Name"
-              name="name"
+              name="senderName"
               id="name1"
+              value={formData.senderName}
+              onChange={handleInputChange}
               required
             />
           </fieldset>
@@ -84,42 +137,28 @@ export default function Sidebar({ property }) {
               rows={10}
               placeholder="How can an agent help"
               id="message1"
+              value={formData.message}
+              onChange={handleInputChange}
               required
-              defaultValue={""}
             />
           </fieldset>
           <button 
-            type="button"
-            onClick={() => setIsContactModalOpen(true)}
+            type="submit"
+            disabled={isSubmitting}
             className="tf-btn bg-color-primary w-full"
-            style={{ border: 'none', cursor: 'pointer' }}
+            style={{ 
+              border: 'none', 
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isSubmitting ? 0.7 : 1
+            }}
           >
-            Send message
+            {isSubmitting ? 'Sending...' : 'Send message'}
           </button>
         </form>
         
         {/* More About This Property Button */}
         <div className="sidebar-ads mb-30">
-          <button 
-            onClick={() => setIsMoreInfoModalOpen(true)}
-            className="tf-btn fw-6 bg-color-primary fw-6 w-full"
-            style={{ 
-              border: 'none', 
-              cursor: 'pointer',
-              padding: '14px 24px',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginBottom: '20px'
-            }}
-          >
-            <i className="icon-mail" style={{ fontSize: '16px' }} />
-            More About This Property
-          </button>
+
           
           <div className="image-wrap">
             <Image
@@ -159,13 +198,6 @@ export default function Sidebar({ property }) {
       </div>
 
       {/* Modals */}
-      <ContactAgentModal 
-        isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-        property={property}
-        agent={agent}
-      />
-      
       <MoreAboutPropertyModal 
         isOpen={isMoreInfoModalOpen}
         onClose={() => setIsMoreInfoModalOpen(false)}
