@@ -130,6 +130,11 @@ export const useReviewsByProperty = (propertyId) => {
     queryKey: ['reviews', 'property', propertyId],
     queryFn: () => reviewAPI.getReviewsByProperty(propertyId),
     enabled: !!propertyId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
   });
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useReviewsByProperty, useCreateReview } from "@/apis/hooks";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,22 +19,22 @@ export default function PropertyReviews({ propertyId }) {
   const createReviewMutation = useCreateReview();
 
   // Get last 5 reviews
-  const recentReviews = reviewsData?.data?.slice(0, 5) || [];
+  const recentReviews = useMemo(() => reviewsData?.data?.slice(0, 5) || [], [reviewsData?.data]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
 
-  const handleRatingChange = (rating) => {
+  const handleRatingChange = useCallback((rating) => {
     setFormData(prev => ({
       ...prev,
       rating
     }));
-  };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,7 +65,7 @@ export default function PropertyReviews({ propertyId }) {
     }
   };
 
-  const renderStars = (rating) => {
+  const renderStars = useCallback((rating) => {
     return Array.from({ length: 5 }, (_, index) => (
       <i 
         key={index} 
@@ -73,15 +73,15 @@ export default function PropertyReviews({ propertyId }) {
         style={{ color: index < rating ? '#f1913d' : '#e0e0e0' }}
       />
     ));
-  };
+  }, []);
 
-  const formatDate = (dateString) => {
+  const formatDate = useCallback((dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-  };
+  }, []);
 
   if (isLoading) {
     return (
