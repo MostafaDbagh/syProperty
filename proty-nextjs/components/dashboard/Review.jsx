@@ -244,6 +244,37 @@ export default function Review() {
                         marginBottom: '8px' 
                       }}>
                         Property: <strong>{review.propertyId.propertyKeyword || 'N/A'}</strong>
+                        <br />
+                        <a 
+                          href={`/property-detail/${review.propertyId._id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: '#f1913d',
+                            textDecoration: 'none',
+                            fontSize: '11px',
+                            fontWeight: '500',
+                            marginTop: '4px',
+                            display: 'inline-block',
+                            padding: '2px 6px',
+                            backgroundColor: '#fef7f1',
+                            borderRadius: '4px',
+                            border: '1px solid rgba(241, 145, 61, 0.2)',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#f1913d';
+                            e.target.style.color = '#ffffff';
+                            e.target.style.borderColor = '#f1913d';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#fef7f1';
+                            e.target.style.color = '#f1913d';
+                            e.target.style.borderColor = 'rgba(241, 145, 61, 0.2)';
+                          }}
+                        >
+                          View Property Details (ID: {review.propertyId._id})
+                        </a>
                       </div>
                     )}
                     <div className="ratings">
