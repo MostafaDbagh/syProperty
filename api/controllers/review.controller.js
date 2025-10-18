@@ -134,9 +134,10 @@ const getReviewsByProperty = async (req, res) => {
         return res.status(400).json({ message: 'propertyId is required' });
       }
   
-      // Get all reviews for this property (temporarily removing hiddenFromListing filter for debugging)
+      // Get all reviews for this property (excluding hidden from listing)
       const reviews = await Review.find({ 
-        propertyId
+        propertyId,
+        hiddenFromListing: { $ne: true }
       }).sort({ createdAt: -1 });
 
       console.log(`Found ${reviews.length} reviews for property ${propertyId}`);

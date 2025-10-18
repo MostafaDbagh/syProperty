@@ -34,7 +34,6 @@ export default function AddProperty() {
     agent: "",
     agentId: "",
     amenities: [],
-    videoUrl: "",
     propertyId: `PROP_${Date.now()}`
   });
 
@@ -264,7 +263,6 @@ export default function AddProperty() {
         agent: user?.email || "",
         agentId: user?._id || "",
         amenities: [],
-        videoUrl: "",
         propertyId: `PROP_${Date.now()}`
       });
       setImages([]);
@@ -683,24 +681,6 @@ export default function AddProperty() {
                 ))}
               </div>
             </div>
-          </div>
-
-          {/* Videos Section */}
-          <div className="widget-box-2 mb-20">
-            <h3 className="title">Videos</h3>
-            <fieldset className="box-fieldset">
-              <label htmlFor="videoUrl" className="text-btn">
-                Video URL:
-              </label>
-              <input
-                type="url"
-                name="videoUrl"
-                className="form-control"
-                placeholder="Youtube, vimeo url"
-                value={formData.videoUrl}
-                onChange={handleInputChange}
-              />
-            </fieldset>
           </div>
 
           {/* Submit Buttons */}

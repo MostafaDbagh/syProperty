@@ -165,6 +165,7 @@ export const useHideReviewFromDashboard = () => {
     mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromDashboard(reviewId, hidden),
     onSuccess: (_, { reviewId }) => {
       queryClient.invalidateQueries(['reviews']);
+      queryClient.invalidateQueries(['reviews', 'property']); // Also invalidate property-specific reviews
     },
   });
 };
@@ -176,6 +177,7 @@ export const useHideReviewFromListing = () => {
     mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromListing(reviewId, hidden),
     onSuccess: (_, { reviewId }) => {
       queryClient.invalidateQueries(['reviews']);
+      queryClient.invalidateQueries(['reviews', 'property']); // Also invalidate property-specific reviews
     },
   });
 };

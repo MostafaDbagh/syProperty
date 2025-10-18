@@ -48,7 +48,6 @@ const listingSchema = new mongoose.Schema(
     visitCount: { type: Number, default: 0 },
 
     ////media -part
-    videoUrl: { type: String },                      
     imageNames: { 
       type: [String], 
       required: false,

@@ -2,20 +2,13 @@
 import React, { useState } from "react";
 import { getStatusBadge } from "@/utlis/propertyHelpers";
 import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
-import { useCreateMessage } from "@/apis/hooks";
+import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
 import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon } from "@/components/icons";
 
 export default function PropertyOverview({ property }) {
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    senderName: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
-  
-  const createMessageMutation = useCreateMessage();
+  const [isAskQuestionModalOpen, setIsAskQuestionModalOpen] = useState(false);
   
   const statusBadge = getStatusBadge(property?.status);
   
@@ -25,39 +18,6 @@ export default function PropertyOverview({ property }) {
     if (status === 'rent') return styles.forRent;
     if (status === 'sale') return styles.forSale;
     return styles.default;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage('');
-
-    try {
-      await createMessageMutation.mutateAsync({
-        propertyId: property._id,
-        agentId: property.agent || property.agentId,
-        senderName: formData.senderName,
-        senderEmail: 'user@example.com', // Default email since we don't have email field
-        subject: `Ask a Question - ${property.propertyKeyword}`,
-        message: formData.message,
-        messageType: 'contact_agent'
-      });
-
-      setSubmitMessage('Question sent successfully!');
-      setFormData({ senderName: '', message: '' });
-    } catch (error) {
-      setSubmitMessage(`Failed to send question: ${error.message || 'Unknown error'}`);
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -201,60 +161,20 @@ export default function PropertyOverview({ property }) {
           </div>
         </div>
       </div>
-      {/* Submit Message */}
-      {submitMessage && (
-        <div className={`alert ${submitMessage.includes('successfully') ? 'alert-success' : 'alert-danger'} mb-3`} style={{
-          padding: '12px 16px',
-          borderRadius: '8px',
-          fontSize: '14px',
-          fontWeight: '500',
-          marginBottom: '20px',
-          backgroundColor: submitMessage.includes('successfully') ? '#fef7f1' : '#fee2e2',
-          color: submitMessage.includes('successfully') ? '#f1913d' : '#991b1b',
-          border: `1px solid ${submitMessage.includes('successfully') ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
-        }}>
-          {submitMessage}
-        </div>
-      )}
+      <button 
+        onClick={() => setIsAskQuestionModalOpen(true)}
+        className="tf-btn bg-color-primary pd-21 fw-6"
+        style={{ border: 'none', cursor: 'pointer', width: '100%' }}
+      >
+        Ask a question
+      </button>
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '16px' }}>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Your Name"
-            name="senderName"
-            value={formData.senderName}
-            onChange={handleInputChange}
-            required
-            style={{ marginBottom: '12px' }}
-          />
-          <textarea
-            name="message"
-            className="form-control"
-            placeholder="Ask a question about this property..."
-            rows={3}
-            value={formData.message}
-            onChange={handleInputChange}
-            required
-            style={{ marginBottom: '16px' }}
-          />
-        </div>
-        <button 
-          type="submit"
-          disabled={isSubmitting}
-          className="tf-btn bg-color-primary pd-21 fw-6"
-          style={{ 
-            border: 'none', 
-            cursor: isSubmitting ? 'not-allowed' : 'pointer', 
-            width: '100%',
-            opacity: isSubmitting ? 0.7 : 1
-          }}
-        >
-          {isSubmitting ? 'Sending...' : 'Ask a question'}
-        </button>
-      </form>
-
+      <ContactAgentModal 
+        isOpen={isAskQuestionModalOpen}
+        onClose={() => setIsAskQuestionModalOpen(false)}
+        property={property}
+      />
+      
       <MoreAboutPropertyModal 
         isOpen={isMoreInfoModalOpen}
         onClose={() => setIsMoreInfoModalOpen(false)}

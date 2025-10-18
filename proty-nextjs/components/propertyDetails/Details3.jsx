@@ -1,7 +1,6 @@
 import React from "react";
 import Slider3 from "./sliders/Slider3";
 import PropertyOverview from "./PropertyOverview";
-import VideoReview from "./VideoReview";
 import ExtraInfo from "./ExtraInfo";
 import Features from "./Features";
 import Location from "./Location";
@@ -18,11 +17,6 @@ export default function Details3({ property }) {
             <div className="wg-property box-overview">
               <PropertyOverview property={property} />
             </div>
-            {property?.videoUrl && (
-              <div className="wg-property video spacing-2">
-                <VideoReview property={property} />
-              </div>
-            )}
             <div className="wg-property box-property-detail spacing-1">
               <ExtraInfo property={property} />
             </div>
