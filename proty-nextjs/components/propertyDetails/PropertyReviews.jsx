@@ -18,6 +18,14 @@ export default function PropertyReviews({ propertyId }) {
   const { data: reviewsData, isLoading, isError } = useReviewsByProperty(propertyId);
   const createReviewMutation = useCreateReview();
 
+  // Debug logging
+  console.log('PropertyReviews Debug:', {
+    propertyId,
+    reviewsData,
+    isLoading,
+    isError
+  });
+
   // Get last 5 reviews
   const recentReviews = useMemo(() => reviewsData?.data?.slice(0, 5) || [], [reviewsData?.data]);
 
