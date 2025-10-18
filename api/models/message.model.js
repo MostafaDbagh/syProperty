@@ -54,7 +54,7 @@ const messageSchema = new mongoose.Schema({
   // Message type
   messageType: {
     type: String,
-    enum: ['inquiry', 'viewing_request', 'offer', 'question', 'complaint'],
+    enum: ['inquiry', 'viewing_request', 'offer', 'question', 'complaint', 'contact_agent', 'request_more_info'],
     default: 'inquiry'
   },
   

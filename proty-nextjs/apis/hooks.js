@@ -180,6 +180,18 @@ export const useHideReviewFromListing = () => {
   });
 };
 
+// Message hooks
+export const useCreateMessage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: messageAPI.createMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
+    },
+  });
+};
+
 // Contact hooks
 export const useContacts = (params = {}) => {
   return useQuery({
