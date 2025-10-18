@@ -42,7 +42,7 @@ export default function Sidebar({ property }) {
         senderEmail: 'user@example.com', // Default email since we don't have email field
         subject: `Contact Agent - ${property.propertyKeyword}`,
         message: formData.message,
-        messageType: 'contact_agent'
+        messageType: 'inquiry'
       });
 
       setSubmitMessage('Message sent successfully!');

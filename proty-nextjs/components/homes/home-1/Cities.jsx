@@ -101,7 +101,7 @@ export default function Cities() {
             </p>
           </div>
           <div className="wrap-neighborhoods">
-            {locations.map((location) => (
+            {locations.slice(0, 7).map((location) => (
               <div
                 key={location.id}
                 className={`box-location hover-img item-${location.id}`}

@@ -40,7 +40,7 @@ export default function MoreAboutPropertyModal({
         senderPhone: formData.senderPhone,
         subject: `More About This Property - ${property.propertyKeyword}`,
         message: formData.message,
-        messageType: 'request_more_info'
+        messageType: 'info'
       });
 
       setSubmitMessage('Message sent successfully!');

@@ -201,14 +201,8 @@ export default function Messages() {
     switch (messageType) {
       case 'inquiry':
         return 'bg-primary';
-      case 'viewing_request':
-        return 'bg-warning';
-      case 'offer':
-        return 'bg-success';
-      case 'question':
+      case 'info':
         return 'bg-info';
-      case 'complaint':
-        return 'bg-danger';
       default:
         return 'bg-light';
     }

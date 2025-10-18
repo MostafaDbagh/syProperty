@@ -32,7 +32,7 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
       senderEmail: formData.email,
       subject: `Ask a Question - ${property.propertyKeyword}`,
       message: formData.message,
-      messageType: 'contact_agent'
+      messageType: 'inquiry'
     };
 
     // Submit using the mutation

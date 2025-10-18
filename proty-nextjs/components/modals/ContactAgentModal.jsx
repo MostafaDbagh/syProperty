@@ -34,12 +34,12 @@ export default function ContactAgentModal({
     try {
       await createMessageMutation.mutateAsync({
         propertyId: property._id,
-        agentId: property.agent || property.agentId,
+        agentId: property.agentId || property.agent,
         senderName: formData.senderName,
         senderEmail: formData.senderEmail,
         subject: `Contact Agent - ${property.propertyKeyword}`,
         message: formData.message,
-        messageType: 'contact_agent'
+        messageType: 'inquiry'
       });
 
       setSubmitMessage('Message sent successfully!');
@@ -130,34 +130,43 @@ export default function ContactAgentModal({
 
         {/* Agent Info */}
         <div className="agent-info" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          marginBottom: '24px',
-          padding: '16px',
-          backgroundColor: '#f8fafc',
+          background: '#ffffff',
           borderRadius: '12px',
-          border: '1px solid #e2e8f0'
+          padding: '20px',
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          marginBottom: '24px'
         }}>
-          <div className="agent-details">
+          <div className="agent-details" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
             <h4 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#1f2937',
+              fontSize: '16px',
+              fontWeight: '700',
+              color: '#2c3e50',
               margin: 0,
-              marginBottom: '4px'
+              letterSpacing: '0.3px'
             }}>
-              {agent?.fullName || agent?.username || 'Property Agent'}
+              Property Agent
             </h4>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              color: '#6b7280',
-              fontSize: '14px'
+              gap: '8px'
             }}>
-              <i className="icon-mail" style={{ fontSize: '16px' }} />
-              <span>{agent?.email || 'sarah@realtor.com'}</span>
+              <i className="icon-mail" style={{
+                color: '#6c757d',
+                fontSize: '14px'
+              }} />
+              <span style={{
+                color: '#6c757d',
+                fontSize: '14px',
+                fontWeight: '400'
+              }}>
+                {agent?.email || 'sarah@realtor.com'}
+              </span>
             </div>
           </div>
         </div>

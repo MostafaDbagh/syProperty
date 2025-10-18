@@ -18,7 +18,7 @@ const getMessagesByAgent = async (req, res, next) => {
     
     // Filter parameters
     const status = req.query.status; // 'unread', 'read', 'replied', 'archived', 'all'
-    const messageType = req.query.messageType; // 'inquiry', 'viewing_request', 'offer', 'question', 'complaint'
+    const messageType = req.query.messageType; // 'inquiry', 'info'
     const propertyId = req.query.propertyId;
     const search = req.query.search; // Search in sender name, email, subject, or message
 
@@ -243,10 +243,23 @@ const createMessage = async (req, res, next) => {
       return next(errorHandler(400, 'All required fields must be provided'));
     }
 
+    // Handle agentId - if it's an email, find the user by email
+    let finalAgentId = agentId;
+    
+    // Check if agentId is an email (contains @)
+    if (agentId.includes('@')) {
+      const User = require('../models/user.model');
+      const user = await User.findOne({ email: agentId });
+      if (!user) {
+        return next(errorHandler(404, 'Agent not found with the provided email'));
+      }
+      finalAgentId = user._id;
+    }
+
     // Create new message
     const newMessage = new Message({
       propertyId,
-      agentId,
+      agentId: finalAgentId,
       senderName,
       senderEmail,
       senderPhone,
