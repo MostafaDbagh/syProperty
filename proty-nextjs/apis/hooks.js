@@ -401,17 +401,6 @@ export const useMessageMutations = () => {
   };
 };
 
-export const useCreateMessage = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: messageAPI.createMessage,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['messages']);
-    },
-  });
-};
-
 // Newsletter hooks
 export const useNewsletterSubscription = () => {
   const queryClient = useQueryClient();
