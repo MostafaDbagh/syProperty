@@ -1,11 +1,10 @@
 "use client";
-import React, { useMemo, useCallback } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
 import FavoriteButton from "@/components/common/FavoriteButton";
-import { usePropertyActions } from "@/hooks/usePropertyActions";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -18,14 +17,10 @@ export default function Properties2() {
     limit: 12, // Only get 12 properties for home page
     sort: 'newest' // Get newest properties
   });
-  
-  // Memoize listings data to prevent unnecessary re-renders
-  const listings = useMemo(() => searchResponse?.data || [], [searchResponse?.data]);
-  
-  const { handleDetailsClick } = usePropertyActions();
+  const listings = searchResponse?.data || [];
 
-  // Memoize the image source function to prevent recreation on every render
-  const getImageSource = useCallback((property) => {
+  // Function to get image source
+  const getImageSource = (property) => {
     // Try different possible image sources
     if (property.images && property.images.length > 0) {
       const firstImage = property.images[0];
@@ -44,23 +39,7 @@ export default function Properties2() {
     
     // Return default image
     return "/images/section/box-house-2.jpg";
-  }, []);
-
-  // Memoize swiper breakpoints to prevent recreation
-  const swiperBreakpoints = useMemo(() => ({
-    0: {
-      slidesPerView: 1,
-      spaceBetween: 20,
-    },
-    768: {
-      slidesPerView: 2,
-      spaceBetween: 30,
-    },
-    1024: {
-      slidesPerView: 3,
-      spaceBetween: 40,
-    },
-  }), []);
+  };
   
   // Show loading state
   if (isLoading) {
@@ -247,35 +226,9 @@ export default function Properties2() {
                           <div className={styles.price}>
                             ${property.propertyPrice?.toLocaleString() || '0'}
                           </div>
-                          
-                          <button 
-                            onClick={() => handleDetailsClick(property._id)}
-                            className={styles.detailsBtn}
-                            style={{ 
-                              background: 'linear-gradient(135deg, #ff6b35, #f7931e)', 
-                              border: 'none', 
-                              borderRadius: '8px',
-                              padding: '10px 20px',
-                              cursor: 'pointer',
-                              textDecoration: 'none',
-                              color: 'white',
-                              fontWeight: '600',
-                              fontSize: '14px',
-                              transition: 'all 0.3s ease',
-                              boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)',
-                              minWidth: '80px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.transform = 'translateY(-2px)';
-                              e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.transform = 'translateY(0)';
-                              e.target.style.boxShadow = '0 2px 8px rgba(255, 107, 53, 0.3)';
-                            }}
-                          >
+                          <Link href={`/property-detail/${property._id}`} className={styles.detailsBtn}>
                             Details
-                          </button>
+                          </Link>
                         </div>
                       </div>
                       

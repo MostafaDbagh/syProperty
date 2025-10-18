@@ -3,7 +3,7 @@ const Listing = require('../models/listing.model');
 
 const createReview = async (req, res) => {
   try {
-    const { name, email, review, userId, propertyId } = req.body;
+    const { name, email, review, rating, userId, propertyId } = req.body;
 
     if (!name || !email || !review) {
       return res.status(400).json({ message: 'All fields are required' });
@@ -18,6 +18,7 @@ const createReview = async (req, res) => {
       name, 
       email, 
       review,
+      rating: rating || 5, // Use provided rating or default to 5
       propertyId,
       userId: userId || null // Add userId if provided
     });
