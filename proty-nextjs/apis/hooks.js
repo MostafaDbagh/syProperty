@@ -158,6 +158,28 @@ export const useCreateReview = () => {
   });
 };
 
+export const useHideReviewFromDashboard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromDashboard(reviewId, hidden),
+    onSuccess: (_, { reviewId }) => {
+      queryClient.invalidateQueries(['reviews']);
+    },
+  });
+};
+
+export const useHideReviewFromListing = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromListing(reviewId, hidden),
+    onSuccess: (_, { reviewId }) => {
+      queryClient.invalidateQueries(['reviews']);
+    },
+  });
+};
+
 // Contact hooks
 export const useContacts = (params = {}) => {
   return useQuery({
