@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 import { useCreateMessage } from "@/apis/hooks";
 
 export default function ContactAgentModal({ 
@@ -140,24 +139,6 @@ export default function ContactAgentModal({
           borderRadius: '12px',
           border: '1px solid #e2e8f0'
         }}>
-          <div className="agent-avatar" style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            backgroundColor: '#e5e7eb',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Image
-              alt="Agent avatar"
-              src={agent?.avatar || '/images/avatar/avatar-1.jpg'}
-              width={60}
-              height={60}
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
           <div className="agent-details">
             <h4 style={{
               fontSize: '18px',
