@@ -471,6 +471,29 @@ export default function Property() {
                                 ${listing.propertyPrice?.toLocaleString()}
                                 {listing.status === 'rent' && listing.rentType && ` / ${listing.rentType}`}
                               </div>
+                              
+                              {/* View Count Display */}
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '6px',
+                                gap: '6px',
+                                backgroundColor: '#f0f2f5',
+                                padding: '4px 8px',
+                                borderRadius: '12px',
+                                border: '1px solid #e0e2e5',
+                                width: 'fit-content',
+                                fontSize: '12px',
+                                color: '#4a5568',
+                                fontWeight: '600',
+                                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                                transition: 'all 0.2s ease'
+                              }}>
+                                <i className="icon-eye" style={{ fontSize: '12px', color: '#4a5568' }} />
+                                <span>
+                                  {listing.visitCount || 0} views
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </td>

@@ -339,6 +339,7 @@ export default function PropertyGridItems({ listings = [] }) {
               <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
                 $ {property.propertyPrice?.toLocaleString() || '0'}
               </h5>
+              
             </div>
           </div>
         </div>

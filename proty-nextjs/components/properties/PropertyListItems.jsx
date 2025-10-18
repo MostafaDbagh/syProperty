@@ -128,7 +128,10 @@ export default function PropertyListItems({ listings = [] }) {
               </li>
             </ul>
             <div className="bot flex justify-between items-center">
-              <h5 className="price">${property.propertyPrice?.toLocaleString() || '0'}</h5>
+              <div>
+                <h5 className="price">${property.propertyPrice?.toLocaleString() || '0'}</h5>
+                
+              </div>
               <div className="wrap-btn flex">
                 <button
                   onClick={() => handleDetailsClick(property._id)}

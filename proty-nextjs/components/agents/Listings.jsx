@@ -489,6 +489,7 @@ export default function Listings({ agentId }) {
                       <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
                         $ {(property.propertyPrice || 0).toLocaleString()}
                       </h5>
+                      
                     </div>
                   </div>
                 </div>

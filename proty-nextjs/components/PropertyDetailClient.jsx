@@ -6,6 +6,7 @@ import Header1 from "@/components/headers/Header1";
 import Breadcumb from "@/components/common/Breadcumb";
 import Cta from "@/components/common/Cta";
 import Details3 from "@/components/propertyDetails/Details3";
+import PropertyReviews from "@/components/propertyDetails/PropertyReviews";
 import RelatedProperties from "@/components/propertyDetails/RelatedProperties";
 import LocationLoader from "@/components/common/LocationLoader";
 

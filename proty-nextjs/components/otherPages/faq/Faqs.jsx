@@ -455,56 +455,7 @@ export default function Faqs() {
           </div>
           <div className="col-xl-4 col-lg-5">
             <div className="tf-sidebar sticky-sidebar">
-              <form className="form-contact-seller mb-30">
-                <h4 className="heading-title mb-30">Contact Sellers</h4>
-                <div className="seller-info">
-                  <div className="avartar">
-                    <Image
-                      alt="FAQ illustration"
-                      width={200}
-                      height={200}
-                      src="/images/avatar/seller.jpg"
-                    />
-                  </div>
-                  <div className="content">
-                    <h6 className="name">Shara Conner</h6>
-                    <ul className="contact">
-                      <li>
-                        <i className="icon-phone-1" />
-                        <span>1-333-345-6868</span>
-                      </li>
-                      <li>
-                        <i className="icon-mail" />
-                        <a href="#">themesflat@gmail.com</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <fieldset className="mb-12">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Full Name"
-                    name="name"
-                    id="name"
-                    required=""
-                  />
-                </fieldset>
-                <fieldset className="mb-30">
-                  <textarea
-                    name="message"
-                    cols={30}
-                    rows={10}
-                    placeholder="How can an agent help"
-                    id="message"
-                    required=""
-                    defaultValue={""}
-                  />
-                </fieldset>
-                <a href="#" className="tf-btn bg-color-primary w-full">
-                  Send message
-                </a>
-              </form>
+         
               <div className="sidebar-ads">
                 <div className="image-wrap">
                   <Image

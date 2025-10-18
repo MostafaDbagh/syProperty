@@ -247,6 +247,7 @@ export default function Properties2() {
                           <div className={styles.price}>
                             ${property.propertyPrice?.toLocaleString() || '0'}
                           </div>
+                          
                           <button 
                             onClick={() => handleDetailsClick(property._id)}
                             className={styles.detailsBtn}

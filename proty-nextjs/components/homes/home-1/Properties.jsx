@@ -339,6 +339,7 @@ export default function Properties({ listings, isLoading, isError }) {
             <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
               $ {listing?.propertyPrice?.toLocaleString()}
             </h5>
+            
           </div>
         </div>
       </div>

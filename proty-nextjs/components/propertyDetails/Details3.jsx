@@ -6,6 +6,7 @@ import ExtraInfo from "./ExtraInfo";
 import Features from "./Features";
 import Location from "./Location";
 import Sidebar from "./Sidebar";
+import PropertyReviews from "./PropertyReviews";
 
 export default function Details3({ property }) {
   return (
@@ -27,6 +28,9 @@ export default function Details3({ property }) {
             </div>
             <div className="wg-property box-amenities spacing-3">
               <Features property={property} />
+            </div>
+            <div className="wg-property box-reviews spacing-3">
+              <PropertyReviews propertyId={property._id} />
             </div>
           </div>
           <div className="col-xl-4 col-lg-5">

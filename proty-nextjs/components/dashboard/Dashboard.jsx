@@ -6,7 +6,6 @@ import Image from "next/image";
 import { properties5 } from "@/data/properties";
 import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics, useDashboardNotifications } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
-import MostVisitedTest from "./MostVisitedTest";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -105,7 +104,6 @@ export default function Dashboard() {
   }, []);
   return (
     <div className="main-content w-100">
-      <MostVisitedTest />
       <style jsx>{`
         @keyframes pulse {
           0%, 100% {
