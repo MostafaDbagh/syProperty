@@ -318,6 +318,50 @@
   text-decoration: underline;
 }
 
+/* Terms and Conditions Checkbox Styles */
+.checkboxContainer {
+  margin-top: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #374151;
+}
+
+.checkboxInput {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #F1913D;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.checkboxText {
+  flex: 1;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.termsLink {
+  color: #F1913D;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.termsLink:hover {
+  color: #E0782E;
+  text-decoration: underline;
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
   .modalOverlay {
