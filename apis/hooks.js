@@ -47,7 +47,12 @@ export const useListings = (params = {}) => {
   return useQuery({
     queryKey: ['listings', params],
     queryFn: () => listingAPI.getListings(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - increased for better performance
+    gcTime: 15 * 60 * 1000, // 15 minutes garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: false, // Prevent refetch on component mount if data exists
+    retry: 1, // Reduce retry attempts
+    retryDelay: 1000, // 1 second delay between retries
   });
 };
 
@@ -57,8 +62,12 @@ export const useSearchListings = (searchParams = {}) => {
     queryKey: ['listings', 'search', searchParams],
     queryFn: () => listingAPI.searchListings(searchParams),
     enabled: true, // Always enabled for now to avoid build issues
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes - increased for better performance
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
     refetchOnWindowFocus: false, // Prevent refetch on window focus
+    refetchOnMount: false, // Prevent refetch on component mount if data exists
+    retry: 1, // Reduce retry attempts
+    retryDelay: 1000, // 1 second delay between retries
   });
 };
 
@@ -67,6 +76,10 @@ export const useListing = (id) => {
     queryKey: ['listing', id],
     queryFn: () => listingAPI.getListingById(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    retry: 1, // Reduce retry attempts
   });
 };
 
@@ -117,6 +130,11 @@ export const useReviewsByProperty = (propertyId) => {
     queryKey: ['reviews', 'property', propertyId],
     queryFn: () => reviewAPI.getReviewsByProperty(propertyId),
     enabled: !!propertyId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
   });
 };
 
@@ -136,6 +154,42 @@ export const useCreateReview = () => {
     mutationFn: reviewAPI.createReview,
     onSuccess: () => {
       queryClient.invalidateQueries(['reviews']);
+    },
+  });
+};
+
+export const useHideReviewFromDashboard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromDashboard(reviewId, hidden),
+    onSuccess: (_, { reviewId }) => {
+      queryClient.invalidateQueries(['reviews']);
+      queryClient.invalidateQueries(['reviews', 'property']); // Also invalidate property-specific reviews
+    },
+  });
+};
+
+export const useHideReviewFromListing = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, hidden }) => reviewAPI.hideReviewFromListing(reviewId, hidden),
+    onSuccess: (_, { reviewId }) => {
+      queryClient.invalidateQueries(['reviews']);
+      queryClient.invalidateQueries(['reviews', 'property']); // Also invalidate property-specific reviews
+    },
+  });
+};
+
+// Message hooks
+export const useCreateMessage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: messageAPI.createMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages']);
     },
   });
 };
@@ -218,9 +272,9 @@ export const useListingsByAgent = (agentId, params = {}) => {
 // Get most visited listings by agent
 export const useMostVisitedListings = (agentId, params = {}) => {
   return useQuery({
-    queryKey: ['listings', 'most-visited', agentId, params],
+    queryKey: ['listings', 'mostVisited', agentId, params],
     queryFn: () => listingAPI.getMostVisitedListings(agentId, params),
-    enabled: !!agentId,
+    enabled: true, // Always enabled, will use fallback agentId if needed
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
@@ -234,7 +288,7 @@ export const useIncrementVisitCount = () => {
     onSuccess: (data, variables) => {
       // Invalidate related queries to refresh data
       queryClient.invalidateQueries(['listings']);
-      queryClient.invalidateQueries(['listings', 'most-visited']);
+      queryClient.invalidateQueries(['listings', 'mostVisited']);
     },
   });
 };
@@ -347,17 +401,6 @@ export const useMessageMutations = () => {
     archiveError: archiveMessageMutation.error,
     deleteError: deleteMessageMutation.error,
   };
-};
-
-export const useCreateMessage = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: messageAPI.createMessage,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['messages']);
-    },
-  });
 };
 
 // Newsletter hooks

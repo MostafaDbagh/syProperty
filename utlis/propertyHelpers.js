@@ -92,6 +92,13 @@ export const hasImages = (property) => {
  * @returns {string} Image URL
  */
 export const getPropertyImage = (property, fallback = '/images/section/property-details-v2-1.jpg') => {
-  return hasImages(property) ? property.images[0] : fallback;
+  if (!hasImages(property)) return fallback;
+  
+  const firstImage = property.images[0];
+  // Handle both object format (with url property) and string format
+  const imageUrl = firstImage?.url || firstImage?.src || firstImage;
+  
+  // Return fallback if imageUrl is empty or invalid
+  return imageUrl && imageUrl.trim() !== '' ? imageUrl : fallback;
 };
 

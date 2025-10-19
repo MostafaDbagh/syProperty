@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -18,26 +18,39 @@ export default function Categories({
     queryKey: ['listings', 'all-count'],
     queryFn: () => listingAPI.searchListings({ limit: 100 }), // Reduced from 1000 to 100 for better performance
     staleTime: 5 * 60 * 1000, // 5 minutes cache
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: false, // Prevent refetch on component mount if data exists
   });
   
-  const allListings = allListingsResponse?.data || [];
+  // Memoize listings data to prevent unnecessary re-renders
+  const allListings = useMemo(() => allListingsResponse?.data || [], [allListingsResponse?.data]);
 
+  // Memoize categories calculation to prevent recalculation on every render
+  const categories = useMemo(() => {
+    const propertyTypes = ['Apartment', 'Villa', 'Studio', 'Office', 'Townhouse', 'Commercial', 'Land'];
+    const icons = ['icon-apartment1', 'icon-villa', 'icon-studio', 'icon-office1', 'icon-townhouse', 'icon-commercial', 'icon-land'];
+    
+    return propertyTypes.map((type, index) => ({
+      name: type === 'Land' ? 'Land/Plot' : type,
+      icon: icons[index],
+      count: allListings.filter(p => p.propertyType === type).length
+    }));
+  }, [allListings]);
 
-  // Create categories from API data with accurate counts
-  const categories = [
-    { name: "Apartment", icon: "icon-apartment1", count: allListings.filter(p => p.propertyType === 'Apartment').length },
-    { name: "Villa", icon: "icon-villa", count: allListings.filter(p => p.propertyType === 'Villa').length },
-    { name: "Studio", icon: "icon-studio", count: allListings.filter(p => p.propertyType === 'Studio').length },
-    { name: "Office", icon: "icon-office1", count: allListings.filter(p => p.propertyType === 'Office').length },
-    { name: "Townhouse", icon: "icon-townhouse", count: allListings.filter(p => p.propertyType === 'Townhouse').length },
-    { name: "Commercial", icon: "icon-commercial", count: allListings.filter(p => p.propertyType === 'Commercial').length },
-    { name: "Land/Plot", icon: "icon-land", count: allListings.filter(p => p.propertyType === 'Land').length }
-  ];
-
-  const handleCategoryClick = (categoryName) => {
+  // Memoize category click handler to prevent recreation on every render
+  const handleCategoryClick = useCallback((categoryName) => {
     setCategory(categoryName);
     onSearchChange({ propertyType: categoryName });
-  };
+  }, [setCategory, onSearchChange]);
+
+  // Memoize swiper breakpoints to prevent recreation
+  const swiperBreakpoints = useMemo(() => ({
+    0: { slidesPerView: 2, spaceBetween: 20 },
+    576: { slidesPerView: 3, spaceBetween: 30 },
+    768: { slidesPerView: 4, spaceBetween: 40 },
+    992: { slidesPerView: 5, spaceBetween: 50 },
+    1200: { slidesPerView: 6, spaceBetween: 60 },
+  }), []);
 
   return (
     <section className={parentClass}>
@@ -64,14 +77,7 @@ export default function Categories({
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
-            breakpoints={{
-              0: { slidesPerView: 2, spaceBetween: 15 },
-              575: { slidesPerView: 3, spaceBetween: 20 },
-              768: { slidesPerView: 4, spaceBetween: 25 },
-              992: { slidesPerView: 5, spaceBetween: 30 },
-              1200: { slidesPerView: 6, spaceBetween: 30 },
-              1400: { slidesPerView: 7, spaceBetween: 30 },
-            }}
+            breakpoints={swiperBreakpoints}
             modules={[Autoplay, Pagination]}
             pagination={{ 
               el: ".spd2", 

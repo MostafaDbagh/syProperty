@@ -23,13 +23,15 @@ export default function Slider3({ property }) {
   
   // Get images from property or use fallback
   const propertyImages = property?.images && property.images.length > 0
-    ? property.images.map((img, idx) => ({
-        src: img,
-        alt: `${property.propertyType || 'Property'} - Image ${idx + 1}`,
-      }))
+    ? property.images
+        .map((img, idx) => ({
+          src: img.url || img.src || img, // Handle both object and string formats
+          alt: `${property.propertyType || 'Property'} - Image ${idx + 1}`,
+        }))
+        .filter(img => img.src && img.src.trim() !== '') // Filter out empty src values
     : fallbackImages;
   
-  const images = propertyImages;
+  const images = propertyImages.length > 0 ? propertyImages : fallbackImages;
   return (
     <div className="single-property-gallery style-1">
       <div className="position-relative">

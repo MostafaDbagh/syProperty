@@ -25,8 +25,8 @@ export const footerData = [
   {
     title: "Quick links",
     links: [
-      { text: "Terms of use", href: "#" },
-      { text: "Privacy policy", href: "#" },
+      { text: "Terms of use", href: "/terms-and-conditions" },
+      { text: "Privacy policy", href: "/privacy-policy" },
       { text: "Our services", href: "#" },
       { text: "Contact support", href: "/contact" },
       { text: "Pricing plans", href: "#" },

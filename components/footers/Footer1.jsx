@@ -240,8 +240,10 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
                                 <div className="checkbox-item ">
                                   <label className="mb-0">
                                     <span className="text-2 text-color-default">
-                                      I have read and agree to the terms &amp;
-                                      conditions
+                                      I have read and agree to the{" "}
+                                      <Link href="/terms-and-conditions" style={{ color: '#ff6b35', textDecoration: 'underline' }}>
+                                        terms &amp; conditions
+                                      </Link>
                                     </span>
                                     <input
                                       type="checkbox"

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
@@ -11,7 +12,8 @@ export default function Register({ isOpen, onClose }) {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "user"
+    role: "user",
+    agreeToTerms: false
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +31,8 @@ export default function Register({ isOpen, onClose }) {
       email: "",
       password: "",
       confirmPassword: "",
-      role: "user"
+      role: "user",
+      agreeToTerms: false
     });
     setFieldErrors({});
     setShowPassword(false);
@@ -65,10 +68,10 @@ export default function Register({ isOpen, onClose }) {
   }, [isOpen]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
     // Clear field error when user types
     setFieldErrors(prev => ({
@@ -159,6 +162,7 @@ export default function Register({ isOpen, onClose }) {
            formData.confirmPassword &&
            formData.password === formData.confirmPassword &&
            formData.password.length >= 6 &&
+           formData.agreeToTerms &&
            Object.values(fieldErrors).every(error => !error);
   };
 
@@ -341,6 +345,32 @@ export default function Register({ isOpen, onClose }) {
                 {error}
               </div>
             )}
+
+            {/* Terms and Conditions Checkbox */}
+            <div className={styles.formGroup}>
+              <div className={styles.checkboxContainer}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="agreeToTerms"
+                    checked={formData.agreeToTerms}
+                    onChange={handleChange}
+                    className={styles.checkboxInput}
+                    required
+                  />
+                  <span className={styles.checkboxText}>
+                    I agree to the{" "}
+                    <Link href="/terms-and-conditions" className={styles.termsLink}>
+                      Terms and Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/privacy-policy" className={styles.termsLink}>
+                      Privacy Policy
+                    </Link>
+                  </span>
+                </label>
+              </div>
+            </div>
 
             <button
               type="submit"

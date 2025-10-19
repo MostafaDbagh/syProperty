@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useCreateContact } from "@/apis/hooks";
+import { useCreateMessage } from "@/apis/hooks";
 import { getPropertyTitle } from "@/utlis/propertyHelpers";
 import styles from "./ContactAgentModal.module.css";
 
@@ -8,11 +8,10 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
     message: ""
   });
 
-  const { mutate: createContact, isPending, isSuccess, isError, error } = useCreateContact();
+  const { mutate: createMessage, isPending, isSuccess, isError, error } = useCreateMessage();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,17 +24,19 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare contact data
-    const contactData = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      interest: property ? `${getPropertyTitle(property)} - $${property.propertyPrice?.toLocaleString()}` : 'Property Inquiry',
-      message: formData.message
+    // Prepare message data
+    const messageData = {
+      propertyId: property._id,
+      agentId: property.agent || property.agentId,
+      senderName: formData.name,
+      senderEmail: formData.email,
+      subject: `Ask a Question - ${property.propertyKeyword}`,
+      message: formData.message,
+      messageType: 'inquiry'
     };
 
     // Submit using the mutation
-    createContact(contactData);
+    createMessage(messageData);
   };
 
   // Handle successful submission
@@ -43,7 +44,7 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
     if (isSuccess) {
       // Reset form and close modal after 2 seconds
       const timer = setTimeout(() => {
-        setFormData({ name: "", email: "", phone: "", message: "" });
+        setFormData({ name: "", email: "", message: "" });
         onClose();
       }, 2000);
       
@@ -54,7 +55,7 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      setFormData({ name: "", email: "", message: "" });
     }
   }, [isOpen]);
 
@@ -102,18 +103,6 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
               value={formData.email}
               onChange={handleChange}
               placeholder="Email"
-              className={styles.formInput}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone"
               className={styles.formInput}
               required
             />

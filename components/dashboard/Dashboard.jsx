@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,7 +14,22 @@ export default function Dashboard() {
     // Get user data from localStorage
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
-      setUserData(JSON.parse(storedUserData));
+      const parsedData = JSON.parse(storedUserData);
+      setUserData(parsedData);
+      console.log('Dashboard userData loaded:', parsedData);
+    } else {
+      // Fallback: try to get user ID from token
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const fallbackUserData = { id: payload.id };
+          setUserData(fallbackUserData);
+          console.log('Dashboard fallback userData:', fallbackUserData);
+        } catch (error) {
+          console.error('Error parsing token:', error);
+        }
+      }
     }
   }, []);
 
@@ -37,7 +52,7 @@ export default function Dashboard() {
     data: mostVisitedData, 
     isLoading: mostVisitedLoading, 
     error: mostVisitedError 
-  } = useMostVisitedListings(userData?.id, { limit: 5 });
+  } = useMostVisitedListings(userData?.id || '68ef776e8cd8a7ccd23eedbd', { limit: 5 });
 
   // Fetch dashboard stats from API
   const { 
@@ -64,12 +79,13 @@ export default function Dashboard() {
   const recentReviews = reviewsData?.data || [];
   const mostVisitedListings = mostVisitedData?.data || [];
   
-  // Extract dashboard data
-  const stats = dashboardStats?.data || {};
-  const analytics = dashboardAnalytics?.data || {};
-  const notifications = dashboardNotifications?.data || {};
+  // Memoize dashboard data to prevent unnecessary re-renders
+  const stats = useMemo(() => dashboardStats?.data || {}, [dashboardStats?.data]);
+  const analytics = useMemo(() => dashboardAnalytics?.data || {}, [dashboardAnalytics?.data]);
+  const notifications = useMemo(() => dashboardNotifications?.data || {}, [dashboardNotifications?.data]);
 
-  const formatDate = (dateString) => {
+  // Memoize utility functions to prevent recreation on every render
+  const formatDate = useCallback((dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
@@ -80,12 +96,12 @@ export default function Dashboard() {
     if (diffDays < 14) return "1 week ago";
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
     return `${Math.ceil(diffDays / 30)} months ago`;
-  };
+  }, []);
 
-  const truncateText = (text, maxLength = 80) => {
+  const truncateText = useCallback((text, maxLength = 80) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
-  };
+  }, []);
   return (
     <div className="main-content w-100">
       <style jsx>{`

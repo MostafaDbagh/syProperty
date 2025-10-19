@@ -4,10 +4,12 @@ import Image from "next/image";
 import React, { useState } from "react";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import FavoriteButton from "@/components/common/FavoriteButton";
+import { usePropertyActions } from "@/hooks/usePropertyActions";
 import LocationLoader from "@/components/common/LocationLoader";
 
 export default function Properties({ listings, isLoading, isError }) {
   const [showPhoneNumbers, setShowPhoneNumbers] = useState({});
+  const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();
 
   const togglePhoneNumber = (propertyId) => {
     setShowPhoneNumbers(prev => ({
@@ -119,10 +121,6 @@ export default function Properties({ listings, isLoading, isError }) {
               propertyId={listing._id}
               showLabel={true}
             />
-            <a href="#" className="btn-icon find hover-tooltip">
-              <i className="icon-find-plus" />
-              <span className="tooltip">Quick View</span>
-            </a>
           </div>
         </div>
 
@@ -296,8 +294,8 @@ export default function Properties({ listings, isLoading, isError }) {
               </button>
 
               {/* Details Button */}
-              <Link
-                href={`/property-detail/${listing._id}`}
+              <button
+                onClick={() => handleDetailsClick(listing._id)}
                 style={{
                   background: '#F97316',
                   border: 'none',
@@ -332,7 +330,7 @@ export default function Properties({ listings, isLoading, isError }) {
                   <polyline points="10,9 9,9 8,9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 Details
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -341,6 +339,7 @@ export default function Properties({ listings, isLoading, isError }) {
             <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
               $ {listing?.propertyPrice?.toLocaleString()}
             </h5>
+            
           </div>
         </div>
       </div>

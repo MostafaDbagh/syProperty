@@ -148,7 +148,7 @@ export const listingAPI = {
   getMostVisitedListings: async (agentId, params = {}) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await Axios.get(`/listing/agent/${agentId}/most-visited`, {
+      const response = await Axios.get(`/listing/agent/${agentId}/mostVisited`, {
         params,
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { useReviewsByAgent } from "@/apis/hooks";
+import { useReviewsByAgent, useHideReviewFromDashboard, useHideReviewFromListing } from "@/apis/hooks";
 import { reviewAPI } from "@/apis/review";
+import { useQueryClient } from "@tanstack/react-query";
 import LocationLoader from "../common/LocationLoader";
 import Toast from "../common/Toast";
 
@@ -10,12 +11,15 @@ export default function Review() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isHiding, setIsHiding] = useState(false);
   const [toast, setToast] = useState({
     isVisible: false,
     message: '',
     type: 'success'
   });
+
+  const queryClient = useQueryClient();
+  const hideFromDashboardMutation = useHideReviewFromDashboard();
+  const hideFromListingMutation = useHideReviewFromListing();
 
   // Show toast notification
   const showToast = (message, type = 'success') => {
@@ -118,31 +122,21 @@ export default function Review() {
 
   // Handle hide review from dashboard
   const handleHideFromDashboard = async (reviewId) => {
-    setIsHiding(true);
     try {
-      await reviewAPI.hideReviewFromDashboard(reviewId, true);
+      await hideFromDashboardMutation.mutateAsync({ reviewId, hidden: true });
       showToast('Review hidden from dashboard');
-      // Refresh the reviews
-      window.location.reload();
     } catch (error) {
       showToast('Failed to hide review', 'error');
-    } finally {
-      setIsHiding(false);
     }
   };
 
   // Handle hide review from listing
   const handleHideFromListing = async (reviewId) => {
-    setIsHiding(true);
     try {
-      await reviewAPI.hideReviewFromListing(reviewId, true);
+      await hideFromListingMutation.mutateAsync({ reviewId, hidden: true });
       showToast('Review hidden from listing');
-      // Refresh the reviews
-      window.location.reload();
     } catch (error) {
       showToast('Failed to hide review', 'error');
-    } finally {
-      setIsHiding(false);
     }
   };
 
@@ -250,6 +244,37 @@ export default function Review() {
                         marginBottom: '8px' 
                       }}>
                         Property: <strong>{review.propertyId.propertyKeyword || 'N/A'}</strong>
+                        <br />
+                        <a 
+                          href={`/property-detail/${review.propertyId._id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: '#f1913d',
+                            textDecoration: 'none',
+                            fontSize: '11px',
+                            fontWeight: '500',
+                            marginTop: '4px',
+                            display: 'inline-block',
+                            padding: '2px 6px',
+                            backgroundColor: '#fef7f1',
+                            borderRadius: '4px',
+                            border: '1px solid rgba(241, 145, 61, 0.2)',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#f1913d';
+                            e.target.style.color = '#ffffff';
+                            e.target.style.borderColor = '#f1913d';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#fef7f1';
+                            e.target.style.color = '#f1913d';
+                            e.target.style.borderColor = 'rgba(241, 145, 61, 0.2)';
+                          }}
+                        >
+                          View Property Details (ID: {review.propertyId._id})
+                        </a>
                       </div>
                     )}
                     <div className="ratings">
@@ -258,7 +283,7 @@ export default function Review() {
                     <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
                       <button
                         onClick={() => handleHideFromDashboard(review._id)}
-                        disabled={isHiding}
+                        disabled={hideFromDashboardMutation.isPending}
                         style={{
                           background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                           border: 'none',
@@ -267,17 +292,17 @@ export default function Review() {
                           padding: '6px 12px',
                           fontSize: '12px',
                           fontWeight: '500',
-                          cursor: isHiding ? 'not-allowed' : 'pointer',
-                          opacity: isHiding ? 0.6 : 1,
+                          cursor: hideFromDashboardMutation.isPending ? 'not-allowed' : 'pointer',
+                          opacity: hideFromDashboardMutation.isPending ? 0.6 : 1,
                           transition: 'all 0.2s ease'
                         }}
                         title="Hide from Dashboard"
                       >
-                        {isHiding ? 'Hiding...' : 'Hide from Dashboard'}
+                        {hideFromDashboardMutation.isPending ? 'Hiding...' : 'Hide from Dashboard'}
                       </button>
                       <button
                         onClick={() => handleHideFromListing(review._id)}
-                        disabled={isHiding}
+                        disabled={hideFromListingMutation.isPending}
                         style={{
                           background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                           border: 'none',
@@ -286,13 +311,13 @@ export default function Review() {
                           padding: '6px 12px',
                           fontSize: '12px',
                           fontWeight: '500',
-                          cursor: isHiding ? 'not-allowed' : 'pointer',
-                          opacity: isHiding ? 0.6 : 1,
+                          cursor: hideFromListingMutation.isPending ? 'not-allowed' : 'pointer',
+                          opacity: hideFromListingMutation.isPending ? 0.6 : 1,
                           transition: 'all 0.2s ease'
                         }}
                         title="Hide from Listing"
                       >
-                        {isHiding ? 'Hiding...' : 'Hide from Listing'}
+                        {hideFromListingMutation.isPending ? 'Hiding...' : 'Hide from Listing'}
                       </button>
                     </div>
                   </li>

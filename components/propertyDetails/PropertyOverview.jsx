@@ -1,12 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { getStatusBadge } from "@/utlis/propertyHelpers";
-import ContactAgentModal from "./ContactAgentModal";
+import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
+import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
 import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon } from "@/components/icons";
 
 export default function PropertyOverview({ property }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
+  const [isAskQuestionModalOpen, setIsAskQuestionModalOpen] = useState(false);
+  
   const statusBadge = getStatusBadge(property?.status);
   
   // Get CSS class for badge based on status
@@ -159,7 +162,7 @@ export default function PropertyOverview({ property }) {
         </div>
       </div>
       <button 
-        onClick={() => setIsModalOpen(true)} 
+        onClick={() => setIsAskQuestionModalOpen(true)}
         className="tf-btn bg-color-primary pd-21 fw-6"
         style={{ border: 'none', cursor: 'pointer', width: '100%' }}
       >
@@ -167,8 +170,14 @@ export default function PropertyOverview({ property }) {
       </button>
 
       <ContactAgentModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAskQuestionModalOpen}
+        onClose={() => setIsAskQuestionModalOpen(false)}
+        property={property}
+      />
+      
+      <MoreAboutPropertyModal 
+        isOpen={isMoreInfoModalOpen}
+        onClose={() => setIsMoreInfoModalOpen(false)}
         property={property}
       />
     </>
