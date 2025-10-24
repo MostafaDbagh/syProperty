@@ -64,36 +64,292 @@ export default function SearchForm({
   };
 
   return (
-    <div className={parentClass} ref={searchFormRef}>
-      <div className="search-form-header mb-32">
-        <h4 className="advanced-search-title">Advanced Search</h4>
-      </div>
-      
-      {/* Property ID Input Field */}
-      <div className="group-input mb-30">
-        <div className="box-input">
-          <label className="mb-2" htmlFor="propertyId">
-            Property ID
-          </label>
-          <input
-            type="text"
-            id="propertyId"
-            className="form-control"
-            placeholder="Enter Property ID"
-            value={searchParams.propertyId || ""}
-            onChange={(e) => handleChange("propertyId", e.target.value)}
-            style={{
-              width: '290px',
-              height: '56px',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e0e0e0',
-              padding: '0 16px',
-              fontSize: '14px'
-            }}
-          />
+    <>
+      <style jsx>{`
+        /* Enhanced City Dropdown Styling for style-3 */
+        .wd-search-form.style-3 .city-dropdown .nice-select {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+          border: 2px solid #e1ecff;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          height: 56px;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select:hover {
+          border-color: #667eea;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select.open {
+          border-color: #667eea;
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e1ecff;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list .option {
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #4a5568;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list .option::before {
+          content: "📍";
+          margin-right: 8px;
+          font-size: 14px;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list .option:hover {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: translateX(4px);
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list .option.selected {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-weight: 600;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list .option.selected::after {
+          content: "✓";
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-weight: bold;
+        }
+        
+        /* Custom scrollbar for city dropdown in style-3 */
+        .wd-search-form.style-3 .city-dropdown .nice-select .list::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 10px;
+        }
+        
+        .wd-search-form.style-3 .city-dropdown .nice-select .list::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        /* Enhanced City Dropdown Styling for all SearchForm variants */
+        .wd-search-form .city-dropdown .nice-select {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+          border: 2px solid #e1ecff;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          height: 56px;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select:hover {
+          border-color: #667eea;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        .wd-search-form .city-dropdown .nice-select.open {
+          border-color: #667eea;
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e1ecff;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list .option {
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #4a5568;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list .option::before {
+          content: "📍";
+          margin-right: 8px;
+          font-size: 14px;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list .option:hover {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: translateX(4px);
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list .option.selected {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-weight: 600;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list .option.selected::after {
+          content: "✓";
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-weight: bold;
+        }
+        
+        /* Custom scrollbar for city dropdown in SearchForm */
+        .wd-search-form .city-dropdown .nice-select .list::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 10px;
+        }
+        
+        .wd-search-form .city-dropdown .nice-select .list::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+      `}</style>
+      <div className={parentClass} ref={searchFormRef}>
+        <div className="search-form-header mb-32">
+          <h4 className="advanced-search-title">Advanced Search</h4>
         </div>
-      </div>
+        
+        {/* Syria Cities and Property ID Row */}
+        <div className="group-input mb-30" style={{ 
+          display: 'flex', 
+          gap: '24px', 
+          alignItems: 'flex-end',
+          flexWrap: 'wrap'
+        }}>
+          <div className="box-input" style={{ flex: '1', minWidth: '280px' }}>
+            <label className="mb-2" htmlFor="syriaCitiesSelect" style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#333',
+              display: 'block'
+            }}>
+              Syria Cities
+            </label>
+            <div className="city-dropdown">
+              <DropdownSelect
+                id="syriaCitiesSelect"
+                options={[
+                  "All Cities",
+                  "Latakia",
+                  "Damascus",
+                  "Aleppo",
+                  "Homs",
+                  "Hama",
+                  "Idlib",
+                  "Deir ez-Zor",
+                  "Daraa",
+                  "Tartous"
+                ]}
+                addtionalParentClass=""
+                selectedValue={searchParams.cities || "All Cities"}
+                onChange={(value) => handleChange("cities", value === "All Cities" ? "" : value)}
+              />
+            </div>
+          </div>
+          <div className="box-input" style={{ flex: '1', minWidth: '280px' }}>
+            <label className="mb-2" htmlFor="propertyId" style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#333',
+              display: 'block'
+            }}>
+              Property ID
+            </label>
+            <input
+              type="text"
+              id="propertyId"
+              className="form-control"
+              placeholder="Enter Property ID"
+              value={searchParams.propertyId || ""}
+              onChange={(e) => handleChange("propertyId", e.target.value)}
+              style={{
+                width: '100%',
+                height: '56px',
+                borderRadius: '12px',
+                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                border: '2px solid #e8e8e8',
+                padding: '0 20px',
+                fontSize: '14px',
+                color: '#333',
+                backgroundColor: '#fff',
+                transition: 'all 0.3s ease',
+                outline: 'none'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#ff6b35';
+                e.target.style.boxShadow = '0 4px 20px rgba(255, 107, 53, 0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#e8e8e8';
+                e.target.style.boxShadow = '0 2px 12px rgba(0, 0, 0, 0.08)';
+              }}
+            />
+          </div>
+        </div>
+      
+      {/* Cities Dropdown for style-3 */}
+      {parentClass.includes('style-3') && (
+        <div className="group-input mb-30">
+          <div className="box-input">
+            <label className="mb-2" htmlFor="citiesSelectStyle3" style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#333',
+              display: 'block'
+            }}>
+              Cities
+            </label>
+            <div className="city-dropdown">
+              <DropdownSelect
+                options={[
+                  "All Cities",
+                  "Latakia",
+                  "Damascus",
+                  "Aleppo",
+                  "Homs",
+                  "Hama",
+                  "Idlib",
+                  "Deir ez-Zor",
+                  "Daraa",
+                  "Tartous",
+                ]}
+                addtionalParentClass=""
+                selectedValue={searchParams.state || "All Cities"}
+                onChange={(value) => handleChange("state", value === "All Cities" ? "" : value)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
       
       <div className="group-price">
         <div className="widget-price">
@@ -244,6 +500,7 @@ export default function SearchForm({
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

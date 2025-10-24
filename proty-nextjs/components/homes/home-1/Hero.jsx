@@ -74,6 +74,7 @@ export default function Hero({
                       ))}
                     </div>
                   </div>
+                  
                   <form onSubmit={(e) => e.preventDefault()}>
                     <fieldset>
                       <input

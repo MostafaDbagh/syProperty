@@ -31,7 +31,93 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
   };
   
   return (
-    <div className="modal modal-filter fade" id="modalFilter">
+    <>
+      <style jsx>{`
+        /* Enhanced City Dropdown Styling for FilterModal */
+        .modal-filter .city-dropdown .nice-select {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+          border: 2px solid #e1ecff;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          height: 56px;
+        }
+        
+        .modal-filter .city-dropdown .nice-select:hover {
+          border-color: #667eea;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        .modal-filter .city-dropdown .nice-select.open {
+          border-color: #667eea;
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e1ecff;
+          max-height: 300px;
+          overflow-y: auto;
+          z-index: 9999;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list .option {
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #4a5568;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list .option::before {
+          content: "📍";
+          margin-right: 8px;
+          font-size: 14px;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list .option:hover {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: translateX(4px);
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list .option.selected {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-weight: 600;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list .option.selected::after {
+          content: "✓";
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-weight: bold;
+        }
+        
+        /* Custom scrollbar for city dropdown in FilterModal */
+        .modal-filter .city-dropdown .nice-select .list::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 10px;
+        }
+        
+        .modal-filter .city-dropdown .nice-select .list::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+      `}</style>
+      <div className="modal modal-filter fade" id="modalFilter">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="wd-search-form style-3">
@@ -43,6 +129,9 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
               />
             </div>
             
+            {/* Syria Cities Dropdown */}
+    
+
             {/* Property ID Input Field */}
             <div className="group-input mb-30">
               <div className="box-input">
@@ -66,6 +155,33 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                     fontSize: '14px'
                   }}
                 />
+              </div>
+            </div>
+            <div className="group-input mb-30">
+              <div className="box-input">
+                <label className="mb-2" htmlFor="citiesSelect">
+                   Cities
+                </label>
+                <div className="city-dropdown">
+                  <DropdownSelect
+                    id="citiesSelect"
+                    options={[
+                      "All Cities",
+                      "Latakia",
+                      "Damascus", 
+                      "Aleppo",
+                      "Homs",
+                      "Hama",
+                      "Idlib",
+                      "Deir ez-Zor",
+                      "Daraa",
+                      "Tartous"
+                    ]}
+                    addtionalParentClass=""
+                    selectedValue={searchParams.cities || "All Cities"}
+                    onChange={(value) => handleChange("cities", value === "All Cities" ? "" : value)}
+                  />
+                </div>
               </div>
             </div>
             <div className="group-price">
@@ -130,7 +246,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 </label>
                 <DropdownSelect
                   id="stateSelect"
-                  options={["Any", "California", "Texas", "Florida", "New York", "Illinois", "Washington", "Pennsylvania", "Ohio", "Georgia", "North Carolina"]}
+                  options={["Any", "Latakia", "Damascus", "Aleppo", "Homs", "Hama", "Idlib", "Deir ez-Zor", "Daraa", "Tartous"]}
                   addtionalParentClass=""
                   value={searchParams.state || "Any"}
                   onChange={(value) => handleChange("state", value === "Any" ? "" : value)}
@@ -205,6 +321,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

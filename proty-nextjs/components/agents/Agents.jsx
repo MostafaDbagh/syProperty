@@ -156,18 +156,42 @@ export default function Agents() {
         .cities-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
-          margin-top: 8px;
+          gap: 8px;
+          margin-top: 10px;
         }
         
         .city-tag {
-          background: #f0f8ff;
-          color: #007bff;
-          padding: 4px 8px;
-          border-radius: 12px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
           font-size: 12px;
-          font-weight: 500;
-          border: 1px solid #e6f3ff;
+          font-weight: 600;
+          border: none;
+          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .city-tag::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .city-tag:hover::before {
+          left: 100%;
+        }
+        
+        .city-tag:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
         
         .all-icons-section {
@@ -280,6 +304,171 @@ export default function Agents() {
             padding: 20px;
           }
         }
+        
+        /* Enhanced City Dropdown Styling */
+        .city-dropdown .nice-select {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+          border: 2px solid #e1ecff;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+        }
+        
+        .city-dropdown .nice-select:hover {
+          border-color: #667eea;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        .city-dropdown .nice-select.open {
+          border-color: #667eea;
+          box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .city-dropdown .nice-select .list {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e1ecff;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+        
+        .city-dropdown .nice-select .list .option {
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #4a5568;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        
+        .city-dropdown .nice-select .list .option::before {
+          content: "📍";
+          margin-right: 8px;
+          font-size: 14px;
+        }
+        
+        .city-dropdown .nice-select .list .option:hover {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: translateX(4px);
+        }
+        
+        .city-dropdown .nice-select .list .option.selected {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-weight: 600;
+        }
+        
+        .city-dropdown .nice-select .list .option.selected::after {
+          content: "✓";
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-weight: bold;
+        }
+        
+        /* Custom scrollbar for city dropdown */
+        .city-dropdown .nice-select .list::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .city-dropdown .nice-select .list::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        
+        .city-dropdown .nice-select .list::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 10px;
+        }
+        
+        .city-dropdown .nice-select .list::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        
+        /* Enhanced animations and micro-interactions */
+        .city-dropdown .nice-select .list {
+          transform-origin: top center;
+          animation: dropdownSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        @keyframes dropdownSlideIn {
+          0% {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        
+        .city-dropdown .nice-select .list .option {
+          animation: fadeInUp 0.2s ease-out;
+          animation-fill-mode: both;
+        }
+        
+        .city-dropdown .nice-select .list .option:nth-child(1) { animation-delay: 0.05s; }
+        .city-dropdown .nice-select .list .option:nth-child(2) { animation-delay: 0.1s; }
+        .city-dropdown .nice-select .list .option:nth-child(3) { animation-delay: 0.15s; }
+        .city-dropdown .nice-select .list .option:nth-child(4) { animation-delay: 0.2s; }
+        .city-dropdown .nice-select .list .option:nth-child(5) { animation-delay: 0.25s; }
+        .city-dropdown .nice-select .list .option:nth-child(6) { animation-delay: 0.3s; }
+        .city-dropdown .nice-select .list .option:nth-child(7) { animation-delay: 0.35s; }
+        .city-dropdown .nice-select .list .option:nth-child(8) { animation-delay: 0.4s; }
+        .city-dropdown .nice-select .list .option:nth-child(9) { animation-delay: 0.45s; }
+        .city-dropdown .nice-select .list .option:nth-child(10) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        /* Pulse effect for selected city tag */
+        .city-tag.selected {
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+          0% {
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+          }
+          50% {
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6);
+          }
+          100% {
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+          }
+        }
+        
+        /* Enhanced search input styling */
+        .box-title .wrap-sort input[type="text"] {
+          background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+          border: 2px solid #e1ecff;
+          border-radius: 12px;
+          padding: 16px 20px;
+          font-size: 15px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+        
+        .box-title .wrap-sort input[type="text"]:focus {
+          border-color: #667eea;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+          outline: none;
+        }
+        
+        .box-title .wrap-sort input[type="text"]::placeholder {
+          color: #a0aec0;
+          font-weight: 400;
+        }
       `}</style>
     <section className="section-agent">
       <div className="tf-container">
@@ -302,23 +491,25 @@ export default function Agents() {
                 </fieldset>
               </form>
 
-              <DropdownSelect
-                options={[
-                  "All location",
-                  "Latakia",
-                  "Damascus",
-                  "Aleppo",
-                  "Homs",
-                  "Hama",
-                  "Idlib",
-                  "Deir ez-Zor",
-                  "Daraa",
-                  "Tartous",
-                ]}
-                addtionalParentClass=""
-                selectedValue={locationFilter}
-                onChange={(value) => setLocationFilter(value)}
-              />
+              <div className="city-dropdown">
+                <DropdownSelect
+                  options={[
+                    "All location",
+                    "Latakia",
+                    "Damascus",
+                    "Aleppo",
+                    "Homs",
+                    "Hama",
+                    "Idlib",
+                    "Deir ez-Zor",
+                    "Daraa",
+                    "Tartous",
+                  ]}
+                  addtionalParentClass=""
+                  selectedValue={locationFilter}
+                  onChange={(value) => setLocationFilter(value)}
+                />
+              </div>
 
               <DropdownSelect
                 options={["Sort by (Default)", "Newest", "Oldest"]}

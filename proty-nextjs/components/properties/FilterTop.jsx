@@ -30,12 +30,23 @@ export default function FilterTop() {
 
                 <DropdownSelect
                   options={[
+                    "All Cities",
+                    "Latakia",
+                    "Damascus",
+                    "Aleppo",
+                    "Homs",
+                    "Hama",
+                    "Idlib",
+                    "Deir ez-Zor",
+                    "Daraa",
+                    "Tartous",
+                  ]}
+                />
+                <DropdownSelect
+                  options={[
                     "Status",
-                    "Bungalow",
-                    "Apartment",
-                    "House",
-                    "Smart Home",
-                    "Office",
+                    "For Sale",
+                    "For Rent",
                   ]}
                 />
                 <DropdownSelect
@@ -52,20 +63,21 @@ export default function FilterTop() {
                 <DropdownSelect
                   options={[
                     "Baths",
-                    "Floating baths",
-                    "Massage baths",
-                    "Floor-standing bath",
-                    "Built-in baths",
+                    "1",
+                    "2",
+                    "3",
+                    "4+",
                   ]}
                 />
 
                 <DropdownSelect
                   options={[
                     "Beds",
-                    "Twin beds",
-                    "Bunk beds",
-                    "Kids beds",
-                    "Single bed",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5+",
                   ]}
                 />
                 <div className="wrap-btn searchFormToggler">
