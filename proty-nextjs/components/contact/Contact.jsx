@@ -1,19 +1,61 @@
 "use client";
 import React from "react";
 import DropdownSelect from "../common/DropdownSelect";
-import MapComponent from "../common/MapComponent";
 
 export default function Contact() {
   return (
+    <>
+      <style jsx>{`
+        .contact-image-section {
+          position: relative;
+          min-height: 500px;
+        }
+        
+        .contact-background-image {
+          background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/cities/c1.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          width: 100%;
+          height: 710px;
+          position: relative;
+        }
+        
+        .contact-background-image::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+          z-index: 1;
+        }
+        
+        .image-wrap {
+          background-image: url('/images/cities/c2.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        
+        @media (max-width: 768px) {
+          .contact-image-section {
+            min-height: 300px;
+          }
+          
+          .contact-background-image {
+            min-height: 300px;
+          }
+        }
+      `}</style>
     <section className="section-top-map style-2">
       <div className="wrap-map">
-        <div
-          id="map"
-          className="row-height"
-          data-map-zoom={16}
-          data-map-scroll="true"
-        >
-          <MapComponent />
+        <div className="row-height contact-image-section">
+          <div className="contact-background-image"></div>
         </div>
       </div>
       <div className="box">
@@ -105,5 +147,6 @@ export default function Contact() {
         </div>
       </div>
     </section>
+    </>
   );
 }

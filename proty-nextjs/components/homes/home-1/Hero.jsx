@@ -20,7 +20,25 @@ export default function Hero({
   };
 
   return (
-    <div className="page-title home01">
+    <>
+      <style jsx>{`
+        .hero-background {
+          background-image: url('/images/cities/hero.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          min-height: 100vh;
+          position: relative;
+        }
+        
+        .hero-background .tf-container {
+          position: relative;
+          z-index: 2;
+        }
+      `}</style>
+      
+      <div className="page-title home01 hero-background">
       <div className="tf-container ">
         <div className="row justify-center relative">
           <div className="col-lg-8 ">
@@ -161,5 +179,6 @@ export default function Hero({
         </div>
       </div>
     </div>
+    </>
   );
 }

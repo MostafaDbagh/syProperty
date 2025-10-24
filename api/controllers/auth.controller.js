@@ -358,35 +358,15 @@ const makeAgent = async (req, res, next) => {
   }
 };
 
-// Get all users with agent role
+// Get all agents from Agent collection
 const getAgents = async (req, res, next) => {
   try {
-    const agents = await User.find({ role: 'agent' }).select('-password');
-    
-    // Transform the data to match the expected format
-    const transformedAgents = agents.map(user => ({
-      _id: user._id,
-      fullName: user.username,
-      email: user.email,
-      avatar: user.avatar,
-      description: user.description,
-      companyName: user.company,
-      position: user.position,
-      officeNumber: user.officeNumber,
-      officeAddress: user.officeAddress,
-      job: user.job,
-      phone: user.phone,
-      location: user.location,
-      facebook: user.facebook,
-      twitter: user.twitter,
-      linkedin: user.linkedin,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    }));
+    const Agent = require('../models/agent.model');
+    const agents = await Agent.find({});
 
     res.status(200).json({
       success: true,
-      data: transformedAgents
+      data: agents
     });
   } catch (error) {
     next(error);

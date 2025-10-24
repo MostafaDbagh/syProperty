@@ -128,7 +128,7 @@ export default function Footer2({ parentClass = "" }) {
                   <div className="content">
                     <div className="title text-1">Address</div>
                     <h6>
-                      <a href="#">proty-support@gmail.com</a>
+                      <a href="#">mohammaddbagh0@gmail.com</a>
                     </h6>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ export default function Footer2({ parentClass = "" }) {
                   <div className="content">
                     <div className="title text-1">Call us</div>
                     <h6>
-                      <a href="#"> (603) 555-0123</a>
+                      <a href="#"> +963995278383</a>
                     </h6>
                   </div>
                 </div>

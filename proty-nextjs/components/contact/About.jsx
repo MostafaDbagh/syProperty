@@ -1,7 +1,18 @@
+"use client";
 import React from "react";
-import Image from "next/image";
 export default function About() {
   return (
+    <>
+      <style jsx>{`
+        .image-wrap {
+          background-image: url('/images/cities/c5.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          width: 80%;
+          height: 560px;
+        }
+      `}</style>
     <section className="section-contact style-4 tf-spacing-1 pb-0">
       <div className="tf-container">
         <div className="row">
@@ -47,7 +58,7 @@ export default function About() {
                   </div>
                   <div className="content">
                     <div className="sub">Office address</div>
-                    <p>102 Ingraham St, Brooklyn, NY 11237</p>
+                    <p>Baghdad street, Latakia, Syria</p>
                   </div>
                 </li>
                 <li>
@@ -89,8 +100,8 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="content">
-                    <div className="sub">Office address</div>
-                    <div className="phone">(603) 555-0123</div>
+                    <div className="sub">Phone number</div>
+                    <div className="phone">+963995278383</div>
                   </div>
                 </li>
                 <li>
@@ -164,8 +175,8 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="content">
-                    <div className="sub">Office address</div>
-                    <a href="#">themesflat@gmail.com</a>
+                    <div className="sub">Email address</div>
+                    <a href="#">mohammaddbagh0@gmail.com</a>
                   </div>
                 </li>
               </ul>
@@ -173,18 +184,11 @@ export default function About() {
           </div>
           <div className="col-md-6">
             <div className="image-wrap">
-              <Image
-                className="lazyload"
-                data-src="/images/section/section-contact-2.jpg"
-                alt="About us image"
-                width={550}
-                height={560}
-                src="/images/section/section-contact-2.jpg"
-              />
             </div>
           </div>
         </div>
       </div>
     </section>
+    </>
   );
 }

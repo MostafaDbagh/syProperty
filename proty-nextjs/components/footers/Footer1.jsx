@@ -95,7 +95,7 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
                   <div className="content">
                     <div className="title text-1">Call us</div>
                     <h6>
-                      <a href="#"> (603) 555-0123</a>
+                      <a href="#"> +963995278383</a>
                     </h6>
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
                   <div className="content">
                     <div className="title text-1">Nee live help</div>
                     <h6 className="fw-4">
-                      <a href="#">proty-support@gmail.com</a>
+                      <a href="#">mohammaddbagh0@gmail.com</a>
                     </h6>
                   </div>
                 </div>

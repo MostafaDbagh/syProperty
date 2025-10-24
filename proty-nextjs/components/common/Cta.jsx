@@ -7,12 +7,7 @@ export default function Cta() {
         <div className="row">
           <div className="col-12">
             <div className="content-inner">
-              <Image
-                alt="Call to action background"
-                src="/images/section/cta.png"
-                width={216}
-                height={312}
-              />
+         
               <div className="content">
                 <h4 className="text_white mb-8">
                   Find a Local Real Estate Agent Today

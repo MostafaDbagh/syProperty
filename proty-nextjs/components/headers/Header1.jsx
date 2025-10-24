@@ -63,7 +63,7 @@ export default function Header1({ parentClass = "header" }) {
                     <div className="icons">
                       <PhoneIcon stroke="black" />
                     </div>
-                    <p>(603) 555-0123</p>
+                    <p>+963995278383</p>
                   </div>
                   <DashboardNav />
                   

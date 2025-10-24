@@ -9,7 +9,35 @@ export default function PageTitle() {
   // Array of items to render
   const items = ["For sale", "For rent"];
   return (
-    <div className="page-title career">
+    <>
+      <style jsx>{`
+        .page-title.career {
+          background-image: url('/images/j2.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          min-height: 100vh;
+          position: relative;
+        }
+        
+        .page-title.career .tf-container {
+          position: relative;
+          z-index: 2;
+        }
+        
+        .page-title.career .title {
+          color: #ffffff !important;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-title.career .h6 {
+          color: #ffffff !important;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+      `}</style>
+      
+      <div className="page-title career">
       <div className="tf-container">
         <div className="row justify-center">
           <div className="col-lg-8">
@@ -61,5 +89,6 @@ export default function PageTitle() {
         </div>
       </div>
     </div>
+    </>
   );
 }

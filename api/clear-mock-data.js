@@ -6,6 +6,7 @@ const User = require('./models/user.model');
 const Listing = require('./models/listing.model');
 const Review = require('./models/review.model');
 const Favorite = require('./models/favorite.model');
+const Agent = require('./models/agent.model');
 
 // MongoDB connection
 const connectDB = async () => {
@@ -29,17 +30,20 @@ const clearDatabase = async () => {
     const listingCount = await Listing.countDocuments();
     const reviewCount = await Review.countDocuments();
     const favoriteCount = await Favorite.countDocuments();
+    const agentCount = await Agent.countDocuments();
 
     console.log('📊 Current data:');
     console.log(`   👥 Users: ${userCount}`);
     console.log(`   🏠 Listings: ${listingCount}`);
     console.log(`   ⭐ Reviews: ${reviewCount}`);
-    console.log(`   ❤️  Favorites: ${favoriteCount}\n`);
+    console.log(`   ❤️  Favorites: ${favoriteCount}`);
+    console.log(`   👨‍💼 Agents: ${agentCount}\n`);
 
     await User.deleteMany({});
     await Listing.deleteMany({});
     await Review.deleteMany({});
     await Favorite.deleteMany({});
+    await Agent.deleteMany({});
 
     console.log('✅ All data cleared successfully!\n');
     
