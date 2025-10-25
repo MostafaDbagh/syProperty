@@ -2,8 +2,11 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import { useSearchListings } from "@/apis/hooks";
+import { useRouter } from "next/navigation";
 
 export default function Cities() {
+  const router = useRouter();
+  
   const { data: searchResponse, isLoading, isError } = useSearchListings({ 
     limit: 100, // Limit to 100 to ensure we get all cities
     sort: 'newest' 
@@ -55,6 +58,18 @@ export default function Cities() {
     
     return locationsData;
   }, [stateCounts]);
+
+  // Handle city button click - scroll to properties and trigger search
+  const handleCityClick = (e, cityName) => {
+    e.preventDefault();
+    
+    // Navigate to property list page with city filter
+    const searchParams = new URLSearchParams();
+    searchParams.set('cities', cityName);
+    
+    // Route to property list page with city filter
+    router.push(`/property-list?${searchParams.toString()}`);
+  };
 
   // Show loading state
   if (isLoading) {
@@ -329,10 +344,17 @@ export default function Cities() {
                   <div className="city-content position-absolute bottom-0 start-0 end-0 p-4">
                     <h4 className="text-white mb-3 fw-bold city-title">{location.city}</h4>
                     <div className="d-flex align-items-center justify-content-between">
-                      <span className="city-count">{location.properties}</span>
+                      <span 
+                        className="city-count" 
+                        onClick={(e) => handleCityClick(e, location.city)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {location.properties}
+                      </span>
                       <a
                         href="#"
                         className="text-1 tf-btn style-border pd-23 text_white city-btn"
+                        onClick={(e) => handleCityClick(e, location.city)}
                       >
                         {location.properties} <i className="icon-arrow-right" />
                       </a>

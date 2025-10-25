@@ -156,7 +156,8 @@ export default function Properties2() {
                   el: ".spd-properties", 
                   clickable: true,
                   dynamicBullets: true,
-                  type: 'bullets'
+                  type: 'bullets',
+                  
                 }}
                 breakpoints={{
                   0: { slidesPerView: 1, spaceBetween: 30 },

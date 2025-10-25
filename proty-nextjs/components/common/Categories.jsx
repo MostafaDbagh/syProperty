@@ -27,8 +27,8 @@ export default function Categories({
 
   // Memoize categories calculation to prevent recalculation on every render
   const categories = useMemo(() => {
-    const propertyTypes = ['Apartment', 'Villa', 'Studio', 'Office', 'Townhouse', 'Commercial', 'Land'];
-    const icons = ['icon-apartment1', 'icon-villa', 'icon-studio', 'icon-office1', 'icon-townhouse', 'icon-commercial', 'icon-land'];
+    const propertyTypes = ['Apartment', 'Villa/farms' , 'Office', 'Commercial', 'Land','holiday home'];
+    const icons = ['icon-apartment1', 'icon-villa', 'icon-office1', 'icon-commercial', 'icon-land', 'icon-studio'];
     
     return propertyTypes.map((type, index) => ({
       name: type === 'Land' ? 'Land/Plot' : type,
@@ -48,8 +48,7 @@ export default function Categories({
     0: { slidesPerView: 2, spaceBetween: 20 },
     576: { slidesPerView: 3, spaceBetween: 30 },
     768: { slidesPerView: 4, spaceBetween: 40 },
-    992: { slidesPerView: 5, spaceBetween: 50 },
-    1200: { slidesPerView: 6, spaceBetween: 60 },
+    1200: { slidesPerView: 6, spaceBetween: 10 },
   }), []);
 
   return (
@@ -69,7 +68,7 @@ export default function Categories({
           <Swiper
             dir="ltr"
             className="swiper sw-layout style-pagination"
-            spaceBetween={15}
+            spaceBetween={5}
             slidesPerView="auto"
             loop={true}
             autoplay={{
@@ -119,6 +118,59 @@ export default function Categories({
           />
           
           <style jsx>{`
+            .categories-item {
+              width: 180px !important;
+              min-width: 180px !important;
+              max-width: 180px !important;
+            }
+            
+            /* Orange pagination styling */
+            .spd2 .swiper-pagination-bullet {
+              width: 12px !important;
+              height: 12px !important;
+              background: #e5e7eb !important;
+              opacity: 1 !important;
+              margin: 0 4px !important;
+              transition: all 0.3s ease !important;
+              border-radius: 50% !important;
+            }
+            
+            .spd2 .swiper-pagination-bullet-active {
+              background: #f1913d !important;
+              transform: scale(1.2) !important;
+            }
+            
+            .spd2 .swiper-pagination-bullet-active-main {
+              background: #f1913d !important;
+              transform: scale(1.2) !important;
+            }
+            
+            /* Additional overrides for all possible Swiper pagination classes */
+            .spd2 .swiper-pagination-bullet-active-main,
+            .spd2 .swiper-pagination-bullet-active,
+            .spd2 .swiper-pagination-bullet-active-prev,
+            .spd2 .swiper-pagination-bullet-active-next {
+              background: #f1913d !important;
+              background-color: #f1913d !important;
+              transform: scale(1.2) !important;
+            }
+            
+            /* Global Swiper pagination override */
+            .swiper-pagination-bullet-active {
+              background: #f1913d !important;
+              background-color: #f1913d !important;
+            }
+            
+            .swiper-pagination-bullet-active-main {
+              background: #f1913d !important;
+              background-color: #f1913d !important;
+            }
+            
+            .spd2 .swiper-pagination-bullet:hover {
+              background: #f1913d !important;
+              opacity: 0.7 !important;
+            }
+            
             @media (min-width: 992px) {
               .spd2 {
                 display: none !important;

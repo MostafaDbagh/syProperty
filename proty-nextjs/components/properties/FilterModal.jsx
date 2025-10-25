@@ -2,6 +2,7 @@
 import Slider from "rc-slider";
 import React, { useState, useEffect } from "react";
 import DropdownSelect from "../common/DropdownSelect";
+import DropdownTagSelect from "../common/DropdownTagSelect";
 import { amenitiesList } from "@/constants/amenities";
 
 export default function FilterModal({ onSearchChange, searchParams = {} }) {
@@ -240,18 +241,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
               </div>
             </div>
             <div className="group-select">
-              <div className="box-select">
-                <label className="mb-2" htmlFor="stateSelect">
-                  Province / States
-                </label>
-                <DropdownSelect
-                  id="stateSelect"
-                  options={["Any", "Latakia", "Damascus", "Aleppo", "Homs", "Hama", "Idlib", "Deir ez-Zor", "Daraa", "Tartous"]}
-                  addtionalParentClass=""
-                  value={searchParams.state || "Any"}
-                  onChange={(value) => handleChange("state", value === "Any" ? "" : value)}
-                />
-              </div>
+        
               
               <div className="box-select">
                 <label className="mb-2" htmlFor="propertyTypeSelect">
@@ -267,28 +257,24 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
               </div>
               
               <div className="box-select">
-                <label className="mb-2" htmlFor="bathsSelect">
-                  Baths
-                </label>
-                <DropdownSelect
+                <DropdownTagSelect
                   id="bathsSelect"
+                  label="Baths"
                   options={["Any", "1", "2", "3", "4", "5", "6"]}
                   addtionalParentClass=""
-                  value={searchParams.bathrooms || "Any"}
-                  onChange={(value) => handleChange("bathrooms", value === "Any" ? "" : value)}
+                  value={searchParams.bathrooms || ""}
+                  onChange={(value) => handleChange("bathrooms", value)}
                 />
               </div>
               
               <div className="box-select">
-                <label className="mb-2" htmlFor="bedsSelect">
-                  Beds
-                </label>
-                <DropdownSelect
+                <DropdownTagSelect
                   id="bedsSelect"
-                  options={["Any", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+                  label="Beds"
+                  options={["Any", 'studio', "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
                   addtionalParentClass=""
-                  value={searchParams.bedrooms || "Any"}
-                  onChange={(value) => handleChange("bedrooms", value === "Any" ? "" : value)}
+                  value={searchParams.bedrooms || ""}
+                  onChange={(value) => handleChange("bedrooms", value)}
                 />
               </div>
             </div>

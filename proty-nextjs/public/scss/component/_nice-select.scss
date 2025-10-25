@@ -34,6 +34,10 @@
         transform: translateY(-50%) rotate(0);
         @include mixin.transition3();
         z-index: 1;
+        width: 12px;
+        height: 19px;
+        display: block;
+        font-size: 12px;
     }
     > span {
         font-weight: 400;

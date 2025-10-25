@@ -5,6 +5,8 @@ const filterListings = async (req, res, next) => {
     const {
       status,
       state,
+      city, // Primary city parameter
+      cities, // Alternative city parameter name
       bedrooms,
       bathrooms,
       priceMin,
@@ -28,7 +30,16 @@ const filterListings = async (req, res, next) => {
 
     // Exact matches
     if (status) filters.status = status;
-    if (state) filters.state = state;
+    // Handle city parameter - main field is 'city', but support legacy 'state' parameter
+    // Priority: city > cities > state
+    if (city) {
+      filters.city = city;
+    } else if (cities) {
+      filters.city = cities;
+    } else if (state) {
+      // Legacy support - map state to city for backward compatibility
+      filters.city = state;
+    }
     if (neighborhood) filters.neighborhood = neighborhood;
     if (rentType) filters.rentType = rentType;
     if (propertyType) filters.propertyType = propertyType;

@@ -2,7 +2,7 @@
 .propertyCard {
   display: flex;
   width: 480px;
-  min-height: 440px;
+  min-height: 400px;
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -361,6 +361,32 @@
 .spd-properties .swiper-pagination-bullet-active {
   background: #f1913d !important;
   transform: scale(1.2) !important;
+}
+
+.spd-properties .swiper-pagination-bullet-active-main {
+  background: #f1913d !important;
+  transform: scale(1.2) !important;
+}
+
+/* Additional overrides for all possible Swiper pagination classes */
+.spd-properties .swiper-pagination-bullet-active-main,
+.spd-properties .swiper-pagination-bullet-active,
+.spd-properties .swiper-pagination-bullet-active-prev,
+.spd-properties .swiper-pagination-bullet-active-next {
+  background: #f1913d !important;
+  background-color: #f1913d !important;
+  transform: scale(1.2) !important;
+}
+
+/* Global Swiper pagination override */
+.swiper-pagination-bullet-active {
+  background: #f1913d !important;
+  background-color: #f1913d !important;
+}
+
+.swiper-pagination-bullet-active-main {
+  background: #f1913d !important;
+  background-color: #f1913d !important;
 }
 
 .spd-properties .swiper-pagination-bullet:hover {

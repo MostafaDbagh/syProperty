@@ -29,7 +29,8 @@ const listingSchema = new mongoose.Schema(
 //////property location//////////
     address: { type: String, required: true },
     country: { type: String,required:true  },
-    state: { type: String,required:true  },
+    city: { type: String,required:true  },
+    state: { type: String }, // Keep for backward compatibility
     neighborhood: { type: String,required:true },
 
     agent: { type: String, required: true }, // Legacy field - keep for backward compatibility

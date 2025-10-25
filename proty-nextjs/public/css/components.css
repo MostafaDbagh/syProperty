@@ -1,5 +1,18 @@
 /* Component Styles - Replacing Inline Styles */
 
+/* Global Swiper Pagination Override - Orange Theme */
+.swiper-pagination-bullet-active,
+.swiper-pagination-bullet-active-main,
+.swiper-pagination-bullet-active-prev,
+.swiper-pagination-bullet-active-next {
+  background: #f1913d !important;
+  background-color: #f1913d !important;
+}
+
+.swiper-pagination-bullet-active {
+  transform: scale(1.2) !important;
+}
+
 /* Dashboard Navigation Styles */
 .dashboard-nav-user {
   cursor: pointer;

@@ -335,7 +335,7 @@ const getEachStateListing = async (req, res) => {
       { $match: { isDeleted: false } },
       {
         $group: {
-          _id: "$state",
+          _id: "$city", // Use 'city' field instead of 'state'
           count: { $sum: 1 },
         },
       },
@@ -343,8 +343,8 @@ const getEachStateListing = async (req, res) => {
     ]);
 
     let formatted = listingsByState.map((item, index) => {
-      const state = item._id;
-      const { imageSrc, width, height } = getImageDataByState(state);
+      const city = item._id;
+      const { imageSrc, width, height } = getImageDataByState(city);
 
       return {
         id: index + 1,
@@ -352,12 +352,13 @@ const getEachStateListing = async (req, res) => {
         alt: "syProperties",
         width,
         height,
-        state,
+        state: city, // Keep 'state' key for backward compatibility with frontend
+        city: city,
         properties: `${item.count.toLocaleString()} Properties`,
       };
     });
 
-    const damascusIndex = formatted.findIndex(item => item.state === "Damascus");
+    const damascusIndex = formatted.findIndex(item => item.city === "Damascus");
     if (damascusIndex !== -1) {
       const [damascusItem] = formatted.splice(damascusIndex, 1);
       formatted.splice(formatted.length - 1, 0, damascusItem);

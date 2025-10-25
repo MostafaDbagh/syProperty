@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
+import DropdownTagSelect from "./DropdownTagSelect";
 import Slider from "rc-slider";
 import { provinceOptions } from "@/data/provinces";
 import { amenitiesList } from "@/constants/amenities";
@@ -416,40 +417,25 @@ export default function SearchForm({
         </div>
       </div>
       <div className="group-select">
+    
         <div className="box-select">
-          <label className="mb-2" htmlFor="provinceSelect">
-            Province / States
-          </label>
-          <DropdownSelect
-            id="provinceSelect"
-            options={provinceOptions}
-            addtionalParentClass=""
-            value={searchParams.province || "All"}
-            onChange={(value) => handleChange("state", value)}
-          />
-        </div>
-        <div className="box-select">
-          <label className="mb-2" htmlFor="bedsSelect">
-            Beds
-          </label>
-          <DropdownSelect
+          <DropdownTagSelect
             id="bedsSelect"
-            options={["Beds: Any", "1", "2", "3", "4", "5", "6"]}
+            label="Beds"
+            options={["Any", 'studio', "1", "2", "3", "4", "5", "6"]}
             addtionalParentClass=""
-            value={searchParams.beds || "Beds: Any"}
+            value={searchParams.bedrooms || ""}
             onChange={(value) => handleChange("bedrooms", value)}
           />
         </div>
 
         <div className="box-select">
-          <label className="mb-2" htmlFor="bathsSelect">
-            Baths
-          </label>
-          <DropdownSelect
+          <DropdownTagSelect
             id="bathsSelect"
-            options={["Bath: Any", "1", "2", "3"]}
+            label="Baths"
+            options={["Any", "1", "2", "3", "4", "5"]}
             addtionalParentClass=""
-            value={searchParams.baths || "Bath: Any"}
+            value={searchParams.bathrooms || ""}
             onChange={(value) => handleChange("bathrooms", value)}
           />
         </div>

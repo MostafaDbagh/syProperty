@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import DropdownSelect from "../common/DropdownSelect";
 import PropertyGridItems from "./PropertyGridItems";
 import PropertyListItems from "./PropertyListItems";
@@ -10,22 +11,26 @@ import { cleanParams } from "@/utlis/cleanedParams";
 import LocationLoader from "../common/LocationLoader";
 
 export default function Properties1({ defaultGrid = false }) {
+  const searchParamsFromUrl = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Initialize search params from URL if available
   const [searchParams, setSearchParams] = useState({
-    status: "",
-    keyword: "",
-    priceMin: "",
-    priceMax: "",
-    sizeMin: "",
-    sizeMax: "",
-    state: "",
-    bedrooms: "",
-    bathrooms: "",
+    status: searchParamsFromUrl.get('status') || "",
+    keyword: searchParamsFromUrl.get('keyword') || "",
+    priceMin: searchParamsFromUrl.get('priceMin') || "",
+    priceMax: searchParamsFromUrl.get('priceMax') || "",
+    sizeMin: searchParamsFromUrl.get('sizeMin') || "",
+    sizeMax: searchParamsFromUrl.get('sizeMax') || "",
+    state: searchParamsFromUrl.get('state') || "",
+    cities: searchParamsFromUrl.get('cities') || "",
+    bedrooms: searchParamsFromUrl.get('bedrooms') || "",
+    bathrooms: searchParamsFromUrl.get('bathrooms') || "",
     amenities: [],
-    propertyType: "",
-    furnished: "",
-    propertyId: "",
-    sort: "newest"
+    propertyType: searchParamsFromUrl.get('propertyType') || "",
+    furnished: searchParamsFromUrl.get('furnished') || "",
+    propertyId: searchParamsFromUrl.get('propertyId') || "",
+    sort: searchParamsFromUrl.get('sort') || "newest"
   });
 
   // Prepare API params with pagination

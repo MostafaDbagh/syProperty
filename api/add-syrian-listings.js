@@ -67,7 +67,8 @@ const generateRandomProperty = (city, agentName) => {
     amenities: ['Parking', 'Garden', 'Balcony', 'Security'].slice(0, Math.floor(Math.random() * 4) + 1),
     address: `${Math.floor(Math.random() * 999) + 1} Main Street, ${city}`,
     country: 'Syria',
-    state: city,
+    city: city, // Use city field instead of state
+    state: city, // Keep for backward compatibility
     neighborhood: `${city} Downtown`,
     agent: agentName,
     agentEmail: agentName === 'John Smith' ? 'john.smith@syrianproperties.com' : 'ahmad.hassan@syrianproperties.com',
