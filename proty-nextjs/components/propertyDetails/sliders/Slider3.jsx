@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Gallery, Item } from "react-photoswipe-gallery";
@@ -21,17 +21,30 @@ const fallbackImages = [
 export default function Slider3({ property }) {
   const [swiperRef, setSwiperRef] = useState(null);
   
-  // Get images from property or use fallback
-  const propertyImages = property?.images && property.images.length > 0
-    ? property.images
-        .map((img, idx) => ({
-          src: img.url || img.src || img, // Handle both object and string formats
-          alt: `${property.propertyType || 'Property'} - Image ${idx + 1}`,
-        }))
-        .filter(img => img.src && img.src.trim() !== '') // Filter out empty src values
-    : fallbackImages;
-  
-  const images = propertyImages.length > 0 ? propertyImages : fallbackImages;
+  // Memoize images processing to prevent hydration issues
+  const images = useMemo(() => {
+    // Get images from property or use fallback
+    const propertyImages = property?.images && property.images.length > 0
+      ? property.images
+          .map((img, idx) => {
+            // Handle different image formats (object with url/src, or direct string)
+            let src = '';
+            if (typeof img === 'string') {
+              src = img;
+            } else if (img && typeof img === 'object') {
+              src = img.url || img.src || '';
+            }
+            
+            return {
+              src: src || `/images/section/box-house-${(idx % 3) + 1}.jpg`, // Fallback to default images
+              alt: `${property?.propertyType || 'Property'} - Image ${idx + 1}`,
+            };
+          })
+          .filter(img => img.src && typeof img.src === 'string' && img.src.trim() !== '') // Filter out empty src values
+      : fallbackImages;
+    
+    return propertyImages.length > 0 ? propertyImages : fallbackImages;
+  }, [property?.images, property?.propertyType]);
   return (
     <div className="single-property-gallery style-1">
       <div className="position-relative">
@@ -47,7 +60,7 @@ export default function Slider3({ property }) {
             className="swiper sw-single"
           >
             {images.map((elm, i) => (
-              <SwiperSlide key={i} className="swiper-slide">
+              <SwiperSlide key={`main-${elm.src}-${i}`} className="swiper-slide">
                 <Item
                   original={elm.src}
                   thumbnail={elm.src}
@@ -91,7 +104,7 @@ export default function Slider3({ property }) {
           slidesPerView={5}
         >
           {images.map((elm, i) => (
-            <SwiperSlide key={i} className="swiper-slide">
+            <SwiperSlide key={`thumb-${elm.src}-${i}`} className="swiper-slide">
               <div className="img-thumb-pagi">
                 <Image alt="Property gallery thumbnail" src={elm.src} width={317} height={202} />
               </div>

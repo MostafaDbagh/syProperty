@@ -138,6 +138,7 @@ export default function Cities() {
           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
           transition: all 0.3s ease;
           position: relative;
+          cursor: pointer;
         }
         
         .city-card:hover {
@@ -324,7 +325,11 @@ export default function Cities() {
           <div className="row g-4">
             {locations.slice(0, 9).map((location) => (
               <div key={location.id} className="col-lg-4 col-md-6 col-sm-6">
-                <div className="box-location city-card">
+                <div 
+                  className="box-location city-card"
+                  onClick={(e) => handleCityClick(e, location.city)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="image-wrap position-relative overflow-hidden rounded-3">
                     <Image
                       className="city-image"

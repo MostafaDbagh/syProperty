@@ -44,9 +44,9 @@ export default function Hero({
           <div className="col-lg-8 ">
             <div className="content-inner">
               <div className="heading-title">
-                <h1 className="title">Search Luxury Homes</h1>
+                <h1 className="title">Search your Dream Homes</h1>
                 <p className="h6 fw-4">
-                  Thousands of luxury home enthusiasts just like you visit our
+                  Alot of  homes enthusiasts just like you visit our
                   website.
                 </p>
               </div>

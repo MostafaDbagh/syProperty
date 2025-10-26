@@ -23,12 +23,7 @@ export default function DropdownTagSelect({
   return (
     <div className={`dropdown-tag-select ${addtionalParentClass}`}>
       {label && (
-        <label className="mb-2" htmlFor={id} style={{
-          fontSize: '14px',
-          fontWeight: '600',
-          color: '#5c5E61',
-          display: 'block'
-        }}>
+        <label className="mb-2 dropdown-label" htmlFor={id}>
           {label}
         </label>
       )}
@@ -38,99 +33,20 @@ export default function DropdownTagSelect({
         <div 
           className="selected-value-display"
           onClick={() => setIsOpen(!isOpen)}
-          style={{
-            padding: '12px 16px',
-            border: '2px solid #e8e8e8',
-            borderRadius: '12px',
-            backgroundColor: '#fff',
-            cursor: 'pointer',
-            fontSize: '14px',
-            color: '#333',
-            fontWeight: '500',
-            transition: 'all 0.3s ease',
-            minHeight: '48px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.borderColor = '#e8e8e8';
-            e.target.style.boxShadow = 'none';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.borderColor = '#e8e8e8';
-            e.target.style.boxShadow = 'none';
-          }}
         >
           <span>{displayValue}</span>
-          <i className="icon-arrow-down" style={{
-            transition: 'transform 0.3s ease',
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            width: '12px',
-            height: '19px',
-            display: 'block',
-            fontSize: '12px',
-            color: '#333'
-          }} />
+          <i className={`icon-arrow-down arrow-icon ${isOpen ? 'open' : ''}`} />
         </div>
 
         {/* Options Grid */}
         {isOpen && (
-          <div className="options-grid" style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            border: '1px solid #e8e8e8',
-            borderRadius: '12px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-            zIndex: 1000,
-            marginTop: '4px',
-            padding: '16px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(60px, 1fr))',
-            gap: '8px',
-            maxHeight: '200px',
-            overflowY: 'auto'
-          }}>
+          <div className="options-grid">
             {options.map((option, index) => (
               <button
                 key={index}
                 type="button"
                 className={`tag-option ${value === option ? 'selected' : ''}`}
                 onClick={() => handleOptionClick(option)}
-                style={{
-                  padding: '8px',
-                  border: '2px solid #e8e8e8',
-                  borderRadius: '24px',
-                  backgroundColor: value === option ? '#f1913d' : '#f8f9fa',
-                  color: value === option ? '#fff' : '#333',
-                  fontSize: '13px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  borderColor: value === option ? '#f1913d' : '#e8e8e8'
-                }}
-                onMouseEnter={(e) => {
-                  if (value !== option) {
-                    e.target.style.backgroundColor = '#f1913d';
-                    e.target.style.color = '#fff';
-                    e.target.style.borderColor = '#f1913d';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.3)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (value !== option) {
-                    e.target.style.backgroundColor = '#f8f9fa';
-                    e.target.style.color = '#333';
-                    e.target.style.borderColor = '#e8e8e8';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
               >
                 {option}
               </button>
@@ -140,6 +56,42 @@ export default function DropdownTagSelect({
       </div>
 
       <style jsx>{`
+        .dropdown-label {
+          font-size: 14px !important;
+          font-weight: 600 !important;
+          color: #5c5E61 !important;
+          display: block !important;
+        }
+        
+        .selected-value-display {
+          padding: 12px 16px !important;
+          border: 2px solid #e8e8e8 !important;
+          border-radius: 12px !important;
+          background-color: #fff !important;
+          cursor: pointer !important;
+          font-size: 14px !important;
+          color: #333 !important;
+          font-weight: 500 !important;
+          transition: all 0.3s ease !important;
+          min-height: 48px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+        }
+        
+        .arrow-icon {
+          transition: transform 0.3s ease !important;
+          width: 12px !important;
+          height: 19px !important;
+          display: block !important;
+          font-size: 12px !important;
+          color: #333 !important;
+        }
+        
+        .arrow-icon.open {
+          transform: rotate(180deg) !important;
+        }
+        
         .dropdown-tag-select {
           position: relative;
           width: 100%;
@@ -148,6 +100,52 @@ export default function DropdownTagSelect({
         .tag-select-container {
           position: relative;
           width: 100%;
+        }
+        
+        .options-grid {
+          position: absolute !important;
+          top: 100% !important;
+          left: 0 !important;
+          right: 0 !important;
+          background-color: #fff !important;
+          border: 1px solid #e8e8e8 !important;
+          border-radius: 12px !important;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+          z-index: 1000 !important;
+          margin-top: 4px !important;
+          padding: 16px !important;
+          display: grid !important;
+          grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)) !important;
+          gap: 8px !important;
+          max-height: 200px !important;
+          overflow-y: auto !important;
+        }
+        
+        .tag-option {
+          padding: 8px !important;
+          border: 2px solid #e8e8e8 !important;
+          border-radius: 24px !important;
+          background-color: #f8f9fa !important;
+          color: #333 !important;
+          font-size: 13px !important;
+          font-weight: 500 !important;
+          cursor: pointer !important;
+          transition: all 0.3s ease !important;
+          text-align: center !important;
+        }
+        
+        .tag-option.selected {
+          background-color: #f1913d !important;
+          color: #fff !important;
+          border-color: #f1913d !important;
+        }
+        
+        .tag-option:hover:not(.selected) {
+          background-color: #f1913d !important;
+          color: #fff !important;
+          border-color: #f1913d !important;
+          transform: translateY(-2px) !important;
+          box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3) !important;
         }
         
         .options-grid::-webkit-scrollbar {

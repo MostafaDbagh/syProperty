@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import DropdownSelect from "../common/DropdownSelect";
 import PropertyGridItems from "./PropertyGridItems";
@@ -10,7 +10,7 @@ import { useSearchListings } from "@/apis/hooks";
 import { cleanParams } from "@/utlis/cleanedParams";
 import LocationLoader from "../common/LocationLoader";
 
-export default function Properties1({ defaultGrid = false }) {
+function Properties1Content({ defaultGrid = false }) {
   const searchParamsFromUrl = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -190,8 +190,28 @@ export default function Properties1({ defaultGrid = false }) {
 
     return items;
   };
+  
   return (
     <>
+      <style jsx>{`
+        .loading-container {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          min-height: 300px !important;
+          grid-column: 1 / -1 !important;
+        }
+        
+        .error-container {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          min-height: 200px !important;
+          grid-column: 1 / -1 !important;
+          color: #dc3545 !important;
+        }
+      `}</style>
+      
       <section className="section-property-layout">
         <div className="tf-container">
           <div className="row">
@@ -303,27 +323,14 @@ export default function Properties1({ defaultGrid = false }) {
                   >
                     <div className="tf-grid-layout lg-col-3 md-col-2">
                       {isLoading ? (
-                        <div className="loading-container" style={{ 
-                          display: 'flex', 
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          minHeight: '300px',
-                          gridColumn: '1 / -1'
-                        }}>
+                        <div className="loading-container">
                           <LocationLoader 
                             size="large" 
                             message="Finding amazing properties for you..."
                           />
                         </div>
                       ) : isError ? (
-                        <div className="error-container" style={{ 
-                          display: 'flex', 
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          minHeight: '200px',
-                          gridColumn: '1 / -1',
-                          color: '#dc3545'
-                        }}>
+                        <div className="error-container">
                           <p>Error loading properties: {error?.message || 'Unknown error'}</p>
                         </div>
                       ) : (
@@ -338,27 +345,14 @@ export default function Properties1({ defaultGrid = false }) {
                   >
                     <div className="tf-grid-layout lg-col-2">
                       {isLoading ? (
-                        <div className="loading-container" style={{ 
-                          display: 'flex', 
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          minHeight: '300px',
-                          gridColumn: '1 / -1'
-                        }}>
+                        <div className="loading-container">
                           <LocationLoader 
                             size="large" 
                             message="Finding amazing properties for you..."
                           />
                         </div>
                       ) : isError ? (
-                        <div className="error-container" style={{ 
-                          display: 'flex', 
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          minHeight: '200px',
-                          gridColumn: '1 / -1',
-                          color: '#dc3545'
-                        }}>
+                        <div className="error-container">
                           <p>Error loading properties: {error?.message || 'Unknown error'}</p>
                         </div>
                       ) : (
@@ -399,5 +393,13 @@ export default function Properties1({ defaultGrid = false }) {
       </section>
       <FilterModal onSearchChange={handleSearchChange} searchParams={searchParams} />
     </>
+  );
+}
+
+export default function Properties1({ defaultGrid = false }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Properties1Content defaultGrid={defaultGrid} />
+    </Suspense>
   );
 }

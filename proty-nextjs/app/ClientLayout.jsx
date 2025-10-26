@@ -16,7 +16,6 @@ import "rc-slider/assets/index.css";
 import { usePathname } from "next/navigation";
 import BackToTop from "@/components/common/BackToTop";
 import MobileMenu from "@/components/headers/MobileMenu";
-import SettingsHandler from "@/components/common/SettingsHandler";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -80,7 +79,6 @@ export default function ClientLayout({ children }) {
             {children}
             <MobileMenu />
             <BackToTop />
-            <SettingsHandler />
           </QueryClientProvider>
         </FavoritesProvider>
       </GlobalModalProvider>

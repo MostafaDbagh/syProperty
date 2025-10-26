@@ -34,6 +34,17 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
   return (
     <>
       <style jsx>{`
+        /* Property ID Input Styling */
+        .property-id-input {
+          width: 100% !important;
+          height: 56px !important;
+          border-radius: 8px !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+          border: 1px solid #e0e0e0 !important;
+          padding: 0 16px !important;
+          font-size: 14px !important;
+        }
+        
         /* Enhanced City Dropdown Styling for FilterModal */
         .modal-filter .city-dropdown .nice-select {
           background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
@@ -142,19 +153,10 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 <input
                   type="text"
                   id="propertyId"
-                  className="form-control"
+                  className="form-control property-id-input"
                   placeholder="Enter Property ID"
                   value={searchParams.propertyId || ""}
                   onChange={(e) => handleChange("propertyId", e.target.value)}
-                  style={{
-                    width: '100%',
-                    height: '56px',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid #e0e0e0',
-                    padding: '0 16px',
-                    fontSize: '14px'
-                  }}
                 />
               </div>
             </div>
@@ -215,7 +217,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
               </div>
               <div className="widget-price">
                 <div className="box-title-price">
-                  <span className="title-price">Size range</span>
+                  <span className="title-price">Size</span>
                   <div className="caption-price">
                     <span>from</span>{" "}
                     <span className="value fw-6" id="slider-range-value01">

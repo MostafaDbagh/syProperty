@@ -394,6 +394,22 @@
   opacity: 0.7 !important;
 }
 
+/* Additional utility classes */
+.property-image-cover {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.contact-agent-title {
+  margin-bottom: 6px !important;
+  font-weight: 600 !important;
+}
+
+.phone-number-text {
+  margin-left: 0 !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .propertyCard {

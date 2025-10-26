@@ -105,6 +105,10 @@ export default function Agents() {
           transition: transform 0.4s ease;
         }
         
+        .property-img {
+          object-fit: cover !important;
+        }
+        
         .agent-item:hover .image-wrap img {
           transform: scale(1.08);
         }
@@ -535,12 +539,11 @@ export default function Agents() {
                     <div className="image-wrap">
                       <Link href={`/agents-details/${agent._id}`}>
                         <Image
-                          className="lazyload"
+                          className="lazyload property-img"
                           alt={agent.fullName || "Agent"}
                           width={435}
                           height={250}
                           src={agent.avatar || "/images/avatar/agent-1.jpg"}
-                          style={{ objectFit: 'cover' }}
                         />
                       </Link>
                     </div>

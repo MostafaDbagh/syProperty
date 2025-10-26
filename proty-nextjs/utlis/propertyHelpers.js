@@ -96,9 +96,15 @@ export const getPropertyImage = (property, fallback = '/images/section/property-
   
   const firstImage = property.images[0];
   // Handle both object format (with url property) and string format
-  const imageUrl = firstImage?.url || firstImage?.src || firstImage;
+  let imageUrl = '';
+  
+  if (typeof firstImage === 'string') {
+    imageUrl = firstImage;
+  } else if (firstImage && typeof firstImage === 'object') {
+    imageUrl = firstImage?.url || firstImage?.src || '';
+  }
   
   // Return fallback if imageUrl is empty or invalid
-  return imageUrl && imageUrl.trim() !== '' ? imageUrl : fallback;
+  return imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '' ? imageUrl : fallback;
 };
 

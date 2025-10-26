@@ -16,7 +16,7 @@ export default function Categories({
   // Get all properties for accurate counting (no pagination)
   const { data: allListingsResponse } = useQuery({
     queryKey: ['listings', 'all-count'],
-    queryFn: () => listingAPI.searchListings({ limit: 100 }), // Reduced from 1000 to 100 for better performance
+    queryFn: () => listingAPI.searchListings({ limit: 1000 }), // Get all listings for accurate counts
     staleTime: 5 * 60 * 1000, // 5 minutes cache
     refetchOnWindowFocus: false, // Prevent unnecessary refetches
     refetchOnMount: false, // Prevent refetch on component mount if data exists
@@ -27,20 +27,31 @@ export default function Categories({
 
   // Memoize categories calculation to prevent recalculation on every render
   const categories = useMemo(() => {
-    const propertyTypes = ['Apartment', 'Villa/farms' , 'Office', 'Commercial', 'Land','holiday home'];
+    const propertyTypes = ['Apartment', 'Villa/farms' , 'Office', 'Commercial', 'Land','Holiday Home'];
     const icons = ['icon-apartment1', 'icon-villa', 'icon-office1', 'icon-commercial', 'icon-land', 'icon-studio'];
     
-    return propertyTypes.map((type, index) => ({
-      name: type === 'Land' ? 'Land/Plot' : type,
-      icon: icons[index],
-      count: allListings.filter(p => p.propertyType === type).length
-    }));
+    return propertyTypes.map((type, index) => {
+      const displayName = type === 'Land' ? 'Land/Plot' : type;
+      // Count listings that match either the type or the display name
+      const count = allListings.filter(p => 
+        p.propertyType === type || 
+        (type === 'Land' && (p.propertyType === 'Land' || p.propertyType === 'Land/Plot'))
+      ).length;
+      
+      return {
+        name: displayName,
+        icon: icons[index],
+        count
+      };
+    });
   }, [allListings]);
 
   // Memoize category click handler to prevent recreation on every render
   const handleCategoryClick = useCallback((categoryName) => {
     setCategory(categoryName);
-    onSearchChange({ propertyType: categoryName });
+    // Map display name to actual property type for API
+    const apiPropertyType = categoryName === 'Land/Plot' ? 'Land' : categoryName;
+    onSearchChange({ propertyType: apiPropertyType });
   }, [setCategory, onSearchChange]);
 
   // Memoize swiper breakpoints to prevent recreation
@@ -59,7 +70,7 @@ export default function Categories({
             <SplitTextAnimation text="Try Searching For" />
           </h2>
           <p className="text-1 split-text split-lines-transform">
-            Thousands of luxury home enthusiasts just like you have found their
+            Alot of Featured homes enthusiasts just like you have found their
             dream home
           </p>
         </div>
@@ -90,14 +101,15 @@ export default function Categories({
                   type="button"
                   onClick={() => handleCategoryClick(category.name)}
                   className={`categories-item ${
-                    searchParams.propertyType === category.name ? "active" : ""
+                    (searchParams.propertyType === category.name || 
+                     (category.name === 'Land/Plot' && searchParams.propertyType === 'Land')) ? "active" : ""
                   }`}
                 >
                   <div className="icon-box">
                     <i className={`icon ${category.icon}`}></i>
                   </div>
                   <div className="content text-center">
-                    <h5>{category.name}</h5>
+                    <h5 className="category-title-h5">{category.name}</h5>
                     <p className="mt-4 text-1">{category.count} Property</p>
                   </div>
                 </button>
@@ -107,17 +119,22 @@ export default function Categories({
           
           {/* Pagination dots for mobile and tablet */}
           <div 
-            className="spd2" 
-            style={{ 
-              marginTop: '20px',
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '8px',
-            }} 
+            className="spd2 pagination-container" 
           />
           
           <style jsx>{`
+            .category-title-h5 {
+              font-size: 18px !important;
+            }
+            
+            .pagination-container {
+              margin-top: 20px !important;
+              text-align: center !important;
+              display: flex !important;
+              justify-content: center !important;
+              gap: 8px !important;
+            }
+            
             .categories-item {
               width: 180px !important;
               min-width: 180px !important;

@@ -10,12 +10,7 @@ export default function PropertyListItems({ listings = [] }) {
   const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();
   if (!listings || listings.length === 0) {
     return (
-      <div style={{ 
-        gridColumn: '1 / -1', 
-        textAlign: 'center', 
-        padding: '40px',
-        color: '#666'
-      }}>
+      <div className="empty-state-container">
         <p>No properties found matching your criteria.</p>
       </div>
     );
@@ -59,22 +54,44 @@ export default function PropertyListItems({ listings = [] }) {
 
   return (
     <>
+      <style jsx>{`
+        .empty-state-container {
+          grid-column: 1 / -1 !important;
+          text-align: center !important;
+          padding: 40px !important;
+          color: #666 !important;
+        }
+        
+        .property-img {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          display: block !important;
+        }
+        
+        .holiday-badge {
+          background: linear-gradient(135deg, #FF6B6B, #FF8E8E) !important;
+          border: 2px solid #FF4757 !important;
+          box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3) !important;
+        }
+        
+        .details-btn-bordered {
+          background: none !important;
+          border: 1px solid #F97316 !important;
+          color: #F97316 !important;
+          cursor: pointer !important;
+        }
+      `}</style>
       {listings.map((property, i) => (
         <div key={i} className="box-house style-list hover-img property-list-image-fix">
           <div className="image-wrap">
             <Link href={`/property-detail/${property._id}`}>
               <Image
-                className="lazyload"
+                className="lazyload property-img"
                 alt={property.propertyKeyword || property.propertyTitle || 'Property'}
                 src={getImageSource(property)}
                 width={600}
                 height={401}
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  objectFit: 'cover',
-                  display: 'block'
-                }}
                 onError={(e) => {
                   console.log('Image failed to load:', e.target.src);
                   e.target.src = "/images/section/box-house-2.jpg";
@@ -83,11 +100,7 @@ export default function PropertyListItems({ listings = [] }) {
             </Link>
             <ul className="box-tag flex gap-8">
               {property.propertyType === 'Holiday Homes' && (
-                <li className="flat-tag text-4 fw-6 text_white" style={{
-                  background: 'linear-gradient(135deg, #FF6B6B, #FF8E8E)',
-                  border: '2px solid #FF4757',
-                  boxShadow: '0 4px 15px rgba(255, 107, 107, 0.3)'
-                }}>
+                <li className="flat-tag text-4 fw-6 text_white holiday-badge">
                   🏖️ Holiday Home
                 </li>
               )}
@@ -135,8 +148,7 @@ export default function PropertyListItems({ listings = [] }) {
               <div className="wrap-btn flex">
                 <button
                   onClick={() => handleDetailsClick(property._id)}
-                  className="tf-btn style-border pd-4"
-                  style={{ background: 'none', border: '1px solid #F97316', color: '#F97316', cursor: 'pointer' }}
+                  className="tf-btn style-border pd-4 details-btn-bordered"
                 >
                   Details
                 </button>

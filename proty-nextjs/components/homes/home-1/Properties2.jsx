@@ -177,16 +177,11 @@ export default function Properties2() {
                         <div className={styles.imageSection}>
                           <Link href={`/property-detail/${property._id}`}>
                             <Image
-                              className="lazyload"
+                              className="lazyload property-image-cover"
                               alt={property.propertyKeyword || property.propertyType || "Property"}
                               src={imageSrc || "/images/section/box-house-2.jpg"}
                               width={370}
                               height={260}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
                               onError={(e) => {
                                 e.target.src = "/images/section/box-house-2.jpg";
                               }}
@@ -260,7 +255,7 @@ export default function Properties2() {
                         
                         {/* Action Buttons - Tab Style */}
                         <div className={styles.actionButtonsSection}>
-                          <p style={{marginBottom: "6px", fontWeight:'600'}}>contact Agent</p>
+                          <p className="contact-agent-title">contact Agent</p>
                           <div className={styles.actionButtonsVertical}>
                             <button 
                               className={`${styles.actionTab} ${styles.callTab}`}
@@ -273,7 +268,7 @@ export default function Properties2() {
                               }}
                             >
                               <i className="icon-phone-1" />
-                              <span ><strong style={{marginLeft: 0}}>+963949112178</strong></span>
+                              <span className="phone-number-text"><strong>+963949112178</strong></span>
                             </button>
                             <button 
                               className={`${styles.actionTab} ${styles.emailTab}`}

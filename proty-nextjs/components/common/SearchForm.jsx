@@ -67,6 +67,45 @@ export default function SearchForm({
   return (
     <>
       <style jsx>{`
+        /* Form layout utilities */
+        .form-row-flex {
+          display: flex !important;
+          gap: 24px !important;
+          align-items: flex-end !important;
+          flex-wrap: wrap !important;
+        }
+        
+        .form-row-item {
+          flex: 1 !important;
+          min-width: 280px !important;
+        }
+        
+        .form-label {
+          font-size: 14px !important;
+          font-weight: 600 !important;
+          color: #333 !important;
+          display: block !important;
+        }
+        
+        .form-input-enhanced {
+          width: 100% !important;
+          height: 56px !important;
+          border-radius: 12px !important;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+          border: 2px solid #e8e8e8 !important;
+          padding: 0 20px !important;
+          font-size: 14px !important;
+          color: #333 !important;
+          background-color: #fff !important;
+          transition: all 0.3s ease !important;
+          outline: none !important;
+        }
+        
+        .form-input-enhanced:focus {
+          border-color: #ff6b35 !important;
+          box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15) !important;
+        }
+        
         /* Enhanced City Dropdown Styling for style-3 */
         .wd-search-form.style-3 .city-dropdown .nice-select {
           background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
@@ -239,19 +278,9 @@ export default function SearchForm({
         </div>
         
         {/* Syria Cities and Property ID Row */}
-        <div className="group-input mb-30" style={{ 
-          display: 'flex', 
-          gap: '24px', 
-          alignItems: 'flex-end',
-          flexWrap: 'wrap'
-        }}>
-          <div className="box-input" style={{ flex: '1', minWidth: '280px' }}>
-            <label className="mb-2" htmlFor="syriaCitiesSelect" style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#333',
-              display: 'block'
-            }}>
+        <div className="group-input mb-30 form-row-flex">
+          <div className="box-input form-row-item">
+            <label className="mb-2 form-label" htmlFor="syriaCitiesSelect">
               Syria Cities
             </label>
             <div className="city-dropdown">
@@ -275,43 +304,17 @@ export default function SearchForm({
               />
             </div>
           </div>
-          <div className="box-input" style={{ flex: '1', minWidth: '280px' }}>
-            <label className="mb-2" htmlFor="propertyId" style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#333',
-              display: 'block'
-            }}>
+          <div className="box-input form-row-item">
+            <label className="mb-2 form-label" htmlFor="propertyId">
               Property ID
             </label>
             <input
               type="text"
               id="propertyId"
-              className="form-control"
+              className="form-control form-input-enhanced"
               placeholder="Enter Property ID"
               value={searchParams.propertyId || ""}
               onChange={(e) => handleChange("propertyId", e.target.value)}
-              style={{
-                width: '100%',
-                height: '56px',
-                borderRadius: '12px',
-                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
-                border: '2px solid #e8e8e8',
-                padding: '0 20px',
-                fontSize: '14px',
-                color: '#333',
-                backgroundColor: '#fff',
-                transition: 'all 0.3s ease',
-                outline: 'none'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#ff6b35';
-                e.target.style.boxShadow = '0 4px 20px rgba(255, 107, 53, 0.15)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e8e8e8';
-                e.target.style.boxShadow = '0 2px 12px rgba(0, 0, 0, 0.08)';
-              }}
             />
           </div>
         </div>
@@ -320,12 +323,7 @@ export default function SearchForm({
       {parentClass.includes('style-3') && (
         <div className="group-input mb-30">
           <div className="box-input">
-            <label className="mb-2" htmlFor="citiesSelectStyle3" style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#333',
-              display: 'block'
-            }}>
+            <label className="mb-2 form-label" htmlFor="citiesSelectStyle3">
               Cities
             </label>
             <div className="city-dropdown">

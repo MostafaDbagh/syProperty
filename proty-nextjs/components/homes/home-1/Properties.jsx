@@ -82,10 +82,10 @@ export default function Properties({ listings, isLoading, isError }) {
           <div className="col-12">
             <div className="heading-section text-center ">
               <h2 className="title split-text effect-right">
-                <SplitTextAnimation text="Today’s Luxury Listings" />
+                <SplitTextAnimation text="Today’s  Listings" />
               </h2>
               <p className="text-1 split-text split-lines-transform">
-                Thousands of luxury home enthusiasts just like you visit our
+                Alot of  homes enthusiasts just like you visit our
                 website.
               </p>
             </div>
