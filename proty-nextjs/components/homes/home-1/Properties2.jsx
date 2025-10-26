@@ -12,8 +12,9 @@ import "swiper/css/pagination";
 import styles from "./Properties2.module.css";
 
 export default function Properties2() {
-  // Use search endpoint with limited params to get featured listings
+  // Use search endpoint to get ONLY Holiday Home properties
   const { data: searchResponse, isLoading, isError, error } = useSearchListings({ 
+    propertyType: 'Holiday Home', // ONLY show Holiday Homes
     limit: 12, // Only get 12 properties for home page
     sort: 'newest' // Get newest properties
   });
@@ -191,13 +192,11 @@ export default function Properties2() {
                           {/* Badges */}
                           <div className={styles.badges}>
                             <span className={styles.badgeRent}>
-                              {property.status === 'sale' ? 'For Sale' : 'For Rent'}
+                              For Rent
                             </span>
-                            {property.propertyType === 'Holiday Homes' && (
-                              <span className={styles.badgeHoliday}>
-                                🏖️ Holiday
-                              </span>
-                            )}
+                            <span className={styles.badgeHoliday}>
+                              🏖️ Holiday Home
+                            </span>
                           </div>
                           
                           {/* Action Buttons */}
