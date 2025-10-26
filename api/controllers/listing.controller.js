@@ -1,3 +1,16 @@
+/**
+ * Listing Controller
+ * 
+ * IMPORTANT: Holiday Homes Requirements Enforcement
+ * 
+ * For properties with propertyType: "Holiday Home":
+ * - status MUST be "rent" (no sale option allowed)
+ * - furnished MUST be true (always furnished)
+ * 
+ * These rules are automatically enforced in createListing() and updateListing()
+ * See HOLIDAY_HOMES_REQUIREMENTS.md for full documentation
+ */
+
 const Listing = require('../models/listing.model.js');
 const { errorHandler } = require('../utils/error.js');
 const cloudinary = require('../utils/cloudinary.js')
@@ -16,6 +29,12 @@ const createListing = async (req, res, next) => {
       // Set agentId from req.body if provided (should be user's _id)
       agentId: req.body.agentId || req.body.userId || null
     };
+
+    // Holiday Homes Requirements Enforcement
+    if (listingData.propertyType === 'Holiday Home') {
+      listingData.status = 'rent'; // Force rent only
+      listingData.furnished = true; // Force furnished true
+    }
 
     const newListing = await Listing.create(listingData);
     
@@ -124,6 +143,18 @@ const updateListing = async (req, res, next) => {
     delete updateData._id;
     delete updateData.createdAt;
     delete updateData.updatedAt;
+
+    // Holiday Homes Requirements Enforcement
+    // Check if updating to Holiday Home OR if existing property is Holiday Home
+    if (updateData.propertyType === 'Holiday Home' || listing.propertyType === 'Holiday Home') {
+      updateData.status = 'rent'; // Force rent only
+      updateData.furnished = true; // Force furnished true
+      
+      // If trying to change from Holiday Home, prevent invalid status/furnished
+      if (listing.propertyType === 'Holiday Home') {
+        updateData.propertyType = 'Holiday Home'; // Keep it as Holiday Home
+      }
+    }
 
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
