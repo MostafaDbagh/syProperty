@@ -155,7 +155,7 @@ const getReviewsByProperty = async (req, res) => {
 
   const getReviewsByAgent = async (req, res) => {
     try {
-      const { agentId } = req.params;
+      let { agentId } = req.params;
   
       if (!agentId) {
         return res.status(400).json({ 
@@ -164,16 +164,30 @@ const getReviewsByProperty = async (req, res) => {
         });
       }
 
+      // Check if this is a user ID that might have an agentId reference
+      const User = require('../models/user.model');
+      const mongoose = require('mongoose');
+      const user = await User.findById(agentId).select('agentId role');
+      
+      if (user && user.role === 'agent' && user.agentId) {
+        // Use the agent's ID from the agents collection
+        agentId = user.agentId.toString();
+      }
+
       // Get pagination parameters from query
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;
   
       // Step 1: Find all properties for this agent
+      // Handle ObjectId conversion for proper matching
+      const isObjectId = mongoose.Types.ObjectId.isValid(agentId);
+      const agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
+      
       const properties = await Listing.find({ 
         $or: [
           { agent: agentId },
-          { agentId: agentId }
+          { agentId: agentIdObj }
         ],
         isDeleted: { $ne: true }
       }).select('_id propertyKeyword');

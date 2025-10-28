@@ -13,7 +13,8 @@
 
 const Listing = require('../models/listing.model.js');
 const { errorHandler } = require('../utils/error.js');
-const cloudinary = require('../utils/cloudinary.js')
+const cloudinary = require('../utils/cloudinary.js');
+const mongoose = require('mongoose');
 
 
 
@@ -26,9 +27,14 @@ const createListing = async (req, res, next) => {
       // Ensure images and imageNames are properly set
       images: req.body.images || [],
       imageNames: req.body.imageNames || [],
-      // Set agentId from req.body if provided (should be user's _id)
-      agentId: req.body.agentId || req.body.userId || null
+      // Set agentId from authenticated user or request body
+      // req.user.id is set by authentication middleware (from JWT token)
+      agentId: req.body.agentId || req.body.userId || req.user?.id || null
     };
+
+    console.log('createListing - agentId set to:', listingData.agentId);
+    console.log('createListing - req.user:', req.user);
+    console.log('createListing - req.body.agentId:', req.body.agentId);
 
     // Holiday Homes Requirements Enforcement
     if (listingData.propertyType === 'Holiday Home') {
@@ -292,12 +298,75 @@ const getListingsByAgent = async (req, res, next) => {
     const skip = (page - 1) * limit;
     const status = req.query.status; // 'rent' or 'sale' filter
 
-    // Build filter object
+    // Convert agentId to ObjectId for proper MongoDB querying
+    const ObjectId = mongoose.Types.ObjectId;
+    const User = require('../models/user.model');
+    let agentIdObj;
+    
+    try {
+      agentIdObj = ObjectId.isValid(agentId) ? new ObjectId(agentId) : agentId;
+    } catch (error) {
+      console.error('Invalid agentId:', agentId, error);
+      return next(errorHandler(400, 'Invalid agent ID'));
+    }
+
+    // Check if this is an old orphaned agent ID and find the new user account
+    // Map of old orphaned agent IDs to new user accounts
+    const orphanedToNewMapping = {
+      '68ff3cf7cbb96ae0f6c49528': '69011eb4094125c9d18233d2', // Tarek Farouk
+      '68ff3cf6cbb96ae0f6c49512': '690124b4e02150e669d14ca1', // Ahmad Al-Hassan
+      '68ff3cf6cbb96ae0f6c49515': '690124b6e02150e669d14ca2', // Mohammad Ali
+      '68ff3cf6cbb96ae0f6c4951a': '690124b8e02150e669d14ca3', // Omar Mahmoud
+      '68ff3cf6cbb96ae0f6c4951d': '690124b9e02150e669d14ca4', // Khalil Abdullah
+      '68ff3cf7cbb96ae0f6c49520': '690124bbe02150e669d14ca5', // Youssef Salim
+      '68ff3cf7cbb96ae0f6c49522': '690124bce02150e669d14ca6', // Ziad Malek
+      '68ff3cf7cbb96ae0f6c49524': '690124bee02150e669d14ca7', // Rami Nasser
+      '68ff3cf7cbb96ae0f6c49526': '690124bfe02150e669d14ca8', // Bassam Hamdi
+      '68ff3cf6cbb96ae0f6c49518': '68ff97d83bb30c2519e463ae'  // Hassan Ibrahim
+    };
+    
+    try {
+      const oldAgentIdStr = agentIdObj.toString();
+      
+      // Check if this is in our mapping
+      if (orphanedToNewMapping[oldAgentIdStr]) {
+        console.log(`Mapping old agent ID ${oldAgentIdStr} to new ID ${orphanedToNewMapping[oldAgentIdStr]}`);
+        agentIdObj = new ObjectId(orphanedToNewMapping[oldAgentIdStr]);
+      } else {
+        // Check if user exists
+        const userExists = await User.findById(agentIdObj);
+        
+        if (!userExists) {
+          console.log(`Agent ID ${oldAgentIdStr} not found as user`);
+          // Try to find by checking all listings with this old agentId
+          const oldAgentListings = await Listing.find({ agentId: agentIdObj }).limit(1).toArray();
+          
+          if (oldAgentListings.length > 0 && oldAgentListings[0].agent) {
+            // Find the user by agent name
+            const agentName = oldAgentListings[0].agent;
+            const newUser = await User.findOne({ 
+              $or: [
+                { username: { $regex: new RegExp(agentName, 'i') }},
+                { email: { $regex: new RegExp(agentName, 'i') }}
+              ],
+              role: 'agent'
+            });
+            
+            if (newUser) {
+              console.log(`Redirecting to new user: ${newUser.username} (${newUser._id})`);
+              agentIdObj = newUser._id;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Error checking for orphaned agent:', err);
+    }
+
+    // Build filter object - only search by agentId (ObjectId field)
+    // The 'agent' field stores email and is not reliable for querying by user ID
     let filter = { 
-      $or: [
-        { agent: agentId }, // Legacy field (string)
-        { agentId: agentId } // New field (ObjectId)
-      ],
+      agentId: agentIdObj, // Use ObjectId field for reliable matching
       isDeleted: { $ne: true } // Exclude deleted listings
     };
 
@@ -305,6 +374,9 @@ const getListingsByAgent = async (req, res, next) => {
     if (status && status !== 'all') {
       filter.status = status;
     }
+
+    console.log('getListingsByAgent - Filter:', filter);
+    console.log('getListingsByAgent - agentId:', agentId);
 
     // Get listings with pagination
     const listings = await Listing.find(filter)
@@ -316,6 +388,12 @@ const getListingsByAgent = async (req, res, next) => {
     // Get total count for pagination
     const total = await Listing.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
+
+    console.log('getListingsByAgent - Results:', {
+      total,
+      found: listings.length,
+      agentId
+    });
 
     res.status(200).json({
       success: true,
@@ -330,6 +408,7 @@ const getListingsByAgent = async (req, res, next) => {
       }
     });
   } catch (error) {
+    console.error('getListingsByAgent - Error:', error);
     next(error);
   }
 };

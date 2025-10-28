@@ -32,7 +32,14 @@ export const agentAPI = {
   // Get all agents
   getAgents: async (params = {}) => {
     try {
-      const response = await Axios.get('/auth/agents', { params });
+      // Add timestamp to bypass browser cache
+      const cacheBust = Date.now();
+      const response = await Axios.get('/agents', { 
+        params: { ...params, _t: cacheBust },
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -42,7 +49,12 @@ export const agentAPI = {
   // Get agent by ID
   getAgentById: async (id) => {
     try {
-      const response = await Axios.get(`/auth/agents/${id}`);
+      const response = await Axios.get(`/agents/${id}`, {
+        params: { _t: Date.now() }, // Cache busting
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

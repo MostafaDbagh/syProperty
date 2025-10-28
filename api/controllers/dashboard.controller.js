@@ -21,7 +21,7 @@ const getDashboardStats = async (req, res) => {
     });
 
     // Get user details
-    const user = await User.findById(userId).select('email firstName lastName isAgent pointBalance');
+    const user = await User.findById(userId).select('email firstName lastName isAgent pointBalance agentId role');
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -29,7 +29,21 @@ const getDashboardStats = async (req, res) => {
       });
     }
 
+    // Use agentId if available (for agent role), otherwise use userId
+    const queryId = (user.role === 'agent' && user.agentId) ? user.agentId.toString() : userId;
+
     // Parallel queries for better performance
+    // Build listing filter to check both agent (legacy) and agentId fields
+    const isObjectId = mongoose.Types.ObjectId.isValid(queryId);
+    const queryIdObj = isObjectId ? new mongoose.Types.ObjectId(queryId) : queryId;
+    const listingFilter = {
+      $or: [
+        { agent: queryId },
+        { agentId: queryIdObj }
+      ],
+      isDeleted: { $ne: true }
+    };
+
     const [
       totalListings,
       pendingListings,
@@ -40,24 +54,21 @@ const getDashboardStats = async (req, res) => {
       totalMessages,
       pointBalance
     ] = await Promise.all([
-      // Total listings by this user
+      // Total listings by this user/agent
       Listing.countDocuments({ 
-        agentId: userId,
-        isDeleted: { $ne: true }
+        ...listingFilter
       }),
       
       // Pending listings
       Listing.countDocuments({ 
-        agentId: userId,
-        approvalStatus: 'pending',
-        isDeleted: { $ne: true }
+        ...listingFilter,
+        approvalStatus: 'pending'
       }),
       
       // Approved listings
       Listing.countDocuments({ 
-        agentId: userId,
-        approvalStatus: 'approved',
-        isDeleted: { $ne: true }
+        ...listingFilter,
+        approvalStatus: 'approved'
       }),
       
       // Total favorites by this user
@@ -82,7 +93,7 @@ const getDashboardStats = async (req, res) => {
         },
         {
           $match: {
-            'property.agentId': new mongoose.Types.ObjectId(userId)
+            'property.agentId': new mongoose.Types.ObjectId(queryId)
           }
         },
         {
@@ -90,15 +101,21 @@ const getDashboardStats = async (req, res) => {
         }
       ]).then(result => result[0]?.total || 0),
       
-      // Unread messages for this agent
+      // Unread messages for this agent - check both user and agent IDs
       Message.countDocuments({ 
-        agentId: userId,
+        $or: [
+          { agentId: userId },
+          { agentId: queryId }
+        ],
         status: 'unread'
       }),
       
-      // Total messages for this agent
+      // Total messages for this agent - check both user and agent IDs
       Message.countDocuments({ 
-        agentId: userId
+        $or: [
+          { agentId: userId },
+          { agentId: queryId }
+        ]
       }),
       
       // Point balance
@@ -115,16 +132,18 @@ const getDashboardStats = async (req, res) => {
     
     const recentActivity = await Promise.all([
       Listing.countDocuments({
-        agentId: userId,
-        createdAt: { $gte: sevenDaysAgo },
-        isDeleted: { $ne: true }
+        ...listingFilter,
+        createdAt: { $gte: sevenDaysAgo }
       }),
       Favorite.countDocuments({
         userId: userId,
         createdAt: { $gte: sevenDaysAgo }
       }),
       Message.countDocuments({
-        agentId: userId,
+        $or: [
+          { agentId: userId },
+          { agentId: queryId }
+        ],
         createdAt: { $gte: sevenDaysAgo }
       })
     ]);
@@ -144,19 +163,19 @@ const getDashboardStats = async (req, res) => {
           as: 'property'
         }
       },
-      {
-        $match: {
-          'property.agentId': new mongoose.Types.ObjectId(userId)
+        {
+          $match: {
+            'property.agentId': new mongoose.Types.ObjectId(queryId)
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            averageRating: { $avg: '$rating' },
+            totalReviews: { $sum: 1 }
+          }
         }
-      },
-      {
-        $group: {
-          _id: null,
-          averageRating: { $avg: '$rating' },
-          totalReviews: { $sum: 1 }
-        }
-      }
-    ]);
+      ]);
     
     const averageRating = reviewsForAgent.length > 0 ? reviewsForAgent[0].averageRating : 0;
 
@@ -248,6 +267,14 @@ const getDashboardAnalytics = async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
+    // Get user details to check for agentId
+    const user = await User.findById(userId).select('agentId role');
+    const queryId = (user && user.role === 'agent' && user.agentId) ? user.agentId.toString() : userId;
+    
+    // Build ObjectId for proper matching
+    const isObjectId = mongoose.Types.ObjectId.isValid(queryId);
+    const queryIdObj = isObjectId ? new mongoose.Types.ObjectId(queryId) : queryId;
+
     // Calculate date range based on period
     const now = new Date();
     let startDate = new Date();
@@ -282,7 +309,10 @@ const getDashboardAnalytics = async (req, res) => {
       Listing.aggregate([
         {
           $match: {
-            agentId: userId,
+            $or: [
+              { agent: queryId },
+              { agentId: queryIdObj }
+            ],
             createdAt: { $gte: startDate },
             isDeleted: { $ne: true }
           }
@@ -321,11 +351,15 @@ const getDashboardAnalytics = async (req, res) => {
         { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
       ]),
 
-      // Messages over time
+      // Messages over time - check both recipientId and agentId
       Message.aggregate([
         {
           $match: {
-            recipientId: userId,
+            $or: [
+              { recipientId: userId },
+              { agentId: userId },
+              { agentId: queryId }
+            ],
             createdAt: { $gte: startDate }
           }
         },
@@ -342,11 +376,24 @@ const getDashboardAnalytics = async (req, res) => {
         { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
       ]),
 
-      // Reviews over time
+      // Reviews over time - get reviews for agent's properties
       Review.aggregate([
         {
+          $addFields: {
+            propertyObjectId: { $toObjectId: '$propertyId' }
+          }
+        },
+        {
+          $lookup: {
+            from: 'listings',
+            localField: 'propertyObjectId',
+            foreignField: '_id',
+            as: 'property'
+          }
+        },
+        {
           $match: {
-            agentId: userId,
+            'property.agentId': new mongoose.Types.ObjectId(queryId),
             createdAt: { $gte: startDate }
           }
         },
@@ -366,7 +413,10 @@ const getDashboardAnalytics = async (req, res) => {
 
       // Top performing listings (by visits)
       Listing.find({
-        agentId: userId,
+        $or: [
+          { agent: queryId },
+          { agentId: queryIdObj }
+        ],
         isDeleted: { $ne: true }
       })
       .select('propertyTitle propertyPrice visitCount createdAt')
@@ -377,7 +427,10 @@ const getDashboardAnalytics = async (req, res) => {
       Listing.aggregate([
         {
           $match: {
-            agentId: userId,
+            $or: [
+              { agent: queryId },
+              { agentId: queryIdObj }
+            ],
             createdAt: { $gte: startDate },
             isDeleted: { $ne: true }
           }
@@ -484,6 +537,10 @@ const getDashboardNotifications = async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
+    // Get user details to check for agentId reference
+    const user = await User.findById(userId).select('agentId role');
+    const queryId = (user && user.role === 'agent' && user.agentId) ? user.agentId.toString() : userId;
+
     // Get various notifications
     const [
       unreadMessages,
@@ -492,15 +549,22 @@ const getDashboardNotifications = async (req, res) => {
       expiringListings,
       newReviews
     ] = await Promise.all([
-      // Unread messages
+      // Unread messages - check both recipientId and agentId
       Message.find({
-        recipientId: userId,
+        $or: [
+          { recipientId: userId },
+          { agentId: userId },
+          { agentId: queryId }
+        ],
         isRead: false
       }).select('senderId subject createdAt').limit(5),
 
       // Pending listings
       Listing.find({
-        agentId: userId,
+        $or: [
+          { agent: queryId },
+          { agentId: queryIdObj }
+        ],
         approvalStatus: 'pending',
         isDeleted: { $ne: true }
       }).select('propertyTitle createdAt').limit(5),
@@ -510,15 +574,48 @@ const getDashboardNotifications = async (req, res) => {
 
       // Expiring listings (older than 90 days)
       Listing.find({
-        agentId: userId,
+        $or: [
+          { agent: queryId },
+          { agentId: queryIdObj }
+        ],
         createdAt: { $lte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) },
         isDeleted: { $ne: true }
       }).select('propertyTitle createdAt').limit(5),
 
-      // Recent reviews
-      Review.find({
-        agentId: userId
-      }).select('rating comment createdAt').sort({ createdAt: -1 }).limit(5)
+      // Recent reviews - get reviews for agent's properties
+      Review.aggregate([
+        {
+          $addFields: {
+            propertyObjectId: { $toObjectId: '$propertyId' }
+          }
+        },
+        {
+          $lookup: {
+            from: 'listings',
+            localField: 'propertyObjectId',
+            foreignField: '_id',
+            as: 'property'
+          }
+        },
+        {
+          $match: {
+            'property.agentId': new mongoose.Types.ObjectId(queryId)
+          }
+        },
+        {
+          $sort: { createdAt: -1 }
+        },
+        {
+          $limit: 5
+        },
+        {
+          $project: {
+            rating: 1,
+            comment: 1,
+            createdAt: 1
+          }
+        }
+      ])
     ]);
 
     const notifications = [];

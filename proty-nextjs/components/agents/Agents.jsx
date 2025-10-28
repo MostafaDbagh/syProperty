@@ -13,7 +13,8 @@ export default function Agents() {
 
   // Fetch agents from API
   const { data: agentsData, isLoading, isError, error } = useAgents();
-  const agents = agentsData?.data || [];
+  // API returns array directly, not wrapped in data property
+  const agents = Array.isArray(agentsData) ? agentsData : [];
 
   // Filter agents based on search and filters
   const filteredAgents = agents.filter(agent => {
@@ -495,7 +496,7 @@ export default function Agents() {
                 </fieldset>
               </form>
 
-              <div className="city-dropdown">
+              <div className="city-dropdown" style={{ width: '40%' }}>
                 <DropdownSelect
                   options={[
                     "All location",
@@ -526,9 +527,92 @@ export default function Agents() {
           
           {sortedAgents.length === 0 ? (
             <div className="col-12 text-center py-5">
-              <div className="alert alert-info">
-                <h4>No Agents Found</h4>
-                <p>No agents match your current search criteria. Try adjusting your filters.</p>
+              <div style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '20px',
+                padding: '60px 40px',
+                margin: '40px 0',
+                boxShadow: '0 10px 40px rgba(102, 126, 234, 0.25)',
+                color: 'white'
+              }}>
+                <div style={{ fontSize: '64px', marginBottom: '20px' }}>🔍</div>
+                <h3 style={{ 
+                  color: 'white', 
+                  fontSize: '28px', 
+                  fontWeight: '700', 
+                  marginBottom: '15px' 
+                }}>
+                  No Agents Found
+                </h3>
+                <p style={{ 
+                  color: 'rgba(255, 255, 255, 0.9)', 
+                  fontSize: '16px', 
+                  marginBottom: '30px',
+                  maxWidth: '600px',
+                  margin: '0 auto 30px'
+                }}>
+                  We couldn't find any agents matching your current search criteria. Try adjusting your filters or search terms.
+                </p>
+                <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setLocationFilter('All location');
+                      setSortBy('Sort by (Default)');
+                    }}
+                    style={{
+                      background: 'white',
+                      color: '#667eea',
+                      border: 'none',
+                      padding: '12px 30px',
+                      borderRadius: '25px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                    }}
+                  >
+                    Reset Filters
+                  </button>
+                  {agents.length > 0 && (
+                    <Link 
+                      href="/agents"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '2px solid white',
+                        padding: '12px 30px',
+                        borderRadius: '25px',
+                        fontWeight: '600',
+                        textDecoration: 'none',
+                        fontSize: '14px',
+                        display: 'inline-block',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'white';
+                        e.target.style.color = '#667eea';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                        e.target.style.color = 'white';
+                        e.target.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      View All {agents.length} Agents
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           ) : (

@@ -114,25 +114,37 @@ export const authAPI = {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
     
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        store.dispatch(setCredentials({
-          user: user,
-          token: token
-        }));
-        return true;
-      } catch (error) {
-        // Clear corrupted data
+    // If no token or user data, ensure we're logged out
+    if (!token || !userStr) {
+      store.dispatch(logout());
+      return false;
+    }
+    
+    try {
+      const user = JSON.parse(userStr);
+      
+      // Validate that we have both token and user data
+      if (!token || !user || !user._id) {
+        // Invalid data - clear it
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         store.dispatch(logout());
         return false;
       }
+      
+      // Valid data - set credentials
+      store.dispatch(setCredentials({
+        user: user,
+        token: token
+      }));
+      return true;
+    } catch (error) {
+      // Clear corrupted data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      store.dispatch(logout());
+      return false;
     }
-    
-    // No token or user data - not authenticated
-    return false;
   },
 
   // OTP APIs

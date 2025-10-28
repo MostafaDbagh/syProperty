@@ -1,4 +1,5 @@
 const Message = require('../models/message.model.js');
+const User = require('../models/user.model.js');
 const Listing = require('../models/listing.model.js');
 const mongoose = require('mongoose');
 const errorHandler = require('../utils/error.js');
@@ -6,9 +7,20 @@ const errorHandler = require('../utils/error.js');
 // Get messages for a specific agent with filtering and pagination
 const getMessagesByAgent = async (req, res, next) => {
   try {
-    const agentId = req.params.agentId;
+    let agentId = req.params.agentId;
     if (!agentId) {
       return next(errorHandler(400, 'Agent ID is required'));
+    }
+
+    // Check if this is a user ID that might have an agentId reference
+    const user = await User.findById(agentId).select('agentId role');
+    console.log('🔍 getMessagesByAgent - User lookup:', { userId: agentId, found: !!user, hasAgentId: !!(user && user.agentId) });
+    
+    if (user && user.role === 'agent' && user.agentId) {
+      // Use the agent's ID from the agents collection
+      const oldAgentId = agentId;
+      agentId = user.agentId.toString();
+      console.log('✅ Using agentId from user:', { oldId: oldAgentId, newId: agentId });
     }
 
     // Get pagination and filter parameters
@@ -22,9 +34,16 @@ const getMessagesByAgent = async (req, res, next) => {
     const propertyId = req.query.propertyId;
     const search = req.query.search; // Search in sender name, email, subject, or message
 
-    // Build filter object
+    // Build filter object - check both user and agent IDs
+    const isObjectId = mongoose.Types.ObjectId.isValid(agentId);
+    const agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
+    const userAgentIdObj = user && user._id ? new mongoose.Types.ObjectId(user._id.toString()) : agentIdObj;
+    
     let filter = { 
-      agentId: agentId
+      $or: [
+        { agentId: agentIdObj },
+        { agentId: userAgentIdObj }
+      ]
     };
 
     // Add status filter
@@ -63,9 +82,9 @@ const getMessagesByAgent = async (req, res, next) => {
     // Get total count for pagination
     const total = await Message.countDocuments(filter);
 
-    // Get statistics
+    // Get statistics - use same filter logic
     const stats = await Message.aggregate([
-      { $match: { agentId: new mongoose.Types.ObjectId(agentId) } },
+      { $match: filter },
       {
         $group: {
           _id: '$status',
@@ -78,7 +97,7 @@ const getMessagesByAgent = async (req, res, next) => {
     const agentProperties = await Listing.find({ 
       $or: [
         { agent: agentId },
-        { agentId: agentId }
+        { agentId: agentIdObj }
       ],
       isDeleted: { $ne: true }
     }).select('_id propertyKeyword propertyPrice status propertyType').limit(50);
@@ -243,18 +262,60 @@ const createMessage = async (req, res, next) => {
       return next(errorHandler(400, 'All required fields must be provided'));
     }
 
-    // Handle agentId - if it's an email, find the user by email
+    // Handle agentId - could be email, user ID, or name
     let finalAgentId = agentId;
     
-    // Check if agentId is an email (contains @)
-    if (agentId.includes('@')) {
-      const User = require('../models/user.model');
+    // Check if it's a valid MongoDB ObjectId
+    if (mongoose.Types.ObjectId.isValid(agentId)) {
+      // It's already a valid ObjectId, use it
+      finalAgentId = agentId;
+    } else if (agentId.includes('@')) {
+      // Check if agentId is an email
       const user = await User.findOne({ email: agentId });
       if (!user) {
         return next(errorHandler(404, 'Agent not found with the provided email'));
       }
       finalAgentId = user._id;
+    } else {
+      // Try to find agent from the property listing
+      // First, try to find the property to get its agentId
+      if (propertyId && mongoose.Types.ObjectId.isValid(propertyId)) {
+        const listing = await Listing.findById(propertyId);
+        if (listing && listing.agentId) {
+          finalAgentId = listing.agentId;
+          console.log('Found agentId from listing:', finalAgentId);
+        } else if (listing && listing.agent) {
+          // If listing has agent name, try to find user by name
+          const user = await User.findOne({ 
+            $or: [
+              { username: listing.agent },
+              { email: listing.agent }
+            ]
+          });
+          if (user) {
+            finalAgentId = user._id;
+          }
+        }
+      }
+      
+      // If still not found, try to find by name directly
+      if (!finalAgentId || finalAgentId === agentId) {
+        const user = await User.findOne({ 
+          $or: [
+            { username: agentId },
+            { email: agentId }
+          ]
+        });
+        
+        if (user) {
+          finalAgentId = user._id;
+        } else {
+          return next(errorHandler(404, `Agent not found. Please provide a valid agent email or ID. Received: ${agentId}`));
+        }
+      }
     }
+    
+    console.log('createMessage - Agent lookup:', { originalAgentId: agentId, finalAgentId });
 
     // Create new message
     const newMessage = new Message({

@@ -12,7 +12,8 @@ export default function AgentDetails({ agentId }) {
   
   // Fetch agent data from API
   const { data: agentData, isLoading, isError, error } = useAgent(agentId);
-  const agent = agentData?.data;
+  // API returns agent object directly, not wrapped in data property
+  const agent = agentData;
 
   if (isLoading) {
     return (

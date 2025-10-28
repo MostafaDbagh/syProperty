@@ -99,9 +99,11 @@ const messageBodies = [
 // MongoDB connection
 const connectDB = async () => {
   try {
+    // Use Heroku MongoDB URI (same as production)
     const mongoURI = process.env.MONGO_URI || 'mongodb+srv://safi:35064612@cluster0-ags3s.mongodb.net/SyProperties?retryWrites=true&w=majority';
+    console.log('🔗 Connecting to MongoDB...');
     await mongoose.connect(mongoURI);
-    console.log('✅ MongoDB Connected');
+    console.log('✅ MongoDB Connected to Production Database');
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error);
     process.exit(1);
@@ -262,14 +264,18 @@ const addComprehensiveData = async () => {
     for (let i = 0; i < totalListings; i++) {
       const city = syrianCities[i % syrianCities.length];
       const agentIndex = i % agents.length;
+      const selectedAgent = agents[agentIndex];
       const agent = {
         first: agentNames[agentIndex].first,
         last: agentNames[agentIndex].last,
-        email: agents[agentIndex].email,
-        phone: agents[agentIndex].phone
+        email: selectedAgent.email,
+        phone: selectedAgent.phone
       };
       
       const property = generateRandomProperty(city, agent);
+      // Link the listing to the agent via agentId
+      property.agentId = selectedAgent._id;
+      
       const listing = new Listing(property);
       await listing.save();
       listings.push(listing);
