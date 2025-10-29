@@ -10,8 +10,6 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node seed-mock-data.js",
-    "clear": "node clear-mock-data.js",
     "heroku-postbuild": "echo 'Backend build complete'",
     "deploy": "npm run start"
   },

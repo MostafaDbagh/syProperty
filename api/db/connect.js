@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
-const mongoURI = process.env.MONGO_URI || 'mongodb+srv://safi:35064612@cluster0-ags3s.mongodb.net/SyProperties?retryWrites=true&w=majority';
+// Get MongoDB URI from environment variables
+const mongoURI = process.env.MONGO_URI;
+
+if (!mongoURI) {
+  logger.error('MONGO_URI is not defined in environment variables!');
+  logger.error('Please create a .env file in the api/ directory with MONGO_URI set.');
+  process.exit(1);
+}
 
 // Connection options (removed deprecated useNewUrlParser and useUnifiedTopology)
 const connectOptions = {

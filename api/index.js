@@ -1,10 +1,10 @@
+// Load environment variables FIRST before requiring any other modules
+require('dotenv').config();
+
 const express = require('express');
-const dotenv = require('dotenv');
 const db = require('./db/connect');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-
-dotenv.config();
 
 const app = express();
 
