@@ -5,6 +5,7 @@ const Favorite = require('../models/favorite.model');
 const Review = require('../models/review.model');
 const Message = require('../models/message.model');
 const Point = require('../models/point.model');
+const logger = require('../utils/logger');
 
 /**
  * Get comprehensive dashboard statistics for an agent/user
@@ -15,7 +16,7 @@ const getDashboardStats = async (req, res) => {
   try {
     const userId = req.user.id;
     
-    console.log('Dashboard Stats Request:', {
+    logger.api('Dashboard Stats Request:', {
       userId,
       timestamp: new Date().toISOString()
     });
@@ -222,7 +223,7 @@ const getDashboardStats = async (req, res) => {
       }
     };
 
-    console.log('Dashboard Stats Response:', {
+    logger.api('Dashboard Stats Response:', {
       userId,
       totalListings,
       pendingListings,
@@ -261,7 +262,7 @@ const getDashboardAnalytics = async (req, res) => {
     const userId = req.user.id;
     const { period = '30d' } = req.query; // 7d, 30d, 90d, 1y
 
-    console.log('Dashboard Analytics Request:', {
+    logger.api('Dashboard Analytics Request:', {
       userId,
       period,
       timestamp: new Date().toISOString()
@@ -499,7 +500,7 @@ const getDashboardAnalytics = async (req, res) => {
       }
     };
 
-    console.log('Dashboard Analytics Response:', {
+    logger.api('Dashboard Analytics Response:', {
       userId,
       period,
       dataPoints: analyticsData.summary.totalDataPoints,
@@ -532,7 +533,7 @@ const getDashboardNotifications = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    console.log('Dashboard Notifications Request:', {
+    logger.api('Dashboard Notifications Request:', {
       userId,
       timestamp: new Date().toISOString()
     });
@@ -676,7 +677,7 @@ const getDashboardNotifications = async (req, res) => {
       });
     }
 
-    console.log('Dashboard Notifications Response:', {
+    logger.api('Dashboard Notifications Response:', {
       userId,
       notificationCount: notifications.length,
       types: notifications.map(n => n.type)

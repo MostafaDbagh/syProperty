@@ -3,6 +3,7 @@ const User = require('../models/user.model.js');
 const Listing = require('../models/listing.model.js');
 const mongoose = require('mongoose');
 const errorHandler = require('../utils/error.js');
+const logger = require('../utils/logger');
 
 // Get messages for a specific agent with filtering and pagination
 const getMessagesByAgent = async (req, res, next) => {
@@ -14,13 +15,13 @@ const getMessagesByAgent = async (req, res, next) => {
 
     // Check if this is a user ID that might have an agentId reference
     const user = await User.findById(agentId).select('agentId role');
-    console.log('🔍 getMessagesByAgent - User lookup:', { userId: agentId, found: !!user, hasAgentId: !!(user && user.agentId) });
+    logger.debug('🔍 getMessagesByAgent - User lookup:', { userId: agentId, found: !!user, hasAgentId: !!(user && user.agentId) });
     
     if (user && user.role === 'agent' && user.agentId) {
       // Use the agent's ID from the agents collection
       const oldAgentId = agentId;
       agentId = user.agentId.toString();
-      console.log('✅ Using agentId from user:', { oldId: oldAgentId, newId: agentId });
+      logger.debug('✅ Using agentId from user:', { oldId: oldAgentId, newId: agentId });
     }
 
     // Get pagination and filter parameters
@@ -311,7 +312,7 @@ const createMessage = async (req, res, next) => {
         const listing = await Listing.findById(propertyId);
         if (listing && listing.agentId) {
           finalAgentId = listing.agentId;
-          console.log('Found agentId from listing:', finalAgentId);
+          logger.debug('Found agentId from listing:', finalAgentId);
         } else if (listing && listing.agent) {
           // If listing has agent name, try to find user by name
           const user = await User.findOne({ 
@@ -343,7 +344,7 @@ const createMessage = async (req, res, next) => {
       }
     }
     
-    console.log('createMessage - Agent lookup:', { originalAgentId: agentId, finalAgentId });
+    logger.debug('createMessage - Agent lookup:', { originalAgentId: agentId, finalAgentId });
 
     // Create new message
     const newMessage = new Message({

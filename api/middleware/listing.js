@@ -1,4 +1,5 @@
 const Listing = require('../models/listing.model');
+const logger = require('../utils/logger');
 
 const filterListings = async (req, res, next) => {
   try {
@@ -84,7 +85,7 @@ const filterListings = async (req, res, next) => {
     // Handle sorting
     let sortOptions = { createdAt: -1 }; // Default: newest first
     if (sort) {
-      console.log('Sort parameter received:', sort);
+      logger.debug('Sort parameter received:', sort);
       switch (sort.toLowerCase()) {
         case 'newest':
           sortOptions = { createdAt: -1 };
@@ -101,7 +102,7 @@ const filterListings = async (req, res, next) => {
         default:
           sortOptions = { createdAt: -1 };
       }
-      console.log('Sort options applied:', sortOptions);
+      logger.debug('Sort options applied:', sortOptions);
     }
 
     // Store filters and sort options in request object for the controller to use

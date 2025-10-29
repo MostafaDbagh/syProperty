@@ -15,6 +15,7 @@ const Listing = require('../models/listing.model.js');
 const { errorHandler } = require('../utils/error.js');
 const cloudinary = require('../utils/cloudinary.js');
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
 
 
@@ -32,9 +33,9 @@ const createListing = async (req, res, next) => {
       agentId: req.body.agentId || req.body.userId || req.user?.id || null
     };
 
-    console.log('createListing - agentId set to:', listingData.agentId);
-    console.log('createListing - req.user:', req.user);
-    console.log('createListing - req.body.agentId:', req.body.agentId);
+    logger.debug('createListing - agentId set to:', listingData.agentId);
+    logger.debug('createListing - req.user:', req.user);
+    logger.debug('createListing - req.body.agentId:', req.body.agentId);
 
     // Holiday Homes Requirements Enforcement
     if (listingData.propertyType === 'Holiday Home') {
@@ -87,7 +88,7 @@ const deleteListing = async (req, res, next) => {
       (listingAgentId && userId === listingAgentId); // New system
 
     if (!isAuthorized) {
-      console.log('Authorization failed for delete:', {
+      logger.warn('Authorization failed for delete:', {
         userId,
         listingUserRef,
         listingAgentId,
@@ -135,7 +136,7 @@ const updateListing = async (req, res, next) => {
       (listingAgentId && userId === listingAgentId); // New system
 
     if (!isAuthorized) {
-      console.log('Authorization failed:', {
+      logger.warn('Authorization failed:', {
         userId,
         listingUserRef,
         listingAgentId,
@@ -245,7 +246,7 @@ const getFilteredListings = async (req, res) => {
     const total = await Listing.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
 
-    console.log('API Debug:', {
+    logger.debug('API Debug:', {
       filter,
       total,
       page,
@@ -256,7 +257,7 @@ const getFilteredListings = async (req, res) => {
 
     // Debug first listing structure
     if (listings.length > 0) {
-      console.log('First listing structure:', {
+      logger.debug('First listing structure:', {
         _id: listings[0]._id,
         propertyTitle: listings[0].propertyTitle,
         images: listings[0].images,
@@ -306,7 +307,7 @@ const getListingsByAgent = async (req, res, next) => {
     try {
       agentIdObj = ObjectId.isValid(agentId) ? new ObjectId(agentId) : agentId;
     } catch (error) {
-      console.error('Invalid agentId:', agentId, error);
+      logger.error('Invalid agentId:', agentId, error);
       return next(errorHandler(400, 'Invalid agent ID'));
     }
 
@@ -330,14 +331,14 @@ const getListingsByAgent = async (req, res, next) => {
       
       // Check if this is in our mapping
       if (orphanedToNewMapping[oldAgentIdStr]) {
-        console.log(`Mapping old agent ID ${oldAgentIdStr} to new ID ${orphanedToNewMapping[oldAgentIdStr]}`);
+        logger.debug(`Mapping old agent ID ${oldAgentIdStr} to new ID ${orphanedToNewMapping[oldAgentIdStr]}`);
         agentIdObj = new ObjectId(orphanedToNewMapping[oldAgentIdStr]);
       } else {
         // Check if user exists
         const userExists = await User.findById(agentIdObj);
         
         if (!userExists) {
-          console.log(`Agent ID ${oldAgentIdStr} not found as user`);
+          logger.debug(`Agent ID ${oldAgentIdStr} not found as user`);
           // Try to find by checking all listings with this old agentId
           const oldAgentListings = await Listing.find({ agentId: agentIdObj }).limit(1).toArray();
           
@@ -353,14 +354,14 @@ const getListingsByAgent = async (req, res, next) => {
             });
             
             if (newUser) {
-              console.log(`Redirecting to new user: ${newUser.username} (${newUser._id})`);
+              logger.debug(`Redirecting to new user: ${newUser.username} (${newUser._id})`);
               agentIdObj = newUser._id;
             }
           }
         }
       }
     } catch (err) {
-      console.log('Error checking for orphaned agent:', err);
+      logger.error('Error checking for orphaned agent:', err);
     }
 
     // Build filter object - only search by agentId (ObjectId field)
@@ -375,8 +376,8 @@ const getListingsByAgent = async (req, res, next) => {
       filter.status = status;
     }
 
-    console.log('getListingsByAgent - Filter:', filter);
-    console.log('getListingsByAgent - agentId:', agentId);
+    logger.debug('getListingsByAgent - Filter:', filter);
+    logger.debug('getListingsByAgent - agentId:', agentId);
 
     // Get listings with pagination
     const listings = await Listing.find(filter)
@@ -389,7 +390,7 @@ const getListingsByAgent = async (req, res, next) => {
     const total = await Listing.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
 
-    console.log('getListingsByAgent - Results:', {
+    logger.debug('getListingsByAgent - Results:', {
       total,
       found: listings.length,
       agentId

@@ -1,5 +1,6 @@
 const Review = require('../models/review.model');
 const Listing = require('../models/listing.model');
+const logger = require('../utils/logger');
 
 const createReview = async (req, res) => {
   try {
@@ -141,7 +142,7 @@ const getReviewsByProperty = async (req, res) => {
         hiddenFromListing: { $ne: true }
       }).sort({ createdAt: -1 });
 
-      console.log(`Found ${reviews.length} reviews for property ${propertyId}`);
+      logger.debug(`Found ${reviews.length} reviews for property ${propertyId}`);
   
       res.status(200).json({
         success: true,
