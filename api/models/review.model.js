@@ -3,11 +3,17 @@ const mongoose = require('mongoose');
 const reviewSchema = new mongoose.Schema(
   {
     propertyId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Listing',
         required: true,
         index: true,
       },
+    agentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+      index: true,
+    },
     userId: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', 

@@ -27,6 +27,8 @@ export { default as HeartOutlineIcon } from './HeartOutlineIcon';
 export { default as CompareIcon } from './CompareIcon';
 export { default as PrintIcon } from './PrintIcon';
 export { default as ShareIcon } from './ShareIcon';
+export { default as CopyIcon } from './CopyIcon';
+export { default as CheckIcon } from './CheckCircleIcon';
 
 // Usage: import { UserIcon, EmailIcon, DashboardIcon, HeartOutlineIcon, EyeIcon, EyeOffIcon } from '@/components/icons';
 

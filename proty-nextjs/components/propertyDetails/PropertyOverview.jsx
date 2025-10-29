@@ -4,13 +4,25 @@ import { getStatusBadge } from "@/utlis/propertyHelpers";
 import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
 import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
-import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon } from "@/components/icons";
+import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon, CopyIcon, CheckIcon } from "@/components/icons";
 
 export default function PropertyOverview({ property }) {
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
   const [isAskQuestionModalOpen, setIsAskQuestionModalOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
   
   const statusBadge = getStatusBadge(property?.status);
+  
+  // Handle copy property ID
+  const handleCopyPropertyId = async (propertyId) => {
+    try {
+      await navigator.clipboard.writeText(propertyId);
+      setCopiedId(propertyId);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy property ID:', error);
+    }
+  };
   
   // Get CSS class for badge based on status
   const getBadgeClass = () => {
@@ -87,7 +99,32 @@ export default function PropertyOverview({ property }) {
             </div>
             <div className="content">
               <div className="text-4 text-color-default">ID:</div>
-              <div className="text-1 text-color-heading">{property?.propertyId || 'N/A'}</div>
+              <div className="text-1 text-color-heading" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>{property?.propertyId || 'N/A'}</span>
+                {property?.propertyId && (
+                  <button
+                    onClick={() => handleCopyPropertyId(property.propertyId)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: copiedId === property.propertyId ? '#28a745' : '#6c757d',
+                      transition: 'color 0.2s'
+                    }}
+                    title={copiedId === property.propertyId ? 'Copied!' : 'Copy Property ID'}
+                    aria-label="Copy property ID to clipboard"
+                  >
+                    {copiedId === property.propertyId ? (
+                      <CheckIcon />
+                    ) : (
+                      <CopyIcon width={16} height={16} stroke={copiedId === property.propertyId ? '#28a745' : '#6c757d'} />
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="box-icon">

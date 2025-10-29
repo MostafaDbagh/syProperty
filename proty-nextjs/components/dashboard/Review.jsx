@@ -16,6 +16,10 @@ export default function Review() {
     message: '',
     type: 'success'
   });
+  
+  // Track which reviews have been successfully hidden
+  const [hiddenFromDashboard, setHiddenFromDashboard] = useState(new Set());
+  const [hiddenFromListing, setHiddenFromListing] = useState(new Set());
 
   const queryClient = useQueryClient();
   const hideFromDashboardMutation = useHideReviewFromDashboard();
@@ -46,6 +50,35 @@ export default function Review() {
   const reviews = reviewsData?.data || [];
   const stats = reviewsData?.stats || { totalReviews: 0, averageRating: 0, totalProperties: 0 };
   const pagination = reviewsData?.pagination || {};
+
+  // Initialize hidden sets from review data (for reviews already hidden)
+  useEffect(() => {
+    if (reviews.length > 0) {
+      const dashboardHidden = new Set();
+      const listingHidden = new Set();
+      
+      reviews.forEach(review => {
+        if (review.hiddenFromDashboard) {
+          dashboardHidden.add(review._id);
+        }
+        if (review.hiddenFromListing) {
+          listingHidden.add(review._id);
+        }
+      });
+      
+      setHiddenFromDashboard(prev => {
+        const merged = new Set(prev);
+        dashboardHidden.forEach(id => merged.add(id));
+        return merged;
+      });
+      
+      setHiddenFromListing(prev => {
+        const merged = new Set(prev);
+        listingHidden.forEach(id => merged.add(id));
+        return merged;
+      });
+    }
+  }, [reviews]);
 
   // Format date helper
   const formatDate = (dateString) => {
@@ -124,6 +157,8 @@ export default function Review() {
   const handleHideFromDashboard = async (reviewId) => {
     try {
       await hideFromDashboardMutation.mutateAsync({ reviewId, hidden: true });
+      // Mark this review as hidden from dashboard
+      setHiddenFromDashboard(prev => new Set(prev).add(reviewId));
       showToast('Review hidden from dashboard');
     } catch (error) {
       showToast('Failed to hide review', 'error');
@@ -134,6 +169,8 @@ export default function Review() {
   const handleHideFromListing = async (reviewId) => {
     try {
       await hideFromListingMutation.mutateAsync({ reviewId, hidden: true });
+      // Mark this review as hidden from listing
+      setHiddenFromListing(prev => new Set(prev).add(reviewId));
       showToast('Review hidden from listing');
     } catch (error) {
       showToast('Failed to hide review', 'error');
@@ -283,41 +320,47 @@ export default function Review() {
                     <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
                       <button
                         onClick={() => handleHideFromDashboard(review._id)}
-                        disabled={hideFromDashboardMutation.isPending}
+                        disabled={hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending}
                         style={{
-                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          background: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard) 
+                            ? '#9ca3af' 
+                            : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                           border: 'none',
                           color: 'white',
                           borderRadius: '6px',
                           padding: '6px 12px',
                           fontSize: '12px',
                           fontWeight: '500',
-                          cursor: hideFromDashboardMutation.isPending ? 'not-allowed' : 'pointer',
-                          opacity: hideFromDashboardMutation.isPending ? 0.6 : 1,
+                          cursor: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending) ? 'not-allowed' : 'pointer',
+                          opacity: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending) ? 0.6 : 1,
                           transition: 'all 0.2s ease'
                         }}
-                        title="Hide from Dashboard"
+                        title={(hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard) ? 'Already hidden' : 'Hide from Dashboard'}
                       >
-                        {hideFromDashboardMutation.isPending ? 'Hiding...' : 'Hide from Dashboard'}
+                        {hideFromDashboardMutation.isPending && !hiddenFromDashboard.has(review._id) && !review.hiddenFromDashboard ? 'Hiding...' : 
+                         (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard) ? 'Hidden' : 'Hide from Dashboard'}
                       </button>
                       <button
                         onClick={() => handleHideFromListing(review._id)}
-                        disabled={hideFromListingMutation.isPending}
+                        disabled={hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending}
                         style={{
-                          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                          background: (hiddenFromListing.has(review._id) || review.hiddenFromListing) 
+                            ? '#9ca3af' 
+                            : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                           border: 'none',
                           color: 'white',
                           borderRadius: '6px',
                           padding: '6px 12px',
                           fontSize: '12px',
                           fontWeight: '500',
-                          cursor: hideFromListingMutation.isPending ? 'not-allowed' : 'pointer',
-                          opacity: hideFromListingMutation.isPending ? 0.6 : 1,
+                          cursor: (hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending) ? 'not-allowed' : 'pointer',
+                          opacity: (hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending) ? 0.6 : 1,
                           transition: 'all 0.2s ease'
                         }}
-                        title="Hide from Listing"
+                        title={(hiddenFromListing.has(review._id) || review.hiddenFromListing) ? 'Already hidden' : 'Hide from Listing'}
                       >
-                        {hideFromListingMutation.isPending ? 'Hiding...' : 'Hide from Listing'}
+                        {hideFromListingMutation.isPending && !hiddenFromListing.has(review._id) && !review.hiddenFromListing ? 'Hiding...' : 
+                         (hiddenFromListing.has(review._id) || review.hiddenFromListing) ? 'Hidden' : 'Hide from Listing'}
                       </button>
                     </div>
                   </li>

@@ -5,11 +5,19 @@ import Image from "next/image";
 import DropdownSelect from "../common/DropdownSelect";
 import { useAgents } from "@/apis/hooks";
 import LocationLoader from "../common/LocationLoader";
+import { CopyIcon, CheckIcon } from "@/components/icons";
+import Toast from "../common/Toast";
 
 export default function Agents() {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("All location");
   const [sortBy, setSortBy] = useState("Sort by (Default)");
+  const [copiedEmail, setCopiedEmail] = useState(null);
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
 
   // Fetch agents from API
   const { data: agentsData, isLoading, isError, error } = useAgents();
@@ -39,6 +47,26 @@ export default function Agents() {
         return 0;
     }
   });
+
+  // Show toast notification
+  const showToast = (message, type = 'success') => {
+    setToast({ isVisible: true, message, type });
+    setTimeout(() => {
+      setToast({ isVisible: false, message: '', type: 'success' });
+    }, 3000);
+  };
+
+  // Handle copy email
+  const handleCopyEmail = async (email, agentId) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopiedEmail(agentId);
+      showToast('Email copied to clipboard');
+      setTimeout(() => setCopiedEmail(null), 2000);
+    } catch (error) {
+      showToast('Failed to copy email', 'error');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -122,6 +150,10 @@ export default function Agents() {
           justify-content: space-between;
         }
         
+        .author {
+          text-align: center;
+        }
+        
         .author h5.name {
           font-size: 16px;
           font-weight: 600;
@@ -130,14 +162,24 @@ export default function Agents() {
           line-height: 1.3;
         }
         
-        .author h5.name a {
-          color: inherit;
-          text-decoration: none;
-          transition: color 0.3s ease;
+        .author h5.name a,
+        .author h5.name .agent-name-link {
+          color: #333 !important;
+          text-decoration: none !important;
         }
         
-        .author h5.name a:hover {
-          color: #007bff;
+        .author h5.name a:hover,
+        .author h5.name a:focus,
+        .author h5.name a:active,
+        .author h5.name .agent-name-link:hover,
+        .author h5.name .agent-name-link:focus,
+        .author h5.name .agent-name-link:active {
+          color: #333 !important;
+          text-decoration: none !important;
+        }
+        
+        .author h5.name a * {
+          color: #333 !important;
         }
         
         .author .text-2 {
@@ -156,6 +198,10 @@ export default function Agents() {
         .author .text-3 i {
           margin-right: 5px;
           color: #007bff;
+        }
+        
+        .author .cities-tags {
+          justify-content: center;
         }
         
         .cities-tags {
@@ -633,14 +679,36 @@ export default function Agents() {
                     </div>
                     <div className="content">
                       <div className="author">
-                        <h5 className="name lh-30">
-                          <Link href={`/agents-details/${agent._id}`}>
+                        <h5 className="name lh-30" style={{ fontSize: '20px', fontWeight: '700', color: '#333' }}>
+                          <Link 
+                            href={`/agents-details/${agent._id}`}
+                            style={{ 
+                              color: '#333',
+                              textDecoration: 'none'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.setProperty('color', '#333', 'important');
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.setProperty('color', '#333', 'important');
+                            }}
+                            className="agent-name-link"
+                          >
                             {agent.fullName || "Agent Name"}
                           </Link>
                         </h5>
-                        <p className="text-2 lh-18">{agent.position || agent.job || "Real Estate Agent"}</p>
+                        <p
+                          className="text-2 lh-18"
+                          style={{
+                            fontSize: '16px',
+                            color: '#667eea',
+                            fontWeight: '600'
+                          }}
+                        >
+                          {agent.position || agent.job || 'Real Estate Agent'}
+                        </p>
                         {agent.companyName && (
-                          <p className="text-3 lh-18">
+                          <p className="text-3 lh-18" style={{ fontSize: '16px' }}>
                             {agent.companyName}
                           </p>
                         )}
@@ -655,52 +723,182 @@ export default function Agents() {
                         )}
                       </div>
                       {(agent.phone || agent.email || agent.facebook || agent.twitter || agent.linkedin) && (
-                        <div className="all-icons-section">
-                          <h6>Contact & Follow</h6>
-                          <div className="all-icons">
-                            {agent.phone && (
-                              <a href={`tel:${agent.phone}`} className="btn-icon" title="Call">
-                                <i className="icon-phone-3" />
-                                <span className="phone-tooltip">{agent.phone}</span>
-                              </a>
-                            )}
+                        <div className="all-icons-section" style={{
+                          marginTop: '12px',
+                          paddingTop: '12px',
+                          borderTop: '1px solid #f0f0f0'
+                        }}>
+                          <h6 style={{
+                            fontSize: '13px',
+                            fontWeight: '700',
+                            color: '#333',
+                            marginBottom: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}>Contact & Follow</h6>
+                          
+                          {/* Email and Phone Icons */}
+                          <div style={{
+                            display: 'flex',
+                            gap: '8px',
+                            marginBottom: '10px',
+                            flexWrap: 'wrap'
+                          }}>
+                            {/* Email Icon */}
                             {agent.email && (
-                              <a href={`mailto:${agent.email}`} className="btn-icon" title="Email">
-                                <i className="icon-letter" />
-                              </a>
-                            )}
-                            {agent.facebook && (
-                              <a 
-                                href={agent.facebook} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="social-icon"
-                                title="Facebook"
+                              <div 
+                                style={{ position: 'relative', display: 'inline-block' }}
+                                onMouseEnter={(e) => {
+                                  const tooltip = e.currentTarget.querySelector('.email-tooltip');
+                                  if (tooltip) tooltip.style.opacity = '1';
+                                }}
+                                onMouseLeave={(e) => {
+                                  const tooltip = e.currentTarget.querySelector('.email-tooltip');
+                                  if (tooltip) tooltip.style.opacity = '0';
+                                }}
                               >
-                                <i className="icon-fb" />
-                              </a>
+                                <button
+                                  onClick={() => handleCopyEmail(agent.email, agent._id)}
+                                  style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '50%',
+                                    background: '#e5e7eb',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const button = e.currentTarget;
+                                    button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                                    button.style.transform = 'scale(1.1)';
+                                    const icon = button.querySelector('i');
+                                    if (icon) icon.style.color = 'white';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const button = e.currentTarget;
+                                    button.style.background = '#e5e7eb';
+                                    button.style.transform = 'scale(1)';
+                                    const icon = button.querySelector('i');
+                                    if (icon) icon.style.color = '#374151';
+                                  }}
+                                  aria-label="Copy email to clipboard"
+                                >
+                                  {copiedEmail === agent._id ? (
+                                    <CheckIcon style={{ fontSize: '18px', color: '#28a745' }} />
+                                  ) : (
+                                    <i className="icon-letter" style={{ color: '#374151', fontSize: '16px' }}></i>
+                                  )}
+                                </button>
+                                {/* Tooltip */}
+                                <div className="email-tooltip" style={{
+                                  position: 'absolute',
+                                  bottom: '100%',
+                                  left: '50%',
+                                  transform: 'translateX(-50%)',
+                                  marginBottom: '8px',
+                                  padding: '6px 10px',
+                                  backgroundColor: '#333',
+                                  color: 'white',
+                                  borderRadius: '6px',
+                                  fontSize: '12px',
+                                  whiteSpace: 'nowrap',
+                                  opacity: 0,
+                                  pointerEvents: 'none',
+                                  transition: 'opacity 0.2s ease',
+                                  zIndex: 1000
+                                }}>
+                                  {copiedEmail === agent._id ? 'Copied!' : agent.email}
+                                  <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    border: '5px solid transparent',
+                                    borderTopColor: '#333'
+                                  }}></div>
+                                </div>
+                              </div>
                             )}
-                            {agent.twitter && (
-                              <a 
-                                href={agent.twitter} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="social-icon"
-                                title="Twitter"
+                            
+                            {/* Phone Icon */}
+                            {agent.phone && (
+                              <div 
+                                style={{ position: 'relative', display: 'inline-block' }}
+                                onMouseEnter={(e) => {
+                                  const tooltip = e.currentTarget.querySelector('.phone-tooltip');
+                                  if (tooltip) tooltip.style.opacity = '1';
+                                }}
+                                onMouseLeave={(e) => {
+                                  const tooltip = e.currentTarget.querySelector('.phone-tooltip');
+                                  if (tooltip) tooltip.style.opacity = '0';
+                                }}
                               >
-                                <i className="icon-X" />
-                              </a>
-                            )}
-                            {agent.linkedin && (
-                              <a 
-                                href={agent.linkedin} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="social-icon"
-                                title="LinkedIn"
-                              >
-                                <i className="icon-linked" />
-                              </a>
+                                <a
+                                  href={`tel:${agent.phone}`}
+                                  style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '50%',
+                                    background: '#e5e7eb',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.2s ease',
+                                    textDecoration: 'none'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const link = e.currentTarget;
+                                    link.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                                    link.style.transform = 'scale(1.1)';
+                                    const icon = link.querySelector('i');
+                                    if (icon) icon.style.color = 'white';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const link = e.currentTarget;
+                                    link.style.background = '#e5e7eb';
+                                    link.style.transform = 'scale(1)';
+                                    const icon = link.querySelector('i');
+                                    if (icon) icon.style.color = '#374151';
+                                  }}
+                                  aria-label={`Call ${agent.phone}`}
+                                >
+                                  <i className="icon-phone-3" style={{ color: '#374151', fontSize: '16px' }}></i>
+                                </a>
+                                {/* Tooltip */}
+                                <div className="phone-tooltip" style={{
+                                  position: 'absolute',
+                                  bottom: '100%',
+                                  left: '50%',
+                                  transform: 'translateX(-50%)',
+                                  marginBottom: '8px',
+                                  padding: '6px 10px',
+                                  backgroundColor: '#333',
+                                  color: 'white',
+                                  borderRadius: '6px',
+                                  fontSize: '12px',
+                                  whiteSpace: 'nowrap',
+                                  opacity: 0,
+                                  pointerEvents: 'none',
+                                  transition: 'opacity 0.2s ease',
+                                  zIndex: 1000
+                                }}>
+                                  {agent.phone}
+                                  <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    border: '5px solid transparent',
+                                    borderTopColor: '#333'
+                                  }}></div>
+                                </div>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -737,6 +935,15 @@ export default function Agents() {
         </div>
       </div>
     </section>
+    
+    {/* Toast */}
+    {toast.isVisible && (
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ isVisible: false, message: '', type: 'success' })}
+      />
+    )}
     </>
   );
 }

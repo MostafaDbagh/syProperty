@@ -40,7 +40,8 @@ export const agentAPI = {
           'Cache-Control': 'no-cache'
         }
       });
-      return response.data;
+      // Return just the data array or the full response if data doesn't exist
+      return response.data.data || response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }

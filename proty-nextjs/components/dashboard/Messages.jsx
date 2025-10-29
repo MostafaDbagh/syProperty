@@ -6,6 +6,7 @@ import DropdownSelect from "../common/DropdownSelect";
 import LocationLoader from "../common/LocationLoader";
 import { useMessagesByAgent, useMessageMutations } from "@/apis/hooks";
 import Toast from "../common/Toast";
+import { CopyIcon, CheckIcon } from "@/components/icons";
 
 export default function Messages() {
   const [user, setUser] = useState(null);
@@ -21,6 +22,8 @@ export default function Messages() {
     message: '',
     type: 'success'
   });
+
+  const [copiedId, setCopiedId] = useState(null);
 
   const [replyModal, setReplyModal] = useState({
     isOpen: false,
@@ -167,6 +170,18 @@ export default function Messages() {
   // Handle delete confirmation
   const handleDeleteClick = (message) => {
     setDeleteModal({ isOpen: true, message });
+  };
+
+  // Handle copy property ID (track copied row by messageId so only that row shows as copied)
+  const handleCopyPropertyId = async (propertyId, messageId) => {
+    try {
+      await navigator.clipboard.writeText(propertyId);
+      setCopiedId(messageId);
+      showToast('Property ID copied to clipboard');
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      showToast('Failed to copy property ID', 'error');
+    }
   };
 
   // Format date helper
@@ -491,14 +506,15 @@ export default function Messages() {
                 <p className="text-muted">You don't have any messages matching your current filters.</p>
               </div>
             ) : (
-              <div className="table-responsive">
-                <table className="table table-hover mb-0">
+              <div className="table-responsive" style={{ overflowX: 'auto', maxWidth: '100%' }}>
+                <table className="table table-hover mb-0" style={{ minWidth: '1200px' }}>
                   <thead className="table-light">
                     <tr>
                       <th>Status</th>
                       <th>Sender</th>
                       <th>Subject</th>
                       <th>Property</th>
+                      <th>Property ID</th>
                       <th>Type</th>
                       <th>Date</th>
                       <th>Actions</th>
@@ -544,6 +560,58 @@ export default function Messages() {
                             </div>
                           ) : (
                             <span className="text-muted">Property not found</span>
+                          )}
+                        </td>
+                        <td>
+                          {message.propertyId?.propertyId ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <small className="text-muted" style={{ fontFamily: 'monospace', fontSize: '11px' }}>
+                                {message.propertyId.propertyId}
+                              </small>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-link p-0"
+                                onClick={() => handleCopyPropertyId(message.propertyId.propertyId, message._id)}
+                                style={{
+                                  padding: '4px 6px',
+                                  color: copiedId === message._id ? '#28a745' : '#6c757d',
+                                  textDecoration: 'none',
+                                  fontSize: '14px',
+                                  lineHeight: '1',
+                                  minWidth: '24px',
+                                  minHeight: '24px',
+                                  background: 'none',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  transition: 'color 0.2s',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}
+                                title={copiedId === message._id ? 'Copied!' : 'Copy Property ID'}
+                                aria-label="Copy property ID to clipboard"
+                                onMouseEnter={(e) => {
+                                  if (copiedId !== message._id) {
+                                    e.target.style.color = '#007bff';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.color = copiedId === message._id ? '#28a745' : '#6c757d';
+                                }}
+                              >
+                                {copiedId === message._id ? (
+                                  <CheckIcon style={{ fontSize: '16px' }} />
+                                ) : (
+                                  <CopyIcon 
+                                    width={16} 
+                                    height={16} 
+                                    stroke={copiedId === message._id ? '#28a745' : '#6c757d'}
+                                  />
+                                )}
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-muted">N/A</span>
                           )}
                         </td>
                         <td>

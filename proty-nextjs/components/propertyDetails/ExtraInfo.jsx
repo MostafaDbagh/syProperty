@@ -1,9 +1,24 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { formatPrice, formatStatus } from "@/utlis/propertyHelpers";
+import { CopyIcon, CheckIcon } from "@/components/icons";
 
 export default function ExtraInfo({ property }) {
+  const [copiedId, setCopiedId] = useState(null);
+  
   // Get description or show default
   const description = property?.propertyDesc || 'No description available for this property.';
+  
+  // Handle copy property ID
+  const handleCopyPropertyId = async (propertyId) => {
+    try {
+      await navigator.clipboard.writeText(propertyId);
+      setCopiedId(propertyId);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy property ID:', error);
+    }
+  };
 
   return (
     <>
@@ -19,7 +34,32 @@ export default function ExtraInfo({ property }) {
         <ul>
           <li className="flex">
             <p className="fw-6">ID</p>
-            <p>#{property?.propertyId || 'N/A'}</p>
+            <p style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>#{property?.propertyId || 'N/A'}</span>
+              {property?.propertyId && (
+                <button
+                  onClick={() => handleCopyPropertyId(property.propertyId)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: copiedId === property.propertyId ? '#28a745' : '#6c757d',
+                    transition: 'color 0.2s'
+                  }}
+                  title={copiedId === property.propertyId ? 'Copied!' : 'Copy Property ID'}
+                  aria-label="Copy property ID to clipboard"
+                >
+                  {copiedId === property.propertyId ? (
+                    <CheckIcon />
+                  ) : (
+                    <CopyIcon width={16} height={16} stroke={copiedId === property.propertyId ? '#28a745' : '#6c757d'} />
+                  )}
+                </button>
+              )}
+            </p>
           </li>
           <li className="flex">
             <p className="fw-6">Price</p>

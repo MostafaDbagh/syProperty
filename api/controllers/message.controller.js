@@ -31,7 +31,8 @@ const getMessagesByAgent = async (req, res, next) => {
     // Filter parameters
     const status = req.query.status; // 'unread', 'read', 'replied', 'archived', 'all'
     const messageType = req.query.messageType; // 'inquiry', 'info'
-    const propertyId = req.query.propertyId;
+    const propertyId = req.query.propertyId; // MongoDB ObjectId
+    const property_id = req.query.property_id; // Actual property ID string (e.g., "PROP_thread_id")
     const search = req.query.search; // Search in sender name, email, subject, or message
 
     // Build filter object - check both user and agent IDs
@@ -57,8 +58,35 @@ const getMessagesByAgent = async (req, res, next) => {
     }
 
     // Add property filter
-    if (propertyId && propertyId !== 'all') {
-      filter.propertyId = propertyId;
+    // Note: property_id takes precedence over propertyId if both are provided
+    let hasPropertyIdFilter = false;
+    
+    // Add property_id filter (filter by actual property ID string field)
+    if (property_id && property_id !== 'all' && property_id.trim() !== '') {
+      // Find listings with matching propertyId field
+      const listings = await Listing.find({ 
+        propertyId: property_id.trim(),
+        isDeleted: { $ne: true }
+      }).select('_id');
+      
+      if (listings.length > 0) {
+        // Filter messages by the ObjectIds of matching listings
+        const listingIds = listings.map(listing => listing._id);
+        filter.propertyId = { $in: listingIds };
+        hasPropertyIdFilter = true;
+      } else {
+        // No matching listings found, return empty results
+        filter.propertyId = new mongoose.Types.ObjectId(); // Invalid ObjectId that won't match anything
+        hasPropertyIdFilter = true;
+      }
+    }
+    
+    // Add propertyId filter (filter by MongoDB ObjectId) - only if property_id was not provided
+    if (!hasPropertyIdFilter && propertyId && propertyId !== 'all') {
+      // Filter by MongoDB ObjectId
+      if (mongoose.Types.ObjectId.isValid(propertyId)) {
+        filter.propertyId = new mongoose.Types.ObjectId(propertyId);
+      }
     }
 
     // Add search filter
@@ -74,7 +102,7 @@ const getMessagesByAgent = async (req, res, next) => {
 
     // Get messages with pagination and populate property details
     const messages = await Message.find(filter)
-      .populate('propertyId', 'propertyKeyword propertyPrice status propertyType images address')
+      .populate('propertyId', 'propertyId propertyKeyword propertyPrice status propertyType images address')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -141,7 +169,7 @@ const getMessageById = async (req, res, next) => {
   try {
     const messageId = req.params.messageId;
     const message = await Message.findById(messageId)
-      .populate('propertyId', 'propertyKeyword propertyPrice status propertyType images address')
+      .populate('propertyId', 'propertyId propertyKeyword propertyPrice status propertyType images address')
       .populate('agentId', 'username email fullName');
 
     if (!message) {
@@ -202,7 +230,7 @@ const replyToMessage = async (req, res, next) => {
         respondedAt: new Date()
       },
       { new: true }
-    ).populate('propertyId', 'propertyKeyword propertyPrice status propertyType');
+    ).populate('propertyId', 'propertyId propertyKeyword propertyPrice status propertyType');
 
     if (!message) {
       return next(errorHandler(404, 'Message not found'));
@@ -334,7 +362,7 @@ const createMessage = async (req, res, next) => {
     await newMessage.save();
 
     // Populate property details for response
-    await newMessage.populate('propertyId', 'propertyKeyword propertyPrice status propertyType');
+    await newMessage.populate('propertyId', 'propertyId propertyKeyword propertyPrice status propertyType');
 
     res.status(201).json({
       success: true,
