@@ -1,4 +1,27 @@
 export default function sitemap() {
+  const baseUrl = 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com';
+
+  const staticRoutes = [
+    '',
+    '/property-list',
+    '/property-grid',
+    '/blog-grid',
+    '/contact',
+    '/agents',
+    '/project-list',
+  ].map((path) => ({
+    url: `${baseUrl}${path}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
+
+  return [
+    ...staticRoutes,
+  ];
+}
+
+export default function sitemap() {
   const baseUrl = 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com'
   
   return [
