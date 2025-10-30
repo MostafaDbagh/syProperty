@@ -1,0 +1,20 @@
+.successMessage {
+  color: #10b981; /* green-500 */
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #ef4444; /* red-500 */
+  font-weight: 600;
+}
+
+.termsLink {
+  text-decoration: underline;
+}
+
+.developerLink {
+  margin-left: 6px;
+  text-decoration: underline;
+}
+
+
