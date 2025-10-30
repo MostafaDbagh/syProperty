@@ -177,81 +177,36 @@ const getReviewsByProperty = async (req, res) => {
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;
   
-      // Query reviews by agentId directly (if using new model) OR by property agentId
-      // Try direct agentId first
-      let reviews;
-      let totalReviews;
-      
-      // Check if reviews have agentId field populated
-      const directReviews = await Review.find({ agentId: agentIdObj }).limit(1);
-      
-      if (directReviews.length > 0) {
-        // Use direct agentId query
-        totalReviews = await Review.countDocuments({ 
-          agentId: agentIdObj,
-          hiddenFromDashboard: { $ne: true }
-        });
-        
-        reviews = await Review.find({ 
-          agentId: agentIdObj,
-          hiddenFromDashboard: { $ne: true }
-        })
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(limit)
-          .populate('userId', 'username email avatar')
-          .populate('propertyId', 'propertyKeyword address propertyPrice images');
-        
-      } else {
-        // Fallback: Find through properties
-        const properties = await Listing.find({ 
-          agentId: agentIdObj,
-          isDeleted: { $ne: true }
-        }).select('_id propertyKeyword');
-        
-        const propertyIds = properties.map(p => p._id);
-        
-        if (propertyIds.length === 0) {
-          return res.status(200).json({
-            success: true,
-            data: [],
-            stats: {
-              totalReviews: 0,
-              averageRating: 0,
-              totalProperties: 0
-            },
-            pagination: {
-              currentPage: page,
-              totalPages: 0,
-              totalReviews: 0,
-              limit
-            }
-          });
-        }
-        
-        totalReviews = await Review.countDocuments({ 
-          propertyId: { $in: propertyIds },
-          hiddenFromDashboard: { $ne: true }
-        });
-        
-        reviews = await Review.find({ 
-          propertyId: { $in: propertyIds },
-          hiddenFromDashboard: { $ne: true }
-        })
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(limit)
-          .populate('userId', 'username email avatar')
-          .populate('propertyId', 'propertyKeyword address propertyPrice images');
-      }
-      
-      const totalPages = Math.ceil(totalReviews / limit);
-      
-      // Calculate statistics
-      const allReviews = await Review.find({ 
+      // Find properties for this agent (used to include property-based reviews)
+      const properties = await Listing.find({ 
         agentId: agentIdObj,
-        hiddenFromDashboard: { $ne: true }
-      });
+        isDeleted: { $ne: true }
+      }).select('_id');
+
+      const propertyIds = properties.map(p => p._id);
+
+      // Match both direct agentId reviews and reviews tied to the agent's properties
+      const match = {
+        hiddenFromDashboard: { $ne: true },
+        $or: [
+          { agentId: agentIdObj },
+          { propertyId: { $in: propertyIds } }
+        ]
+      };
+
+      // Counts and pagination
+      const totalReviews = await Review.countDocuments(match);
+      const totalPages = Math.ceil(totalReviews / limit);
+
+      const reviews = await Review.find(match)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('userId', 'username email avatar')
+        .populate('propertyId', 'propertyKeyword address propertyPrice images');
+
+      // Calculate statistics on full set
+      const allReviews = await Review.find(match);
       
       const averageRating = allReviews.length > 0
         ? allReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / allReviews.length
