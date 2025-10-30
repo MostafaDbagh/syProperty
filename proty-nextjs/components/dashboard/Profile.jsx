@@ -4,6 +4,8 @@ import Image from "next/image";
 import { userAPI } from "@/apis";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
+import logger from "@/utils/logger";
+import styles from "./Profile.module.css";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -66,7 +68,7 @@ export default function Profile() {
         });
         setUser(profile);
       } catch (error) {
-        console.error("Error loading profile:", error);
+        logger.error("Error loading profile:", error);
         setToast({ type: "error", message: "Failed to load profile" });
       } finally {
         setLoading(false);
@@ -105,7 +107,7 @@ export default function Profile() {
       
       setToast({ type: "success", message: "Profile updated successfully!" });
     } catch (error) {
-      console.error("Error updating profile:", error);
+      logger.error("Error updating profile:", error);
       setToast({ type: "error", message: "Failed to update profile" });
     } finally {
       setSaving(false);
@@ -142,7 +144,7 @@ export default function Profile() {
       
       setToast({ type: "success", message: "Password changed successfully!" });
     } catch (error) {
-      console.error("Error changing password:", error);
+      logger.error("Error changing password:", error);
       setToast({ type: "error", message: "Failed to change password" });
     } finally {
       setSaving(false);
@@ -151,18 +153,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#f8f9fa',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999
-      }}>
+      <div className={styles.loadingOverlay}>
         <LocationLoader 
           size="large" 
           message="Loading your profile..."
@@ -187,12 +178,7 @@ export default function Profile() {
                   Your current account type is set to agent. You have access to all agent features
                   including property management and analytics.
                 </p>
-                <div style={{ 
-                  padding: "10px",
-                  background: "#f0f9ff",
-                  borderRadius: "8px",
-                  marginTop: "10px"
-                }}>
+                <div className={styles.pointsBalance}>
                   <strong>Points Balance:</strong> {user.pointsBalance || 0} points
                 </div>
               </div>

@@ -9,6 +9,8 @@ import EditPropertyModal from "../modals/EditPropertyModal";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
+import logger from "@/utils/logger";
+import styles from "./Property.module.css";
 
 export default function Property() {
   const [user, setUser] = useState(null);
@@ -107,7 +109,7 @@ export default function Property() {
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           showToast(`Property marked as ${action} successfully!`, 'success');
         } catch (error) {
-          console.error(`Error marking property as ${action}:`, error);
+          logger.error(`Error marking property as ${action}:`, error);
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           
           // Show more specific error message
@@ -142,7 +144,7 @@ export default function Property() {
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           showToast('Property deleted successfully!', 'success');
         } catch (error) {
-          console.error('Error deleting property:', error);
+          logger.error('Error deleting property:', error);
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           
           // Show more specific error message
@@ -158,7 +160,7 @@ export default function Property() {
   const { data: listingsResponse, isLoading, isError, refetch } = useQuery({
     queryKey: ['my-listings', user?._id, currentPage],
     queryFn: () => {
-      console.log('Property.jsx - Fetching listings for user:', user?._id);
+      logger.debug('Property.jsx - Fetching listings for user:', user?._id);
       return listingAPI.getListingsByAgent(user._id, {
         page: currentPage,
         limit: itemsPerPage
@@ -174,7 +176,7 @@ export default function Property() {
   
   // Debug: Log the response structure
   if (listingsResponse) {
-    console.log('Property.jsx - listingsResponse structure:', {
+    logger.debug('Property.jsx - listingsResponse structure:', {
       type: typeof listingsResponse,
       isArray: Array.isArray(listingsResponse),
       hasData: !!listingsResponse.data,
@@ -186,7 +188,7 @@ export default function Property() {
   
   // Debug: Log any errors
   if (isError) {
-    console.error('Property.jsx - Error fetching listings:', isError);
+    logger.error('Property.jsx - Error fetching listings:', isError);
   }
   
   if (Array.isArray(listingsResponse)) {
@@ -208,7 +210,7 @@ export default function Property() {
   
   // Ensure listings is always an array
   if (!Array.isArray(listings)) {
-    console.warn('Property.jsx - Listings is not an array:', listings);
+    logger.warn('Property.jsx - Listings is not an array:', listings);
     listings = [];
   }
 
@@ -229,7 +231,7 @@ export default function Property() {
                                listing.propertyType === propertyTypeFilter;
     
     // Debug logging
-    console.log('Filter Debug:', {
+    logger.debug('Filter Debug:', {
       listingTitle: listing.propertyKeyword,
       listingStatus: listing.status,
       listingPropertyType: listing.propertyType,
@@ -405,7 +407,7 @@ export default function Property() {
                 </div>
               ) : filteredListings.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center' }}>
-                  <p>No properties found. <Link href="/add-property" style={{ color: '#1E88E5' }}>Add your first property</Link></p>
+                  <p>No properties found. <Link href="/add-property" className={styles.addPropertyLink}>Add your first property</Link></p>
                 </div>
               ) : (
                 <table>

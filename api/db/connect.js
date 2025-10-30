@@ -36,7 +36,7 @@ mongoose.connect(mongoURI, connectOptions)
       logger.error('2. Verify MongoDB Atlas cluster is not paused');
       logger.error('3. Check if your IP is whitelisted in MongoDB Atlas Network Access');
       logger.error('4. Verify your MongoDB connection string is correct');
-      logger.error('5. Check DNS resolution: nslookup cluster0-ags3s.mongodb.net');
+      logger.error('5. Check DNS resolution for your MongoDB cluster hostname');
       logger.error('6. Try using a VPN if DNS resolution is blocked');
     }
     

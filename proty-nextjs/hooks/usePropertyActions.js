@@ -1,6 +1,7 @@
 import { useIncrementVisitCount } from "@/apis/hooks";
 import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
+import logger from "@/utils/logger";
 
 export const usePropertyActions = () => {
   const incrementVisitCount = useIncrementVisitCount();
@@ -16,7 +17,7 @@ export const usePropertyActions = () => {
         visitedProperties.current = visitedSet;
       }
     } catch (error) {
-      console.log('Error loading visited properties:', error);
+      logger.error('Error loading visited properties:', error);
     }
   }, []);
 
@@ -26,7 +27,7 @@ export const usePropertyActions = () => {
       visitedProperties.current.add(propertyId);
       localStorage.setItem('visitedProperties', JSON.stringify([...visitedProperties.current]));
     } catch (error) {
-      console.log('Error saving visited properties:', error);
+      logger.error('Error saving visited properties:', error);
     }
   };
 
@@ -35,9 +36,9 @@ export const usePropertyActions = () => {
     if (!visitedProperties.current.has(propertyId)) {
       saveVisitedProperties(propertyId);
       incrementVisitCount.mutate(propertyId);
-      console.log(`Visit API called for property: ${propertyId}`);
+      logger.debug(`Visit API called for property: ${propertyId}`);
     } else {
-      console.log(`Property ${propertyId} already visited, skipping API call`);
+      logger.debug(`Property ${propertyId} already visited, skipping API call`);
     }
     // Navigate to property detail page
     router.push(`/property-detail/${propertyId}`);
@@ -48,12 +49,12 @@ export const usePropertyActions = () => {
     if (!visitedProperties.current.has(propertyId)) {
       saveVisitedProperties(propertyId);
       incrementVisitCount.mutate(propertyId);
-      console.log(`Visit API called for property: ${propertyId}`);
+      logger.debug(`Visit API called for property: ${propertyId}`);
     } else {
-      console.log(`Property ${propertyId} already visited, skipping API call`);
+      logger.debug(`Property ${propertyId} already visited, skipping API call`);
     }
     // You can add modal logic here for quick view
-    console.log('Quick view clicked for property:', propertyId);
+    logger.debug('Quick view clicked for property:', propertyId);
   };
 
   return {

@@ -5,6 +5,7 @@ import Register from '../modals/Register';
 import Login from '../modals/Login';
 import ForgotPasswordFlow from '../modals/ForgotPasswordFlow';
 import OTPVerification from '../modals/OTPVerification';
+import logger from '@/utils/logger';
 
 const GlobalModalContext = createContext();
 
@@ -146,7 +147,7 @@ export const GlobalModalProvider = ({ children }) => {
         );
         break;
       default:
-        console.warn(`Unknown modal type: ${modalType}`);
+        logger.warn(`Unknown modal type: ${modalType}`);
     }
   };
 

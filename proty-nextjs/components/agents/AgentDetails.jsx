@@ -6,6 +6,7 @@ import Image from "next/image";
 import { properties4 } from "@/data/properties";
 import { useAgent } from "@/apis/hooks";
 import LocationLoader from "../common/LocationLoader";
+import styles from "./AgentDetails.module.css";
 
 export default function AgentDetails({ agentId }) {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
@@ -56,21 +57,15 @@ export default function AgentDetails({ agentId }) {
       <div className="tf-container">
         <div className="row">
           <div className="col-lg-8">
-              <div className="agent-details hover-img effec-overlay" style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-start', marginBottom: '132px' }}>
-              <div className="image-wrap" style={{ flex: '0 0 auto', width: '400px', height: '400px' }}>
+              <div className={`agent-details hover-img effec-overlay ${styles.agentDetailsContainer}`}>
+              <div className={`image-wrap ${styles.imageWrap}`}>
                 <Link href={`/agents-details/${agent._id}`}>
                   <Image
-                    className="lazyload"
                     alt={agent.fullName || "Agent"}
                     width={400}
                     height={400}
                     src={agent.avatar || "/images/section/agent-details.jpg"}
-                    style={{ 
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '12px'
-                    }}
+                    className={styles.agentImage}
                   />
                 </Link>
                 <ul className="tf-social style-3">
@@ -111,7 +106,7 @@ export default function AgentDetails({ agentId }) {
                   </li>
                 </ul>
               </div>
-              <div className="content-inner" style={{ flex: '1 1 auto', width: 'auto' }}>
+              <div className={`content-inner ${styles.contentInner}`}>
                 <div className="author">
                   <h4 className="name">
                     <Link href={`/agents-details/${agent._id}`}>
@@ -199,47 +194,47 @@ export default function AgentDetails({ agentId }) {
                   
                   {/* Additional Details Section */}
                   {showMoreDetails && (
-                    <div className="additional-details" style={{ marginTop: '20px' }}>
+                    <div className={`additional-details ${styles.additionalDetails}`}>
                       {/* Professional Details */}
-                      <div className="details-section" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', marginBottom: '20px' }}>
-                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Professional Details</h6>
+                      <div className={`details-section ${styles.detailsSection}`}>
+                        <h6 className={`title ${styles.sectionTitle}`}>Professional Details</h6>
                         
-                        <div className="details-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Company:</strong>
-                            <span style={{ color: '#666' }}>
+                        <div className={`details-grid ${styles.detailsGrid}`}>
+                          <div className={`detail-item ${styles.detailItem}`}>
+                            <strong className={styles.detailLabel}>Company:</strong>
+                            <span className={styles.detailValue}>
                               {agent.companyName || "Proty Real Estate"}
                             </span>
                           </div>
                           
-                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Position:</strong>
-                            <span style={{ color: '#666' }}>
+                          <div className={`detail-item ${styles.detailItem}`}>
+                            <strong className={styles.detailLabel}>Position:</strong>
+                            <span className={styles.detailValue}>
                               {agent.position || agent.job || "Real Estate Agent"}
                             </span>
                           </div>
                           
                           {agent.officeNumber && (
-                            <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                              <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Office Phone:</strong>
-                              <span style={{ color: '#666' }}>
+                            <div className={`detail-item ${styles.detailItem}`}>
+                              <strong className={styles.detailLabel}>Office Phone:</strong>
+                              <span className={styles.detailValue}>
                                 {agent.officeNumber}
                               </span>
                             </div>
                           )}
                           
                           {agent.officeAddress && (
-                            <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                              <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Office Address:</strong>
-                              <span style={{ color: '#666' }}>
+                            <div className={`detail-item ${styles.detailItem}`}>
+                              <strong className={styles.detailLabel}>Office Address:</strong>
+                              <span className={styles.detailValue}>
                                 {agent.officeAddress}
                               </span>
                             </div>
                           )}
                           
-                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Member Since:</strong>
-                            <span style={{ color: '#666' }}>
+                          <div className={`detail-item ${styles.detailItem}`}>
+                            <strong className={styles.detailLabel}>Member Since:</strong>
+                            <span className={styles.detailValue}>
                               {new Date(agent.createdAt).toLocaleDateString('en-US', { 
                                 year: 'numeric', 
                                 month: 'long' 
@@ -247,9 +242,9 @@ export default function AgentDetails({ agentId }) {
                             </span>
                           </div>
                           
-                          <div className="detail-item" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Specialization:</strong>
-                            <span style={{ color: '#666' }}>
+                          <div className={`detail-item ${styles.detailItem}`}>
+                            <strong className={styles.detailLabel}>Specialization:</strong>
+                            <span className={styles.detailValue}>
                               Residential & Commercial Properties
                             </span>
                           </div>
@@ -257,107 +252,107 @@ export default function AgentDetails({ agentId }) {
                       </div>
 
                       {/* Services & Expertise */}
-                      <div className="services-section" style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #e9ecef', borderRadius: '8px', marginBottom: '20px' }}>
-                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Services & Expertise</h6>
+                      <div className={`services-section ${styles.servicesSection}`}>
+                        <h6 className={`title ${styles.sectionTitle}`}>Services & Expertise</h6>
                         
-                        <div className="services-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏠</div>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Property Sales</strong>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Residential & Commercial</span>
+                        <div className={`services-grid ${styles.servicesGrid}`}>
+                          <div className={`service-item ${styles.serviceItem}`}>
+                            <div className={styles.serviceIcon}>🏠</div>
+                            <strong className={styles.serviceTitle}>Property Sales</strong>
+                            <span className={styles.serviceDescription}>Residential & Commercial</span>
                           </div>
                           
-                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔑</div>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Property Rentals</strong>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Long & Short Term</span>
+                          <div className={`service-item ${styles.serviceItem}`}>
+                            <div className={styles.serviceIcon}>🔑</div>
+                            <strong className={styles.serviceTitle}>Property Rentals</strong>
+                            <span className={styles.serviceDescription}>Long & Short Term</span>
                           </div>
                           
-                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>📊</div>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Market Analysis</strong>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Price & Trend Reports</span>
+                          <div className={`service-item ${styles.serviceItem}`}>
+                            <div className={styles.serviceIcon}>📊</div>
+                            <strong className={styles.serviceTitle}>Market Analysis</strong>
+                            <span className={styles.serviceDescription}>Price & Trend Reports</span>
                           </div>
                           
-                          <div className="service-item" style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px', textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🤝</div>
-                            <strong style={{ color: '#333', display: 'block', marginBottom: '5px' }}>Negotiation</strong>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Expert Deal Making</span>
+                          <div className={`service-item ${styles.serviceItem}`}>
+                            <div className={styles.serviceIcon}>🤝</div>
+                            <strong className={styles.serviceTitle}>Negotiation</strong>
+                            <span className={styles.serviceDescription}>Expert Deal Making</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Professional Summary */}
-                      <div className="professional-summary" style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #e9ecef', borderRadius: '8px', marginBottom: '20px' }}>
-                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Professional Summary</h6>
-                        <p className="text-1" style={{ color: '#666', lineHeight: '1.6', marginBottom: '15px' }}>
+                      <div className={`professional-summary ${styles.professionalSummary}`}>
+                        <h6 className={`title ${styles.sectionTitle}`}>Professional Summary</h6>
+                        <p className={`text-1 ${styles.summaryText}`}>
                           {agent.fullName || "This agent"} brings extensive experience in real estate transactions, 
                           market analysis, and client relations. With a proven track record of successful property 
                           sales and satisfied clients, {agent.fullName?.split(' ')[0] || "they"} are committed to 
                           providing personalized service and expert guidance throughout the buying and selling process.
                         </p>
                         
-                        <div className="achievements" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', marginTop: '15px' }}>
-                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
-                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>50+</div>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Properties Sold</span>
+                        <div className={`achievements ${styles.achievements}`}>
+                          <div className={`achievement-item ${styles.achievementItem}`}>
+                            <div className={styles.achievementNumber}>50+</div>
+                            <span className={styles.achievementLabel}>Properties Sold</span>
                           </div>
                           
-                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
-                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>5+</div>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Years Experience</span>
+                          <div className={`achievement-item ${styles.achievementItem}`}>
+                            <div className={styles.achievementNumber}>5+</div>
+                            <span className={styles.achievementLabel}>Years Experience</span>
                           </div>
                           
-                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
-                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>98%</div>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Client Satisfaction</span>
+                          <div className={`achievement-item ${styles.achievementItem}`}>
+                            <div className={styles.achievementNumber}>98%</div>
+                            <span className={styles.achievementLabel}>Client Satisfaction</span>
                           </div>
                           
-                          <div className="achievement-item" style={{ textAlign: 'center', padding: '10px' }}>
-                            <div style={{ fontSize: '28px', color: '#ff6b35', fontWeight: 'bold', marginBottom: '5px' }}>24/7</div>
-                            <span style={{ color: '#666', fontSize: '14px' }}>Availability</span>
+                          <div className={`achievement-item ${styles.achievementItem}`}>
+                            <div className={styles.achievementNumber}>24/7</div>
+                            <span className={styles.achievementLabel}>Availability</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Contact Information */}
-                      <div className="contact-info" style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-                        <h6 className="title" style={{ marginBottom: '15px', color: '#333', fontSize: '18px', fontWeight: '600' }}>Contact Information</h6>
+                      <div className={`contact-info ${styles.contactInfo}`}>
+                        <h6 className={`title ${styles.sectionTitle}`}>Contact Information</h6>
                         
-                        <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                          <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📧</div>
+                        <div className={`contact-grid ${styles.contactGrid}`}>
+                          <div className={`contact-item ${styles.contactItem}`}>
+                            <div className={styles.contactIcon}>📧</div>
                             <div>
-                              <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Email</strong>
-                              <span style={{ color: '#666', fontSize: '14px' }}>{agent.email || 'contact@property.com'}</span>
+                              <strong className={styles.contactLabel}>Email</strong>
+                              <span className={styles.contactValue}>{agent.email || 'contact@property.com'}</span>
                             </div>
                           </div>
                           
                           {agent.phone && (
-                            <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                              <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📞</div>
+                            <div className={`contact-item ${styles.contactItem}`}>
+                              <div className={styles.contactIcon}>📞</div>
                               <div>
-                                <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Phone</strong>
-                                <span style={{ color: '#666', fontSize: '14px' }}>{agent.phone}</span>
+                                <strong className={styles.contactLabel}>Phone</strong>
+                                <span className={styles.contactValue}>{agent.phone}</span>
                               </div>
                             </div>
                           )}
                           
                           {agent.location && (
-                            <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                              <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>📍</div>
+                            <div className={`contact-item ${styles.contactItem}`}>
+                              <div className={styles.contactIcon}>📍</div>
                               <div>
-                                <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Location</strong>
-                                <span style={{ color: '#666', fontSize: '14px' }}>{agent.location}</span>
+                                <strong className={styles.contactLabel}>Location</strong>
+                                <span className={styles.contactValue}>{agent.location}</span>
                               </div>
                             </div>
                           )}
                           
-                          <div className="contact-item" style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: 'white', borderRadius: '6px' }}>
-                            <div style={{ fontSize: '20px', marginRight: '10px', color: '#ff6b35' }}>⏰</div>
+                          <div className={`contact-item ${styles.contactItem}`}>
+                            <div className={styles.contactIcon}>⏰</div>
                             <div>
-                              <strong style={{ color: '#333', display: 'block', fontSize: '12px' }}>Response Time</strong>
-                              <span style={{ color: '#666', fontSize: '14px' }}>Within 2 hours</span>
+                              <strong className={styles.contactLabel}>Response Time</strong>
+                              <span className={styles.contactValue}>Within 2 hours</span>
                             </div>
                           </div>
                         </div>
@@ -367,16 +362,7 @@ export default function AgentDetails({ agentId }) {
                   
                   <button 
                     onClick={() => setShowMoreDetails(!showMoreDetails)}
-                    className="tf-btn-link"
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      marginTop: '15px'
-                    }}
+                    className={`tf-btn-link ${styles.toggleButton}`}
                   >
                     <span>{showMoreDetails ? 'Show Less' : 'Read More'}</span>
                     <svg width={20}
@@ -384,10 +370,7 @@ export default function AgentDetails({ agentId }) {
                       viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      style={{ 
-                        transform: showMoreDetails ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.3s ease'
-                      }}
+                      className={showMoreDetails ? styles.chevronIconRotated : styles.chevronIcon}
                      aria-hidden="true">
                       <g clipPath="url(#clip0_2450_13860)">
                         <path

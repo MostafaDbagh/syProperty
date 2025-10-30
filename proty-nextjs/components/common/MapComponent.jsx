@@ -10,6 +10,7 @@ import { useMemo, useState } from "react";
 import { properties } from "@/data/properties";
 import Link from "next/link";
 import Image from "next/image";
+import logger from "@/utils/logger";
 
 const option = {
   zoomControl: true,
@@ -202,7 +203,7 @@ export default function MapComponent({ zoom = 16 }) {
 
   // Handle Google Maps loading errors (like billing not enabled)
   if (loadError) {
-    console.warn('Google Maps failed to load:', loadError);
+    logger.warn('Google Maps failed to load:', loadError);
     setMapError(true);
   }
 

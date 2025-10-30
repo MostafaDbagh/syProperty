@@ -1,0 +1,210 @@
+/* AgentDetails Component Styles */
+
+/* Main Container */
+.agentDetailsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  margin-bottom: 132px;
+}
+
+/* Image Wrapper */
+.imageWrap {
+  flex: 0 0 auto;
+  width: 400px;
+  height: 400px;
+}
+
+.agentImage {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+/* Content Inner */
+.contentInner {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+/* Additional Details */
+.additionalDetails {
+  margin-top: 20px;
+}
+
+/* Details Section */
+.detailsSection {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.detailItem {
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+}
+
+.detailLabel {
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.detailValue {
+  color: #666;
+}
+
+.sectionTitle {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Services Section */
+.servicesSection {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.serviceItem {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.serviceIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.serviceTitle {
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.serviceDescription {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Professional Summary */
+.professionalSummary {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.summaryText {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.achievements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.achievementItem {
+  text-align: center;
+  padding: 10px;
+}
+
+.achievementNumber {
+  font-size: 28px;
+  color: #ff6b35;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.achievementLabel {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Contact Info */
+.contactInfo {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+}
+
+.contactIcon {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #ff6b35;
+}
+
+.contactLabel {
+  color: #333;
+  display: block;
+  font-size: 12px;
+}
+
+.contactValue {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Toggle Button */
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.chevronIcon {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.chevronIconRotated {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+

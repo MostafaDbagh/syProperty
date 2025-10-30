@@ -7,6 +7,7 @@ import { useAgents } from "@/apis/hooks";
 import LocationLoader from "../common/LocationLoader";
 import { CopyIcon, CheckIcon } from "@/components/icons";
 import Toast from "../common/Toast";
+import styles from "./Agents.module.css";
 
 export default function Agents() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -542,7 +543,7 @@ export default function Agents() {
                 </fieldset>
               </form>
 
-              <div className="city-dropdown" style={{ width: '40%' }}>
+              <div className={`city-dropdown ${styles.cityDropdown}`}>
                 <DropdownSelect
                   options={[
                     "All location",
@@ -573,58 +574,21 @@ export default function Agents() {
           
           {sortedAgents.length === 0 ? (
             <div className="col-12 text-center py-5">
-              <div style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '20px',
-                padding: '60px 40px',
-                margin: '40px 0',
-                boxShadow: '0 10px 40px rgba(102, 126, 234, 0.25)',
-                color: 'white'
-              }}>
-                <div style={{ fontSize: '64px', marginBottom: '20px' }}>🔍</div>
-                <h3 style={{ 
-                  color: 'white', 
-                  fontSize: '28px', 
-                  fontWeight: '700', 
-                  marginBottom: '15px' 
-                }}>
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>🔍</div>
+                <h3 className={styles.emptyTitle}>
                   No Agents Found
                 </h3>
-                <p style={{ 
-                  color: 'rgba(255, 255, 255, 0.9)', 
-                  fontSize: '16px', 
-                  marginBottom: '30px',
-                  maxWidth: '600px',
-                  margin: '0 auto 30px'
-                }}>
+                <p className={styles.emptyText}>
                   We couldn't find any agents matching your current search criteria. Try adjusting your filters or search terms.
                 </p>
-                <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <div className={styles.emptyActions}>
                   <button
+                    className={styles.resetBtn}
                     onClick={() => {
                       setSearchTerm('');
                       setLocationFilter('All location');
                       setSortBy('Sort by (Default)');
-                    }}
-                    style={{
-                      background: 'white',
-                      color: '#667eea',
-                      border: 'none',
-                      padding: '12px 30px',
-                      borderRadius: '25px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
                     }}
                   >
                     Reset Filters
@@ -632,28 +596,7 @@ export default function Agents() {
                   {agents.length > 0 && (
                     <Link 
                       href="/agents"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        color: 'white',
-                        border: '2px solid white',
-                        padding: '12px 30px',
-                        borderRadius: '25px',
-                        fontWeight: '600',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        display: 'inline-block',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'white';
-                        e.target.style.color = '#667eea';
-                        e.target.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                        e.target.style.color = 'white';
-                        e.target.style.transform = 'translateY(0)';
-                      }}
+                      className={styles.viewAllLink}
                     >
                       View All {agents.length} Agents
                     </Link>
@@ -679,36 +622,19 @@ export default function Agents() {
                     </div>
                     <div className="content">
                       <div className="author">
-                        <h5 className="name lh-30" style={{ fontSize: '20px', fontWeight: '700', color: '#333' }}>
+                        <h5 className={styles.agentName + " name lh-30"}>
                           <Link 
                             href={`/agents-details/${agent._id}`}
-                            style={{ 
-                              color: '#333',
-                              textDecoration: 'none'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.setProperty('color', '#333', 'important');
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.setProperty('color', '#333', 'important');
-                            }}
-                            className="agent-name-link"
+                            className={"agent-name-link " + styles.agentNameLink}
                           >
                             {agent.fullName || "Agent Name"}
                           </Link>
                         </h5>
-                        <p
-                          className="text-2 lh-18"
-                          style={{
-                            fontSize: '16px',
-                            color: '#667eea',
-                            fontWeight: '600'
-                          }}
-                        >
+                        <p className={styles.positionText + " text-2 lh-18"}>
                           {agent.position || agent.job || 'Real Estate Agent'}
                         </p>
                         {agent.companyName && (
-                          <p className="text-3 lh-18" style={{ fontSize: '16px' }}>
+                          <p className={styles.companyText + " text-3 lh-18"}>
                             {agent.companyName}
                           </p>
                         )}
@@ -723,31 +649,15 @@ export default function Agents() {
                         )}
                       </div>
                       {(agent.phone || agent.email || agent.facebook || agent.twitter || agent.linkedin) && (
-                        <div className="all-icons-section" style={{
-                          marginTop: '12px',
-                          paddingTop: '12px',
-                          borderTop: '1px solid #f0f0f0'
-                        }}>
-                          <h6 style={{
-                            fontSize: '13px',
-                            fontWeight: '700',
-                            color: '#333',
-                            marginBottom: '10px',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                          }}>Contact & Follow</h6>
-                          
+                        <div className={styles.iconsSection + " all-icons-section"}>
+                          <h6
+                            className={styles.sectionHeader}
+                          >Contact & Follow</h6>
                           {/* Email and Phone Icons */}
-                          <div style={{
-                            display: 'flex',
-                            gap: '8px',
-                            marginBottom: '10px',
-                            flexWrap: 'wrap'
-                          }}>
+                          <div className={styles.iconsRow}>
                             {/* Email Icon */}
                             {agent.email && (
-                              <div 
-                                style={{ position: 'relative', display: 'inline-block' }}
+                              <div className={styles.iconWrapper}
                                 onMouseEnter={(e) => {
                                   const tooltip = e.currentTarget.querySelector('.email-tooltip');
                                   if (tooltip) tooltip.style.opacity = '1';
@@ -758,76 +668,27 @@ export default function Agents() {
                                 }}
                               >
                                 <button
+                                  className={styles.iconButton}
                                   onClick={() => handleCopyEmail(agent.email, agent._id)}
-                                  style={{
-                                    width: '36px',
-                                    height: '36px',
-                                    borderRadius: '50%',
-                                    background: '#e5e7eb',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'all 0.2s ease'
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    const button = e.currentTarget;
-                                    button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                                    button.style.transform = 'scale(1.1)';
-                                    const icon = button.querySelector('i');
-                                    if (icon) icon.style.color = 'white';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    const button = e.currentTarget;
-                                    button.style.background = '#e5e7eb';
-                                    button.style.transform = 'scale(1)';
-                                    const icon = button.querySelector('i');
-                                    if (icon) icon.style.color = '#374151';
-                                  }}
                                   aria-label="Copy email to clipboard"
                                 >
                                   {copiedEmail === agent._id ? (
-                                    <CheckIcon style={{ fontSize: '18px', color: '#28a745' }} />
+                                    <CheckIcon className={styles.iconCheck} />
                                   ) : (
-                                    <i className="icon-letter" style={{ color: '#374151', fontSize: '16px' }}></i>
+                                    <i className={"icon-letter " + styles.icon}></i>
                                   )}
                                 </button>
                                 {/* Tooltip */}
-                                <div className="email-tooltip" style={{
-                                  position: 'absolute',
-                                  bottom: '100%',
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  marginBottom: '8px',
-                                  padding: '6px 10px',
-                                  backgroundColor: '#333',
-                                  color: 'white',
-                                  borderRadius: '6px',
-                                  fontSize: '12px',
-                                  whiteSpace: 'nowrap',
-                                  opacity: 0,
-                                  pointerEvents: 'none',
-                                  transition: 'opacity 0.2s ease',
-                                  zIndex: 1000
-                                }}>
+                                <div className={"email-tooltip " + styles.tooltip}>
                                   {copiedEmail === agent._id ? 'Copied!' : agent.email}
-                                  <div style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    border: '5px solid transparent',
-                                    borderTopColor: '#333'
-                                  }}></div>
+                                  <div className={styles.tooltipArrow}></div>
                                 </div>
                               </div>
                             )}
-                            
                             {/* Phone Icon */}
                             {agent.phone && (
-                              <div 
-                                style={{ position: 'relative', display: 'inline-block' }}
+                              <div
+                                className={styles.iconWrapper}
                                 onMouseEnter={(e) => {
                                   const tooltip = e.currentTarget.querySelector('.phone-tooltip');
                                   if (tooltip) tooltip.style.opacity = '1';
@@ -839,64 +700,15 @@ export default function Agents() {
                               >
                                 <a
                                   href={`tel:${agent.phone}`}
-                                  style={{
-                                    width: '36px',
-                                    height: '36px',
-                                    borderRadius: '50%',
-                                    background: '#e5e7eb',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'all 0.2s ease',
-                                    textDecoration: 'none'
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    const link = e.currentTarget;
-                                    link.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                                    link.style.transform = 'scale(1.1)';
-                                    const icon = link.querySelector('i');
-                                    if (icon) icon.style.color = 'white';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    const link = e.currentTarget;
-                                    link.style.background = '#e5e7eb';
-                                    link.style.transform = 'scale(1)';
-                                    const icon = link.querySelector('i');
-                                    if (icon) icon.style.color = '#374151';
-                                  }}
+                                  className={styles.phoneLink}
                                   aria-label={`Call ${agent.phone}`}
                                 >
-                                  <i className="icon-phone-3" style={{ color: '#374151', fontSize: '16px' }}></i>
+                                  <i className={"icon-phone-3 " + styles.icon}></i>
                                 </a>
                                 {/* Tooltip */}
-                                <div className="phone-tooltip" style={{
-                                  position: 'absolute',
-                                  bottom: '100%',
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  marginBottom: '8px',
-                                  padding: '6px 10px',
-                                  backgroundColor: '#333',
-                                  color: 'white',
-                                  borderRadius: '6px',
-                                  fontSize: '12px',
-                                  whiteSpace: 'nowrap',
-                                  opacity: 0,
-                                  pointerEvents: 'none',
-                                  transition: 'opacity 0.2s ease',
-                                  zIndex: 1000
-                                }}>
+                                <div className={"phone-tooltip " + styles.tooltip}>
                                   {agent.phone}
-                                  <div style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    border: '5px solid transparent',
-                                    borderTopColor: '#333'
-                                  }}></div>
+                                  <div className={styles.tooltipArrow}></div>
                                 </div>
                               </div>
                             )}

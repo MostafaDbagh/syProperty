@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import logger from '@/utils/logger';
 
 const useRouteProtection = (requiredRole = null) => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const useRouteProtection = (requiredRole = null) => {
         setUser(userData);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error parsing user data:', error);
+        logger.error('Error parsing user data:', error);
         setUser(null);
         setIsLoading(false);
       }

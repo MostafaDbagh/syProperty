@@ -6,6 +6,7 @@ import { reviewAPI } from "@/apis/review";
 import { useQueryClient } from "@tanstack/react-query";
 import LocationLoader from "../common/LocationLoader";
 import Toast from "../common/Toast";
+import styles from "./Review.module.css";
 
 export default function Review() {
   const [user, setUser] = useState(null);
@@ -188,32 +189,32 @@ export default function Review() {
         {!isLoading && stats.totalReviews > 0 && (
           <div className="row mb-4">
             <div className="col-md-4">
-              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-                <div className="card-body text-center p-4">
-                  <h3 className="mb-2" style={{ color: '#ff6b35', fontSize: '32px', fontWeight: '700' }}>
+              <div className={`card border-0 shadow-sm ${styles.statCard}`}>
+                <div className={`card-body ${styles.statCardBody}`}>
+                  <h3 className={`mb-2 ${styles.statNumber}`}>
                     {stats.totalReviews}
                   </h3>
-                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Total Reviews</p>
+                  <p className={`mb-0 ${styles.statLabel}`}>Total Reviews</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-                <div className="card-body text-center p-4">
-                  <h3 className="mb-2" style={{ color: '#FFB800', fontSize: '32px', fontWeight: '700' }}>
-                    {stats.averageRating.toFixed(1)} <i className="icon-star" style={{ fontSize: '24px' }} />
+              <div className={`card border-0 shadow-sm ${styles.statCard}`}>
+                <div className={`card-body ${styles.statCardBody}`}>
+                  <h3 className={`mb-2 ${styles.statNumberYellow}`}>
+                    {stats.averageRating.toFixed(1)} <i className={`icon-star ${styles.starIcon}`} />
                   </h3>
-                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Average Rating</p>
+                  <p className={`mb-0 ${styles.statLabel}`}>Average Rating</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-                <div className="card-body text-center p-4">
-                  <h3 className="mb-2" style={{ color: '#28a745', fontSize: '32px', fontWeight: '700' }}>
+              <div className={`card border-0 shadow-sm ${styles.statCard}`}>
+                <div className={`card-body ${styles.statCardBody}`}>
+                  <h3 className={`mb-2 ${styles.statNumberGreen}`}>
                     {stats.totalProperties}
                   </h3>
-                  <p className="mb-0" style={{ color: '#666', fontSize: '14px' }}>Properties with Reviews</p>
+                  <p className={`mb-0 ${styles.statLabel}`}>Properties with Reviews</p>
                 </div>
               </div>
             </div>
@@ -224,14 +225,14 @@ export default function Review() {
           <h3 className="title">
             My Property Reviews
             {pagination.totalReviews > 0 && (
-              <span style={{ fontSize: '14px', fontWeight: 'normal', marginLeft: '10px', color: '#666' }}>
+              <span className={styles.titleBadge}>
                 ({pagination.totalReviews} total reviews)
               </span>
             )}
           </h3>
 
           {isLoading && (
-            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+            <div className={styles.loadingContainer}>
               <LocationLoader 
                 size="large" 
                 message="Loading property reviews..."
@@ -240,13 +241,13 @@ export default function Review() {
           )}
 
           {isError && (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#dc3545' }}>
+            <div className={styles.errorContainer}>
               <p>Failed to load reviews. Please try again later.</p>
             </div>
           )}
 
           {!isLoading && !isError && reviews.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px' }}>
+            <div className={styles.emptyContainer}>
               <p>No reviews found.</p>
             </div>
           )}
@@ -274,41 +275,14 @@ export default function Review() {
                     </div>
                     <p>{review.review}</p>
                     {review.propertyId && (
-                      <div style={{ 
-                        fontSize: '12px', 
-                        color: '#666', 
-                        marginTop: '8px',
-                        marginBottom: '8px' 
-                      }}>
+                      <div className={styles.propertyInfoContainer}>
                         Property: <strong>{review.propertyId.propertyKeyword || 'N/A'}</strong>
                         <br />
                         <a 
                           href={`/property-detail/${review.propertyId._id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{
-                            color: '#f1913d',
-                            textDecoration: 'none',
-                            fontSize: '11px',
-                            fontWeight: '500',
-                            marginTop: '4px',
-                            display: 'inline-block',
-                            padding: '2px 6px',
-                            backgroundColor: '#fef7f1',
-                            borderRadius: '4px',
-                            border: '1px solid rgba(241, 145, 61, 0.2)',
-                            transition: 'all 0.2s ease'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#f1913d';
-                            e.target.style.color = '#ffffff';
-                            e.target.style.borderColor = '#f1913d';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#fef7f1';
-                            e.target.style.color = '#f1913d';
-                            e.target.style.borderColor = 'rgba(241, 145, 61, 0.2)';
-                          }}
+                          className={styles.propertyLink}
                         >
                           View Property Details (ID: {review.propertyId._id})
                         </a>
@@ -317,24 +291,11 @@ export default function Review() {
                     <div className="ratings">
                       {renderStars(review.rating || 5)}
                     </div>
-                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+                    <div className={styles.actionButtons}>
                       <button
                         onClick={() => handleHideFromDashboard(review._id)}
                         disabled={hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending}
-                        style={{
-                          background: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard) 
-                            ? '#9ca3af' 
-                            : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                          border: 'none',
-                          color: 'white',
-                          borderRadius: '6px',
-                          padding: '6px 12px',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          cursor: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending) ? 'not-allowed' : 'pointer',
-                          opacity: (hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard || hideFromDashboardMutation.isPending) ? 0.6 : 1,
-                          transition: 'all 0.2s ease'
-                        }}
+                        className={styles.hideButtonDashboard}
                         title={(hiddenFromDashboard.has(review._id) || review.hiddenFromDashboard) ? 'Already hidden' : 'Hide from Dashboard'}
                       >
                         {hideFromDashboardMutation.isPending && !hiddenFromDashboard.has(review._id) && !review.hiddenFromDashboard ? 'Hiding...' : 
@@ -343,20 +304,7 @@ export default function Review() {
                       <button
                         onClick={() => handleHideFromListing(review._id)}
                         disabled={hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending}
-                        style={{
-                          background: (hiddenFromListing.has(review._id) || review.hiddenFromListing) 
-                            ? '#9ca3af' 
-                            : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                          border: 'none',
-                          color: 'white',
-                          borderRadius: '6px',
-                          padding: '6px 12px',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          cursor: (hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending) ? 'not-allowed' : 'pointer',
-                          opacity: (hiddenFromListing.has(review._id) || review.hiddenFromListing || hideFromListingMutation.isPending) ? 0.6 : 1,
-                          transition: 'all 0.2s ease'
-                        }}
+                        className={styles.hideButtonListing}
                         title={(hiddenFromListing.has(review._id) || review.hiddenFromListing) ? 'Already hidden' : 'Hide from Listing'}
                       >
                         {hideFromListingMutation.isPending && !hiddenFromListing.has(review._id) && !review.hiddenFromListing ? 'Hiding...' : 
@@ -369,67 +317,28 @@ export default function Review() {
 
               {/* Pagination */}
               {pagination.totalPages > 1 && (
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginTop: '30px',
-                  paddingTop: '20px',
-                  borderTop: '1px solid #e5e5e5'
-                }}>
+                <div className={styles.paginationContainer}>
                   {/* Previous Button */}
                   <button
                     onClick={handlePrevPage}
                     disabled={!pagination.hasPreviousPage}
-                    style={{
-                      padding: '8px 16px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '6px',
-                      background: pagination.hasPreviousPage ? '#fff' : '#f5f5f5',
-                      color: pagination.hasPreviousPage ? '#333' : '#999',
-                      cursor: pagination.hasPreviousPage ? 'pointer' : 'not-allowed',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={styles.paginationNavButton}
                   >
                     « Previous
                   </button>
 
                   {/* Page Numbers */}
-                  <div style={{ display: 'flex', gap: '5px' }}>
+                  <div className={styles.paginationPageNumbers}>
                     {getPageNumbers().map((page, index) => (
                       page === '...' ? (
-                        <span key={`ellipsis-${index}`} style={{ padding: '8px 12px', color: '#999' }}>
+                        <span key={`ellipsis-${index}`} className={styles.paginationEllipsis}>
                           ...
                         </span>
                       ) : (
                         <button
                           key={page}
                           onClick={() => handlePageClick(page)}
-                          style={{
-                            padding: '8px 12px',
-                            border: '1px solid #e5e5e5',
-                            borderRadius: '6px',
-                            background: currentPage === page ? '#ff6b35' : '#fff',
-                            color: currentPage === page ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: currentPage === page ? '600' : '400',
-                            minWidth: '40px',
-                            transition: 'all 0.2s ease'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (currentPage !== page) {
-                              e.target.style.backgroundColor = '#f5f5f5';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (currentPage !== page) {
-                              e.target.style.backgroundColor = '#fff';
-                            }
-                          }}
+                          className={`${styles.paginationPageButton} ${currentPage === page ? styles.paginationPageButtonActive : ''}`}
                         >
                           {page}
                         </button>
@@ -441,17 +350,7 @@ export default function Review() {
                   <button
                     onClick={handleNextPage}
                     disabled={!pagination.hasNextPage}
-                    style={{
-                      padding: '8px 16px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '6px',
-                      background: pagination.hasNextPage ? '#fff' : '#f5f5f5',
-                      color: pagination.hasNextPage ? '#333' : '#999',
-                      cursor: pagination.hasNextPage ? 'pointer' : 'not-allowed',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={styles.paginationNavButton}
                   >
                     Next »
                   </button>

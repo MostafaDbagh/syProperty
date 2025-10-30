@@ -2,6 +2,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
+import logger from "@/utils/logger";
 
 export default function GlobalStatusModal({ 
   isOpen, 
@@ -120,11 +121,11 @@ export default function GlobalStatusModal({
                 {isSuccess && (
                   <button
                     onClick={() => {
-                      console.log('🔑 Login Now button clicked - closing success modal and opening login modal');
+                      logger.debug('🔑 Login Now button clicked - closing success modal and opening login modal');
                       onClose();
                       // Open login modal after a short delay
                       setTimeout(() => {
-                        console.log('🔑 Opening login modal via GlobalModalContext');
+                        logger.debug('🔑 Opening login modal via GlobalModalContext');
                         showLoginModal();
                       }, 200);
                     }}

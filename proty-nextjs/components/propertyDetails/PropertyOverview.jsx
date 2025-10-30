@@ -5,6 +5,7 @@ import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
 import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
 import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon, CopyIcon, CheckIcon } from "@/components/icons";
+import logger from "@/utils/logger";
 
 export default function PropertyOverview({ property }) {
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function PropertyOverview({ property }) {
       setCopiedId(propertyId);
       setTimeout(() => setCopiedId(null), 2000);
     } catch (error) {
-      console.error('Failed to copy property ID:', error);
+      logger.error('Failed to copy property ID:', error);
     }
   };
   

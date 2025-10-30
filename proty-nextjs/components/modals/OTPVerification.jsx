@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
+import styles from "./OTPVerification.module.css"
 
 export default function OTPVerification({ 
   isOpen, 
@@ -32,11 +33,8 @@ export default function OTPVerification({
       setOtp(['', '', '', '', '', '']);
       setError('');
       setOtpVerified(false);
-      
       if (inputRefs.current[0]) {
-        setTimeout(() => {
-          inputRefs.current[0].focus();
-        }, 100);
+        setTimeout(() => { inputRefs.current[0].focus(); }, 100);
       }
     }
   }, [isOpen]);
@@ -44,9 +42,7 @@ export default function OTPVerification({
   // Resend cooldown timer
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => {
-        setResendCooldown(resendCooldown - 1);
-      }, 1000);
+      const timer = setTimeout(() => { setResendCooldown(resendCooldown - 1); }, 1000);
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
@@ -62,12 +58,10 @@ export default function OTPVerification({
   const handleOTPChange = (index, value) => {
     if (value.length > 1) return;
     if (value && !/^\d$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
     setError('');
-
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -81,25 +75,19 @@ export default function OTPVerification({
 
   const handleVerifyOTP = async (e) => {
     if (e) e.preventDefault();
-    
     const otpString = otp.join('');
     if (otpString.length !== 6) {
       setError('Please enter all 6 digits');
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
       const verifyResult = await authAPI.verifyOTP(email, otpString, type);
-      
       if (verifyResult.success) {
         setOtpVerified(true);
-        
         if (type === 'signup') {
           const result = await authAPI.signup(userData);
-          
           if (result.success) {
             showSuccessModal(
               "Registration Successful!",
@@ -123,16 +111,10 @@ export default function OTPVerification({
         inputRefs.current[0]?.focus();
       }
     } catch (error) {
-      if (error.message) {
-        setError(error.message);
-      } else if (error.error) {
-        setError(error.error);
-      } else if (typeof error === 'string') {
-        setError(error);
-      } else {
-        setError('OTP verification failed. Please try again.');
-      }
-      
+      if (error.message) setError(error.message);
+      else if (error.error) setError(error.error);
+      else if (typeof error === 'string') setError(error);
+      else setError('OTP verification failed. Please try again.');
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
@@ -142,10 +124,8 @@ export default function OTPVerification({
 
   const handleResendOTP = async () => {
     if (resendCooldown > 0) return;
-    
     setIsSendingOTP(true);
     setError('');
-
     try {
       await authAPI.sendOTP(email, type);
       setResendCooldown(30);
@@ -168,100 +148,37 @@ export default function OTPVerification({
 
   return (
     <div 
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 999999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)'
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          handleClose();
-        }
-      }}
+      className={styles.overlay}
+      onClick={(e) => { if (e.target === e.currentTarget) { handleClose(); } }}
     >
-      
       {/* Modal content */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        padding: '30px',
-        maxWidth: '480px',
-        width: '90%',
-        maxHeight: '90vh',
-        overflow: 'auto',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
-      }}>
+      <div className={styles.container}>
         {/* Header */}
-        <div style={{ position: 'relative', marginBottom: '24px' }}>
-          <h4 style={{ 
-            margin: 0, 
-            fontSize: '24px', 
-            fontWeight: '600', 
-            color: 'var(--Heading)',
-            textAlign: 'center'
-          }}>
+        <div className={styles.header}>
+          <h4 className={styles.title}>
             {type === 'forgot_password' ? 'Email Verification for Reset Password' : 'Verify Your Email'}
           </h4>
           <span
             onClick={handleClose}
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              cursor: 'pointer', 
-              fontSize: '24px', 
-              color: 'var(--Note)',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            className={styles.closeIcon}
           >
             ×
           </span>
         </div>
         
         {/* Email section */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{
-            width: '64px',
-            height: '64px',
-            backgroundColor: 'var(--Sub-primary-1)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 16px',
-            fontSize: '28px',
-            color: 'var(--Primary)'
-          }}>
-            📧
-          </div>
-          <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '16px' }}>
-            {type === 'forgot_password' ? 'We\'ve sent a password reset code to' : 'We\'ve sent a 6-digit code to'}
+        <div className={styles.emailSection}>
+          <div className={styles.emailIcon}>📧</div>
+          <p className={styles.emailText}>
+            {type === 'forgot_password' ? "We've sent a password reset code to" : "We've sent a 6-digit code to"}
           </p>
-          <p style={{ margin: '0 0 16px 0', color: 'var(--Primary)', fontSize: '16px', fontWeight: '600' }}>
+          <p className={styles.emailAddress}>
             {email}
           </p>
           
           {/* OTP Warning */}
-          <div style={{
-            backgroundColor: 'var(--Sub-primary-1)',
-            border: '1px solid var(--Sub-primary-2)',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            marginBottom: '8px',
-            display: 'inline-block'
-          }}>
-            <p style={{ margin: 0, color: 'var(--Primary)', fontSize: '14px', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <div className={styles.warningBox}>
+            <p className={styles.warningText}>
               <span>⏰</span>
               OTP will expire after 5 minutes
             </p>
@@ -270,12 +187,11 @@ export default function OTPVerification({
 
         {/* OTP Input */}
         <form onSubmit={handleVerifyOTP}>
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '600', color: 'var(--Heading)' }}>
+          <div className={styles.otpBlock}>
+            <label className={styles.otpLabel}>
               Enter verification code
             </label>
-            
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '16px' }}>
+            <div className={styles.otpInputs}>
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -285,61 +201,25 @@ export default function OTPVerification({
                   onChange={(e) => handleOTPChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   maxLength="1"
-                  style={{
-                    width: '48px',
-                    height: '56px',
-                    border: '2px solid var(--Line)',
-                    borderRadius: '8px',
-                    textAlign: 'center',
-                    fontSize: '24px',
-                    fontWeight: '600',
-                    backgroundColor: 'var(--White)',
-                    outline: 'none',
-                    color: 'var(--Heading)',
-                    transition: 'border-color 0.2s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--Primary)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--Line)';
-                  }}
+                  className={styles.otpInput}
+                  onFocus={(e) => { e.target.classList.add(styles.otpInputFocused); }}
+                  onBlur={(e) => { e.target.classList.remove(styles.otpInputFocused); }}
                 />
               ))}
             </div>
-
             {error && (
-              <div style={{
-                backgroundColor: '#fee',
-                color: '#c33',
-                padding: '12px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                textAlign: 'center',
-                marginBottom: '16px'
-              }}>
+              <div className={styles.errorAlert}>
                 {error}
               </div>
             )}
           </div>
 
           {/* Submit button */}
-          <div style={{ marginBottom: '24px' }}>
+          <div className={styles.submitBlock}>
             <button
               type="submit"
               disabled={otp.join('').length !== 6 || isLoading}
-              style={{
-                width: '100%',
-                padding: '14px',
-                backgroundColor: otp.join('').length === 6 && !isLoading ? 'var(--Primary)' : 'var(--Note)',
-                color: 'var(--White)',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: otp.join('').length === 6 && !isLoading ? 'pointer' : 'not-allowed',
-                transition: 'all 0.2s'
-              }}
+              className={`${styles.submitButton} ${otp.join('').length === 6 && !isLoading ? styles.submitEnabled : styles.submitDisabled}`}
             >
               {type === 'forgot_password' 
                 ? (isLoading ? 'Verifying...' : 'Verify & Reset Password')
@@ -349,34 +229,15 @@ export default function OTPVerification({
           </div>
 
           {/* Resend section */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: '0 0 8px 0', color: 'var(--Text)', fontSize: '14px' }}>
+          <div className={styles.resendSection}>
+            <p className={styles.resendText}>
               Didn't receive the code?
             </p>
             <button
               type="button"
               onClick={handleResendOTP}
               disabled={resendCooldown > 0 || isSendingOTP}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--Primary)',
-                cursor: resendCooldown > 0 || isSendingOTP ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                textDecoration: 'none',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                if (resendCooldown === 0 && !isSendingOTP) {
-                  e.target.style.backgroundColor = 'var(--Sub-primary-1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'transparent';
-              }}
+              className={styles.resendButton}
             >
               {isSendingOTP ? 'Sending...' : 
                resendCooldown > 0 ? 'Resend in ' + resendCooldown + 's' : 

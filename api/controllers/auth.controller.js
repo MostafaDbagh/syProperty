@@ -2,6 +2,7 @@ const User = require('../models/user.model.js');
 const bcryptjs = require('bcryptjs');
 const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
 
 const signup = async (req, res, next) => {
   const { username, email, password, role } = req.body;
@@ -156,7 +157,7 @@ const sendOTP = async (req, res, next) => {
     
     // In a real application, you would send this OTP via email/SMS
     // For now, we'll just log it and return success
-    console.log(`${type.toUpperCase()} OTP for ${email}: ${otp}`);
+    logger.info(`${type.toUpperCase()} OTP for ${email}: ${otp}`);
     
     // Store OTP in memory (in production, use Redis or database)
     if (!global.otpStore) {

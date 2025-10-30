@@ -45,6 +45,8 @@ app.get('/api/health', (req, res) => {
 
 const PORT = process.env.PORT || 5500;
 
+const logger = require('./utils/logger');
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });

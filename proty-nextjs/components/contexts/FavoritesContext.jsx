@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { favoriteAPI } from '@/apis/favorites';
+import logger from '@/utils/logger';
 
 const FavoritesContext = createContext();
 
@@ -32,15 +33,15 @@ export const FavoritesProvider = ({ children }) => {
     try {
       // Get a small number of items to get the total count from pagination
       const response = await favoriteAPI.getFavorites({ page: 1, limit: 10 });
-      console.log('FavoritesContext - API response:', response);
+      logger.debug('FavoritesContext - API response:', response);
       const totalCount = response?.pagination?.totalFavorites || response?.data?.length || 0;
-      console.log('FavoritesContext - Setting count to:', totalCount);
+      logger.debug('FavoritesContext - Setting count to:', totalCount);
       setFavoritesCount(totalCount);
     } catch (error) {
-      console.error('Error loading favorites count:', error);
+      logger.error('Error loading favorites count:', error);
       // Don't reset to 0 on timeout - keep previous count
       if (error.message?.includes('timeout')) {
-        console.warn('Favorites API timeout - keeping previous count');
+        logger.warn('Favorites API timeout - keeping previous count');
       } else {
         setFavoritesCount(0);
       }

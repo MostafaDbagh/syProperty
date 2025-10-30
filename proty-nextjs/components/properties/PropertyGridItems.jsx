@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import FavoriteButton from "../common/FavoriteButton";
 import { usePropertyActions } from "@/hooks/usePropertyActions";
 import "./PropertyImageFix.css";
+import logger from "@/utils/logger";
 
 export default function PropertyGridItems({ listings = [] }) {
   const [showPhoneNumbers, setShowPhoneNumbers] = useState({});
@@ -197,7 +198,7 @@ export default function PropertyGridItems({ listings = [] }) {
                 width={339}
                 height={245}
                 onError={(e) => {
-                  console.log('Image failed to load:', e.target.src);
+                  logger.warn('Image failed to load:', e.target.src);
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}

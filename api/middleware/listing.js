@@ -110,7 +110,7 @@ const filterListings = async (req, res, next) => {
     req.sortOptions = sortOptions;
     next();
   } catch (err) {
-    console.error(err);
+    logger.error('Listing middleware error:', err);
     res.status(500).json({ error: 'Server Error' });
   }
 };

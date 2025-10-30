@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { footerData } from "@/data/footerLinks";
+import logger from "@/utils/logger";
+import styles from "./Footer1.module.css";
 export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
   useEffect(() => {
     const headings = document.querySelectorAll(".title-mobile");
@@ -63,7 +65,7 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
         handleShowMessage();
       }
     } catch (error) {
-      console.error("Error:", error.response?.data || "An error occurred");
+      logger.error("Error:", error.response?.data || "An error occurred");
       setSuccess(false); // Set error state
       handleShowMessage();
       e.target.reset(); // Reset the form
@@ -186,11 +188,11 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
                           }`}
                         >
                           {success ? (
-                            <p style={{ color: "rgb(52, 168, 83)" }}>
+                            <p className={styles.successMessage}>
                               You have successfully subscribed.
                             </p>
                           ) : (
-                            <p style={{ color: "red" }}>Something went wrong</p>
+                            <p className={styles.errorMessage}>Something went wrong</p>
                           )}
                         </div>
                         <form onSubmit={sendEmail} id="sib-form">
@@ -241,7 +243,7 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
                                   <label className="mb-0">
                                     <span className="text-2 text-color-default">
                                       I have read and agree to the{" "}
-                                      <Link href="/terms-and-conditions" style={{ color: '#ff6b35', textDecoration: 'underline' }}>
+                                      <Link href="/terms-and-conditions" className={styles.termsLink}>
                                         terms &amp; conditions
                                       </Link>
                                     </span>
@@ -283,7 +285,7 @@ export default function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
               Copyright © {new Date().getFullYear()}{" "}
               <span className="fw-7">PROTY - REAL ESTATE</span> . Designed &amp;
               Developed by
-              <a href="#">Themesflat</a>
+              <a href="#" className={styles.developerLink}>Themesflat</a>
             </p>
             <div className="wrap-social">
               <div className="text-3  fw-6 text_white">Follow us</div>

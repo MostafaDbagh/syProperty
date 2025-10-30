@@ -7,6 +7,7 @@ import LocationLoader from "../common/LocationLoader";
 import { useMessagesByAgent, useMessageMutations } from "@/apis/hooks";
 import Toast from "../common/Toast";
 import { CopyIcon, CheckIcon } from "@/components/icons";
+import styles from "./Messages.module.css";
 
 export default function Messages() {
   const [user, setUser] = useState(null);
@@ -349,81 +350,33 @@ export default function Messages() {
         {/* Statistics Cards */}
         <div className="row mb-4" style={{ justifyContent: 'center' }}>
           <div className="col-md-3 col-sm-6 mb-3">
-            <div style={{ 
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-              borderRadius: '16px',
-              padding: '28px 24px',
-              color: 'white',
-              boxShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
-              textAlign: 'center',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 15px 40px rgba(99, 102, 241, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 10px 30px rgba(99, 102, 241, 0.2)';
-            }}>
-              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>
                 {stats.total || 0}
               </div>
-              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+              <div className={styles.statLabel}>
                 Total Messages
               </div>
             </div>
           </div>
           
           <div className="col-md-3 col-sm-6 mb-3">
-            <div style={{ 
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              borderRadius: '16px',
-              padding: '28px 24px',
-              color: 'white',
-              boxShadow: '0 10px 30px rgba(16, 185, 129, 0.2)',
-              textAlign: 'center',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 15px 40px rgba(16, 185, 129, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.2)';
-            }}>
-              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>
                 {stats.replied || 0}
               </div>
-              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+              <div className={styles.statLabel}>
                 Replied
               </div>
             </div>
           </div>
           
           <div className="col-md-3 col-sm-6 mb-3">
-            <div style={{ 
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-              borderRadius: '16px',
-              padding: '28px 24px',
-              color: 'white',
-              boxShadow: '0 10px 30px rgba(245, 158, 11, 0.2)',
-              textAlign: 'center',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 15px 40px rgba(245, 158, 11, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 10px 30px rgba(245, 158, 11, 0.2)';
-            }}>
-              <div style={{ fontSize: '36px', fontWeight: '700', marginBottom: '8px' }}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>
                 {stats.unread || 0}
               </div>
-              <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '500' }}>
+              <div className={styles.statLabel}>
                 Unread
               </div>
             </div>

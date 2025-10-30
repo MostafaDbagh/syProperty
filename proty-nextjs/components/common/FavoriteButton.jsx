@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { favoriteAPI } from '@/apis/favorites';
 import { useRouter } from 'next/navigation';
 import { useFavorites } from '@/components/contexts/FavoritesContext';
+import logger from '@/utils/logger';
 
 export default function FavoriteButton({ 
   propertyId, 
@@ -32,7 +33,7 @@ export default function FavoriteButton({
         const favorited = await favoriteAPI.isFavorited(propertyId);
         setIsFavorited(favorited);
       } catch (error) {
-        console.error('Error checking favorite status:', error);
+        logger.error('Error checking favorite status:', error);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -79,7 +80,7 @@ export default function FavoriteButton({
         }
       }
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      logger.error('Error toggling favorite:', error);
       
       // Show error message
       alert(error?.message || error?.error || 'Failed to update favorites. Please try again.');

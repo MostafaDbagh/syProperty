@@ -243,7 +243,7 @@ const getDashboardStats = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Dashboard Stats Error:', error);
+    logger.error('Dashboard Stats Error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve dashboard statistics',
@@ -515,7 +515,7 @@ const getDashboardAnalytics = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Dashboard Analytics Error:', error);
+    logger.error('Dashboard Analytics Error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve dashboard analytics',
@@ -695,7 +695,7 @@ const getDashboardNotifications = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Dashboard Notifications Error:', error);
+    logger.error('Dashboard Notifications Error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve dashboard notifications',

@@ -12,12 +12,13 @@ export default function Header10() {
               <div className="header-inner-wrap">
                 <div className="header-logo">
                   <Link href={`/`} className="site-logo">
-                    <img
+                    <Image
                       className="logo_header"
                       alt="Property website logo"
-                      data-light="/images/logo/logo@2x.png"
-                      data-dark="/images/logo/logo-2@2x.png"
                       src="/images/logo/logo@2x.png"
+                      width={120}
+                      height={56}
+                      priority
                     />
                   </Link>
                 </div>

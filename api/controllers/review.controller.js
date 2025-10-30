@@ -27,7 +27,7 @@ const createReview = async (req, res) => {
 
     res.status(201).json({ message: 'Review created', review: newReview });
   } catch (error) {
-    console.error(error);
+    logger.error('Error creating review:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -57,7 +57,7 @@ const likeReview = async (req, res) => {
   
       res.status(200).json({ message: 'Review liked', likes: review.likedBy.length, dislikes: review.dislikedBy.length });
     } catch (error) {
-      console.error(error);
+      logger.error('Error liking review:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };
@@ -87,7 +87,7 @@ const likeReview = async (req, res) => {
   
       res.status(200).json({ message: 'Review disliked', likes: review.likedBy.length, dislikes: review.dislikedBy.length });
     } catch (error) {
-      console.error(error);
+      logger.error('Error disliking review:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };
@@ -124,7 +124,7 @@ const getReviews = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
+    logger.error('Error creating review:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -149,7 +149,7 @@ const getReviewsByProperty = async (req, res) => {
         data: reviews
       });
     } catch (error) {
-      console.error(error);
+      logger.error('Error deleting review:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };
@@ -275,7 +275,7 @@ const getReviewsByProperty = async (req, res) => {
         }
       });
     } catch (error) {
-      console.error('Error in getReviewsByAgent:', error);
+      logger.error('Error in getReviewsByAgent:', error);
       res.status(500).json({ 
         success: false,
         message: 'Server error',
@@ -306,7 +306,7 @@ const getReviewsByProperty = async (req, res) => {
   
       res.status(200).json(reviews);
     } catch (error) {
-      console.error(error);
+      logger.error('Error getting reviews:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };
@@ -333,7 +333,7 @@ const getReviewsByProperty = async (req, res) => {
         data: review
       });
     } catch (error) {
-      console.error('Error hiding review from dashboard:', error);
+      logger.error('Error hiding review from dashboard:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };
@@ -360,7 +360,7 @@ const getReviewsByProperty = async (req, res) => {
         data: review
       });
     } catch (error) {
-      console.error('Error hiding review from listing:', error);
+      logger.error('Error hiding review from listing:', error);
       res.status(500).json({ message: 'Server error' });
     }
   };

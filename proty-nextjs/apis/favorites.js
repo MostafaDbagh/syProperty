@@ -1,4 +1,5 @@
 import Axios from '../axios';
+import logger from '../utils/logger';
 
 // Favorite API functions
 export const favoriteAPI = {
@@ -71,7 +72,7 @@ export const favoriteAPI = {
     } catch (error) {
       // Don't log error for unauthenticated users
       if (error.response?.status !== 401) {
-        console.error('Error checking if favorited:', error);
+        logger.error('Error checking if favorited:', error);
       }
       return false;
     }

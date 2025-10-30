@@ -1,4 +1,5 @@
 import axios from '../axios';
+import logger from '../utils/logger';
 
 const dashboardAPI = {
   /**
@@ -10,7 +11,7 @@ const dashboardAPI = {
       const response = await axios.get('/dashboard/stats');
       return response.data;
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      logger.error('Error fetching dashboard stats:', error);
       throw error;
     }
   },
@@ -25,7 +26,7 @@ const dashboardAPI = {
       const response = await axios.get(`/dashboard/analytics?period=${period}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching dashboard analytics:', error);
+      logger.error('Error fetching dashboard analytics:', error);
       throw error;
     }
   },
@@ -39,7 +40,7 @@ const dashboardAPI = {
       const response = await axios.get('/dashboard/notifications');
       return response.data;
     } catch (error) {
-      console.error('Error fetching dashboard notifications:', error);
+      logger.error('Error fetching dashboard notifications:', error);
       throw error;
     }
   },
@@ -53,7 +54,7 @@ const dashboardAPI = {
       const response = await axios.get('/dashboard/health');
       return response.data;
     } catch (error) {
-      console.error('Error fetching dashboard health:', error);
+      logger.error('Error fetching dashboard health:', error);
       throw error;
     }
   }

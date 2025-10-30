@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import styles from "./NewPassword.module.css";
+import logger from "@/utils/logger";
 
 export default function NewPassword({ isOpen, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -80,7 +81,7 @@ export default function NewPassword({ isOpen, onClose, onSubmit }) {
       // Only show local error if it's a validation error
       // API errors will be handled by the parent component with error modal
       const errorMsg = err.message || "Failed to reset password. Please try again.";
-      console.log("NewPassword error:", errorMsg);
+      logger.error("NewPassword error:", errorMsg);
       // Don't set local error as the parent will show error modal
     } finally {
       setIsSubmitting(false);

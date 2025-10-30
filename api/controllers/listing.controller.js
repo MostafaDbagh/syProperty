@@ -409,7 +409,7 @@ const getListingsByAgent = async (req, res, next) => {
       }
     });
   } catch (error) {
-    console.error('getListingsByAgent - Error:', error);
+    logger.error('getListingsByAgent - Error:', error);
     next(error);
   }
 };
@@ -477,7 +477,7 @@ const getEachStateListing = async (req, res) => {
 
     res.status(200).json({ success: true, data: formatted });
   } catch (error) {
-    console.error("Error in getEachStateListing:", error);
+    logger.error("Error in getEachStateListing:", error);
     res.status(500).json({
       success: false,
       message: "Server Error",

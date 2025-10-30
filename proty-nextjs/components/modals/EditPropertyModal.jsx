@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { listingAPI } from '@/apis/listing';
+import styles from './EditPropertyModal.module.css'
 
 const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -122,140 +123,50 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
     onClose();
   };
 
-  // Standard input styling
-  const inputStyle = {
-    width: '100%',
-    padding: '14px 18px',
-    border: '2px solid #e1e5e9',
-    borderRadius: '8px',
-    fontSize: '14px',
-    color: '#333333',
-    backgroundColor: '#ffffff',
-    transition: 'border-color 0.2s ease',
-    outline: 'none'
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '10px',
-    fontWeight: '600',
-    color: '#333333',
-    fontSize: '14px'
-  };
-
+  // Standard input styling (migrated to CSS)
   const handleInputFocus = (e) => {
-    e.target.style.borderColor = '#007bff';
+    e.target.classList.add(styles.inputFocused);
   };
 
   const handleInputBlur = (e) => {
-    e.target.style.borderColor = '#e1e5e9';
+    e.target.classList.remove(styles.inputFocused);
   };
 
   if (!isOpen || !property) return null;
 
   return (
     <div 
-      className="modal-overlay" 
+      className={styles.modalOverlay}
       onClick={handleCancel}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '20px'
-      }}
     >
       <div 
-        className="modal-content" 
+        className={styles.modalContent}
         onClick={(e) => e.stopPropagation()}
-        style={{
-        backgroundColor: '#ffffff',
-        borderRadius: '12px',
-        padding: '0',
-        width: '100%',
-        maxWidth: '650px',
-        maxHeight: '90vh',
-        overflow: 'hidden',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '20px'
-      }}>
-        <div className="modal-header" style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '30px 40px',
-          borderBottom: '1px solid #f0f0f0',
-          backgroundColor: '#fafafa'
-        }}>
-          <h2 style={{ 
-            margin: 0, 
-            fontSize: '24px', 
-            fontWeight: '600',
-            color: '#333333'
-          }}>
+      >
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>
             Edit Property
           </h2>
           <button 
             onClick={handleCancel}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '28px',
-              cursor: 'pointer',
-              color: '#999999',
-              width: '32px',
-              height: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '50%',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#f0f0f0';
-              e.target.style.color = '#666666';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-              e.target.style.color = '#999999';
-            }}
+            className={styles.closeButton}
           >
             ×
           </button>
         </div>
 
-        <div style={{ 
-          flex: 1, 
-          overflowY: 'auto',
-          padding: '0'
-        }}>
-          <form onSubmit={handleSubmit} style={{ padding: '40px' }}>
+        <div className={styles.modalBody}>
+          <form onSubmit={handleSubmit} className={styles.formContainer}>
             {error && (
-              <div style={{
-                backgroundColor: '#fee',
-                color: '#c33',
-                padding: '12px 16px',
-                borderRadius: '6px',
-                marginBottom: '24px',
-                border: '1px solid #fcc',
-                fontSize: '14px'
-              }}>
+              <div className={styles.errorAlert}>
                 {error}
               </div>
             )}
 
-            <div style={{ display: 'grid', gap: '28px' }}>
+            <div className={styles.gridGap28}>
             {/* Property Title */}
             <div>
-              <label style={labelStyle}>
+              <label className={styles.formLabel}>
                 Property Title *
               </label>
               <input
@@ -264,7 +175,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                 value={formData.propertyKeyword}
                 onChange={handleInputChange}
                 required
-                style={inputStyle}
+                className={styles.input}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
@@ -272,7 +183,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
 
             {/* Address */}
             <div>
-              <label style={labelStyle}>
+              <label className={styles.formLabel}>
                 Address *
               </label>
               <input
@@ -281,16 +192,16 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                 value={formData.address}
                 onChange={handleInputChange}
                 required
-                style={inputStyle}
+                className={styles.input}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
             </div>
 
             {/* Price and Status Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
+            <div className={styles.gridTwoCols}>
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Price *
                 </label>
                 <input
@@ -301,21 +212,21 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   required
                   min="0"
                   step="0.01"
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
               </div>
 
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Property Type
                 </label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 >
@@ -326,9 +237,9 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
             </div>
 
             {/* Property Details Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '28px' }}>
+            <div className={styles.gridThreeCols}>
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Bedrooms
                 </label>
                 <input
@@ -337,14 +248,14 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   value={formData.bedrooms}
                   onChange={handleInputChange}
                   min="0"
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
               </div>
 
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Bathrooms
                 </label>
                 <input
@@ -354,14 +265,14 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   onChange={handleInputChange}
                   min="0"
                   step="0.5"
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
               </div>
 
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Square Footage
                 </label>
                 <input
@@ -370,7 +281,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   value={formData.squareFootage}
                   onChange={handleInputChange}
                   min="0"
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
@@ -378,9 +289,9 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
             </div>
 
             {/* Additional Details Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
+            <div className={styles.gridTwoCols}>
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Year Built
                 </label>
                 <input
@@ -390,14 +301,14 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   onChange={handleInputChange}
                   min="1800"
                   max={new Date().getFullYear()}
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
               </div>
 
               <div>
-                <label style={labelStyle}>
+                <label className={styles.formLabel}>
                   Property Category
                 </label>
                 <input
@@ -406,7 +317,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                   value={formData.propertyType}
                   onChange={handleInputChange}
                   placeholder="e.g., Apartment, House, Villa"
-                  style={inputStyle}
+                  className={styles.input}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
@@ -415,7 +326,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
 
             {/* Description */}
             <div>
-              <label style={labelStyle}>
+              <label className={styles.formLabel}>
                 Description
               </label>
               <textarea
@@ -423,11 +334,7 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows="4"
-                style={{
-                  ...inputStyle,
-                  resize: 'vertical',
-                  minHeight: '100px'
-                }}
+                className={`${styles.input} ${styles.textarea}`}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
@@ -435,14 +342,14 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
 
             {/* Approval Status */}
             <div>
-              <label style={labelStyle}>
+              <label className={styles.formLabel}>
                 Approval Status
               </label>
               <select
                 name="approvalStatus"
                 value={formData.approvalStatus}
                 onChange={handleInputChange}
-                style={inputStyle}
+                className={styles.input}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               >
@@ -455,64 +362,24 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
 
             {/* Amenities */}
             <div>
-              <label style={labelStyle}>
+              <label className={styles.formLabel}>
                 Amenities
               </label>
-              <div style={{
-                border: '2px solid #e1e5e9',
-                borderRadius: '8px',
-                padding: '16px',
-                backgroundColor: '#ffffff',
-                maxHeight: '300px',
-                overflowY: 'auto'
-              }}>
+              <div className={styles.amenitiesWrap}>
                 {/* Available Amenities Grid */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                  gap: '12px',
-                  marginBottom: '20px'
-                }}>
+                <div className={styles.amenitiesGrid}>
                   {availableAmenities.map((amenity) => (
                     <label
                       key={amenity}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        backgroundColor: formData.amenities.includes(amenity) ? '#e3f2fd' : '#f8f9fa',
-                        border: formData.amenities.includes(amenity) ? '1px solid #2196f3' : '1px solid #e1e5e9',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        fontSize: '14px',
-                        fontWeight: '500'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!formData.amenities.includes(amenity)) {
-                          e.target.style.backgroundColor = '#f0f0f0';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!formData.amenities.includes(amenity)) {
-                          e.target.style.backgroundColor = '#f8f9fa';
-                        }
-                      }}
+                      className={styles.amenityItem}
                     >
                       <input
                         type="checkbox"
                         checked={formData.amenities.includes(amenity)}
                         onChange={() => handleAmenityToggle(amenity)}
-                        style={{
-                          margin: 0,
-                          cursor: 'pointer'
-                        }}
+                        className={styles.checkbox}
                       />
-                      <span style={{
-                        color: formData.amenities.includes(amenity) ? '#1976d2' : '#333333',
-                        userSelect: 'none'
-                      }}>
+                      <span className={formData.amenities.includes(amenity) ? styles.amenitySelected : styles.amenityLabel}>
                         {amenity}
                       </span>
                     </label>
@@ -522,56 +389,10 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
                 {/* Selected Amenities */}
                 {formData.amenities.length > 0 && (
                   <div>
-                    <h4 style={{
-                      margin: '0 0 12px 0',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#333333'
-                    }}>
-                      Selected Amenities ({formData.amenities.length})
-                    </h4>
-                    <div style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '8px'
-                    }}>
-                      {formData.amenities.map((amenity, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '6px 12px',
-                            backgroundColor: '#e3f2fd',
-                            border: '1px solid #2196f3',
-                            borderRadius: '20px',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            color: '#1976d2'
-                          }}
-                        >
-                          {amenity}
-                          <button
-                            type="button"
-                            onClick={() => handleAmenityToggle(amenity)}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: '#1976d2',
-                              cursor: 'pointer',
-                              fontSize: '16px',
-                              padding: '0',
-                              width: '16px',
-                              height: '16px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}
-                          >
-                            ×
-                          </button>
-                        </span>
+                    <div className={styles.selectedAmenitiesTitle}>Selected Amenities:</div>
+                    <div className={styles.selectedAmenitiesChips}>
+                      {formData.amenities.map((a) => (
+                        <span key={a} className={styles.chip}>{a}</span>
                       ))}
                     </div>
                   </div>
@@ -579,79 +400,15 @@ const EditPropertyModal = ({ isOpen, onClose, property, onSuccess }) => {
               </div>
             </div>
             </div>
-          </form>
-        </div>
 
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '20px',
-          justifyContent: 'flex-end',
-          padding: '30px 40px',
-          borderTop: '1px solid #f0f0f0',
-          backgroundColor: '#fafafa'
-        }}>
-          <button
-            type="button"
-            onClick={handleCancel}
-            disabled={loading}
-            style={{
-              padding: '12px 24px',
-              border: '2px solid #e1e5e9',
-              borderRadius: '8px',
-              background: '#ffffff',
-              color: '#666666',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-              transition: 'all 0.2s ease',
-              minWidth: '100px'
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.target.style.borderColor = '#d1d5db';
-                e.target.style.backgroundColor = '#f9fafb';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.target.style.borderColor = '#e1e5e9';
-                e.target.style.backgroundColor = '#ffffff';
-              }
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            onClick={handleSubmit}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '8px',
-              background: loading ? '#94a3b8' : '#007bff',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s ease',
-              minWidth: window.innerWidth <= 360 ? '100%' : '120px'
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.target.style.backgroundColor = '#0056b3';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.target.style.backgroundColor = '#007bff';
-              }
-            }}
-          >
-            {loading ? 'Saving...' : 'Save Changes'}
-          </button>
+            {/* Footer Buttons */}
+            <div className={styles.footerButtons}>
+              <button type="button" onClick={handleCancel} className={styles.btnSecondary}>Cancel</button>
+              <button type="submit" disabled={loading} className={styles.btnPrimary}>
+                {loading ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

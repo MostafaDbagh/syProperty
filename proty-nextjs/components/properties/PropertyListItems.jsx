@@ -5,6 +5,7 @@ import React from "react";
 import FavoriteButton from "../common/FavoriteButton";
 import { usePropertyActions } from "@/hooks/usePropertyActions";
 import "./PropertyImageFix.css";
+import logger from "@/utils/logger";
 
 export default function PropertyListItems({ listings = [] }) {
   const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();
@@ -18,37 +19,37 @@ export default function PropertyListItems({ listings = [] }) {
 
   // Debug: Log the first property to see the data structure
   if (listings.length > 0) {
-    console.log('PropertyListItems - First property data:', listings[0]);
-    console.log('PropertyListItems - Images:', listings[0].images);
-    console.log('PropertyListItems - ImageNames:', listings[0].imageNames);
-    console.log('PropertyListItems - All keys:', Object.keys(listings[0]));
+    logger.debug('PropertyListItems - First property data:', listings[0]);
+    logger.debug('PropertyListItems - Images:', listings[0].images);
+    logger.debug('PropertyListItems - ImageNames:', listings[0].imageNames);
+    logger.debug('PropertyListItems - All keys:', Object.keys(listings[0]));
   }
 
   // Function to get image source
   const getImageSource = (property) => {
-    console.log('Getting image source for property:', property.propertyTitle);
+    logger.debug('Getting image source for property:', property.propertyTitle);
     
     // Try different possible image sources
     if (property.images && property.images.length > 0) {
       const firstImage = property.images[0];
-      console.log('First image object:', firstImage);
+      logger.debug('First image object:', firstImage);
       
       if (typeof firstImage === 'string') {
-        console.log('Image is string:', firstImage);
+        logger.debug('Image is string:', firstImage);
         return firstImage;
       } else if (firstImage && firstImage.url) {
-        console.log('Image URL:', firstImage.url);
+        logger.debug('Image URL:', firstImage.url);
         return firstImage.url;
       }
     }
     
     // Try imageNames as fallback
     if (property.imageNames && property.imageNames.length > 0) {
-      console.log('Using imageNames:', property.imageNames[0]);
+      logger.debug('Using imageNames:', property.imageNames[0]);
       return property.imageNames[0];
     }
     
-    console.log('Using default image');
+    logger.debug('Using default image');
     return "/images/section/box-house-2.jpg";
   };
 
@@ -93,7 +94,7 @@ export default function PropertyListItems({ listings = [] }) {
                 width={600}
                 height={401}
                 onError={(e) => {
-                  console.log('Image failed to load:', e.target.src);
+                  logger.warn('Image failed to load:', e.target.src);
                   e.target.src = "/images/section/box-house-2.jpg";
                 }}
               />

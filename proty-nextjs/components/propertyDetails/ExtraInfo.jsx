@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { formatPrice, formatStatus } from "@/utlis/propertyHelpers";
 import { CopyIcon, CheckIcon } from "@/components/icons";
+import logger from "@/utils/logger";
 
 export default function ExtraInfo({ property }) {
   const [copiedId, setCopiedId] = useState(null);
@@ -16,7 +17,7 @@ export default function ExtraInfo({ property }) {
       setCopiedId(propertyId);
       setTimeout(() => setCopiedId(null), 2000);
     } catch (error) {
-      console.error('Failed to copy property ID:', error);
+      logger.error('Failed to copy property ID:', error);
     }
   };
 

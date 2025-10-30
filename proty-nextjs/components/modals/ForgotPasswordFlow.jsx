@@ -6,6 +6,7 @@ import NewPassword from "./NewPassword";
 import PasswordResetSuccess from "./PasswordResetSuccess";
 import PasswordResetError from "./PasswordResetError";
 import { authAPI } from "@/apis/auth";
+import logger from "@/utils/logger";
 
 export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
   const [currentStep, setCurrentStep] = useState(1); // 1: Email, 2: OTP, 3: New Password, 4: Success, 5: Error
@@ -36,7 +37,7 @@ export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
       setEmail(userEmail);
       setCurrentStep(2); // Move to OTP verification
       
-      console.log("📧 Reset code sent to:", userEmail);
+      logger.debug("📧 Reset code sent to:", userEmail);
     } catch (error) {
       throw new Error("Failed to send reset code. Please try again.");
     }
@@ -44,41 +45,41 @@ export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
 
   // Handle OTP verification success
   const handleOTPSuccess = (otpCode) => {
-    console.log("🔄 handleOTPSuccess called, moving to step 3");
+    logger.debug("🔄 handleOTPSuccess called, moving to step 3");
     setOtpCode(otpCode); // Store the verified OTP
     setCurrentStep(3); // Move to new password
-    console.log("✅ OTP verified successfully, currentStep should be 3");
+    logger.debug("✅ OTP verified successfully, currentStep should be 3");
   };
 
   // Handle password reset
   const handlePasswordReset = async (newPassword) => {
     try {
-      console.log("🔄 Starting password reset for:", email);
+      logger.debug("🔄 Starting password reset for:", email);
       
       // Call API to reset password
       const response = await authAPI.resetPassword(email, newPassword);
       
-      console.log("✅ Password reset response:", response);
+      logger.debug("✅ Password reset response:", response);
       
       // Check if the response indicates success
       if (response && response.success) {
-        console.log("✅ Password reset successfully for:", email);
-        console.log("🔄 Setting currentStep to 4 (success modal)");
+        logger.debug("✅ Password reset successfully for:", email);
+        logger.debug("🔄 Setting currentStep to 4 (success modal)");
         
         // Move to success step
         setCurrentStep(4);
         setErrorMessage(""); // Clear any previous errors
         
-        console.log("✅ currentStep should now be 4");
+        logger.debug("✅ currentStep should now be 4");
       } else {
         // Handle unsuccessful response
         const message = response?.message || "Failed to reset password. Please try again.";
-        console.error("❌ Password reset failed:", message);
+        logger.error("❌ Password reset failed:", message);
         setErrorMessage(message);
         setCurrentStep(5); // Show error modal
       }
     } catch (error) {
-      console.error("❌ Password reset failed:", error);
+      logger.error("❌ Password reset failed:", error);
       
       // Extract error message from different error formats
       let errorMsg = "Failed to reset password. Please try again.";

@@ -7,6 +7,8 @@ import Toast from "../common/Toast";
 import { useRouter } from "next/navigation";
 import { syrianProvinces } from "@/data/provinces";
 import { amenitiesList } from "@/constants/amenities";
+import logger from "@/utils/logger";
+import styles from "./AddProperty.module.css";
 
 export default function AddProperty() {
   const router = useRouter();
@@ -230,11 +232,11 @@ export default function AddProperty() {
         imageNames: images.map(img => img.name)
       };
 
-      console.log("Submitting property data:", submitData);
+      logger.debug("Submitting property data:", submitData);
       
       const result = await createListingMutation.mutateAsync(submitData);
       
-      console.log("Property created successfully:", result);
+      logger.debug("Property created successfully:", result);
       
       setToast({ 
         type: "success", 
@@ -273,7 +275,7 @@ export default function AddProperty() {
       setTimeout(() => router.push("/my-property"), 2000);
       
     } catch (error) {
-      console.error("Error creating property:", error);
+      logger.error("Error creating property:", error);
       
       let errorMessage = "Failed to create property";
       
@@ -427,11 +429,7 @@ export default function AddProperty() {
                     className="form-control"
                     value="Syria"
                     disabled
-                    style={{ 
-                      backgroundColor: '#f5f5f5', 
-                      cursor: 'not-allowed',
-                      color: '#666'
-                    }}
+                    className={styles.disabledInput}
                   />
                   {errors.country && <span className="text-danger">{errors.country}</span>}
                 </fieldset>
@@ -698,7 +696,7 @@ export default function AddProperty() {
               className="tf-btn style-border pd-10"
               onClick={() => {
                 // Save as draft functionality
-                console.log("Save as draft:", formData);
+                logger.debug("Save as draft:", formData);
                 toast.success("Draft saved!");
               }}
             >

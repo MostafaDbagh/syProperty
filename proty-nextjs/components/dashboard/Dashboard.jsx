@@ -6,6 +6,8 @@ import Image from "next/image";
 import { properties5 } from "@/data/properties";
 import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics, useDashboardNotifications } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
+import logger from "@/utils/logger";
+import styles from "./Dashboard.module.css";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -16,7 +18,7 @@ export default function Dashboard() {
     if (storedUserData) {
       const parsedData = JSON.parse(storedUserData);
       setUserData(parsedData);
-      console.log('Dashboard userData loaded:', parsedData);
+      logger.debug('Dashboard userData loaded:', parsedData);
     } else {
       // Fallback: try to get user ID from token
       const token = localStorage.getItem('token');
@@ -25,9 +27,9 @@ export default function Dashboard() {
           const payload = JSON.parse(atob(token.split('.')[1]));
           const fallbackUserData = { id: payload.id };
           setUserData(fallbackUserData);
-          console.log('Dashboard fallback userData:', fallbackUserData);
+          logger.debug('Dashboard fallback userData:', fallbackUserData);
         } catch (error) {
-          console.error('Error parsing token:', error);
+          logger.error('Error parsing token:', error);
         }
       }
     }

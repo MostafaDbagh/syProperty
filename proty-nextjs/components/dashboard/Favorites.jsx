@@ -8,6 +8,8 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
 import { useFavorites } from "@/components/contexts/FavoritesContext";
+import logger from "@/utils/logger";
+import styles from "./Favorites.module.css";
 
 export default function Favorites() {
   const [user, setUser] = useState(null);
@@ -34,13 +36,13 @@ export default function Favorites() {
     const userData = localStorage.getItem('user');
     if (userData) {
       const parsedUser = JSON.parse(userData);
-      console.log('👤 User loaded from localStorage:', parsedUser);
-      console.log('   - Email:', parsedUser.email);
-      console.log('   - Role:', parsedUser.role);
-      console.log('   - ID:', parsedUser._id);
+      logger.debug('👤 User loaded from localStorage:', parsedUser);
+      logger.debug('   - Email:', parsedUser.email);
+      logger.debug('   - Role:', parsedUser.role);
+      logger.debug('   - ID:', parsedUser._id);
       setUser(parsedUser);
     } else {
-      console.log('⚠️ No user found in localStorage');
+      logger.warn('⚠️ No user found in localStorage');
     }
   }, []);
 
@@ -155,7 +157,7 @@ export default function Favorites() {
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           showToast('Property removed from favorites successfully!', 'success');
         } catch (error) {
-          console.error('Error removing favorite:', error);
+          logger.error('Error removing favorite:', error);
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           const errorMessage = error?.message || error?.error || 'Failed to remove favorite. Please try again.';
           showToast(errorMessage, 'error');

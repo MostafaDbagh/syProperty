@@ -6,6 +6,7 @@ import DropdownTagSelect from "./DropdownTagSelect";
 import Slider from "rc-slider";
 import { provinceOptions } from "@/data/provinces";
 import { amenitiesList } from "@/constants/amenities";
+import logger from "@/utils/logger";
 
 export default function SearchForm({
   parentClass = "wd-search-form",
@@ -28,7 +29,7 @@ export default function SearchForm({
           searchFormRef.current.classList.contains("show") &&
           !searchFormRef.current.contains(event.target) &&
           !searchFormToggler?.contains(event.target)) {
-        console.log("Closing SearchForm - clicked outside");
+        logger.debug("Closing SearchForm - clicked outside");
         searchFormRef.current.classList.remove("show");
       }
     };
