@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ListingController = require('../controllers/listing.controller.js');
+const verifyToken = require('../utils/verifyUser');
 const filterListings = require('../middleware/listing.js');
 const {uploadListingImages,uploadListingImagesMiddleware} = require('../utils/uploadListingImages.js');
 const { 
@@ -10,10 +11,10 @@ const {
 } = require('../middleware/pointDeduction.js');
 
 router.get('/search', filterListings, ListingController.getFilteredListings);
-router.post('/create', uploadListingImages, uploadListingImagesMiddleware, checkAndDeductPoints, ListingController.createListing, deductPointsAfterListing);
+router.post('/create', verifyToken, uploadListingImages, uploadListingImagesMiddleware, checkAndDeductPoints, ListingController.createListing, deductPointsAfterListing);
 router.get('/stateCount',ListingController.getEachStateListing);
-router.delete('/delete/:id', refundPointsOnListingDelete, ListingController.deleteListing);
-router.post('/update/:id', ListingController.updateListing);
+router.delete('/delete/:id', verifyToken, refundPointsOnListingDelete, ListingController.deleteListing);
+router.post('/update/:id', verifyToken, ListingController.updateListing);
 router.get('/:id', ListingController.getListingById);
 router.get('/:id/images', ListingController.getListingImages);
 router.get('/agent/:agentId', ListingController.getListingsByAgent);
