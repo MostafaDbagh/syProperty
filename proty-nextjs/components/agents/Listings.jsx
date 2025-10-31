@@ -161,7 +161,7 @@ export default function Listings({ agentId }) {
 
   if (isLoading) {
     return (
-      <div className="wg-listing">
+      <div className={`wg-listing ${styles.wgListing}`}>
         <div className="heading">
           <div className="text-7 fw-6 text-color-heading">Listing</div>
           <div className="tf-houese-filter">
@@ -176,7 +176,7 @@ export default function Listings({ agentId }) {
             </div>
           </div>
         </div>
-        <div className={styles.rootGrid + " tf-grid-layout md-col-2"} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={styles.rootGrid} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <LocationLoader 
             size="medium" 
             message="Loading agent's properties..."
@@ -188,11 +188,11 @@ export default function Listings({ agentId }) {
 
   if (isError) {
     return (
-      <div className="wg-listing">
+      <div className={`wg-listing ${styles.wgListing}`}>
         <div className="heading">
           <div className="text-7 fw-6 text-color-heading">Listing</div>
         </div>
-        <div className={styles.rootGrid + " tf-grid-layout md-col-2"} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={styles.rootGrid} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="alert alert-danger">
             <h4>Error loading listings</h4>
             <p>{error?.message || "Failed to fetch agent listings. Please try again later."}</p>
@@ -203,7 +203,7 @@ export default function Listings({ agentId }) {
   }
 
   return (
-    <div className="wg-listing">
+    <div className={`wg-listing ${styles.wgListing}`}>
       <div className="heading">
         <div className="text-7 fw-6 text-color-heading">Listing</div>
         <div className="tf-houese-filter">
@@ -232,7 +232,7 @@ export default function Listings({ agentId }) {
       </div>
       
       {listings.length === 0 ? (
-        <div className={styles.rootGrid + " tf-grid-layout md-col-2"} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={styles.rootGrid} style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="text-center">
             <p className="text-1">No properties found for this agent.</p>
             <p className="text-1">Try adjusting your filters or check back later.</p>
@@ -240,11 +240,11 @@ export default function Listings({ agentId }) {
         </div>
       ) : (
         <>
-          <div id="parent" className={styles.rootGrid + " tf-grid-layout md-col-2"}>
+          <div id="parent" className={styles.rootGrid}>
             {listings.map((property, i) => (
-              <div key={property._id || i} className="tf_filter_rent tf-filter-item tf-tab-content">
+              <div key={property._id || i} className={`${styles.listingCard} tf_filter_rent tf-filter-item tf-tab-content`}>
                 <div className="box-house hover-img">
-                  <div className={styles.imageWrap + " image-wrap"}>
+                  <div className={`${styles.imageWrap} image-wrap`}>
                     <Link href={`/property-detail/${property._id}`}>
                       <Image
                         className={styles.propertyImage + " lazyload"}
@@ -311,7 +311,7 @@ export default function Listings({ agentId }) {
                             fontSize: '14px',
                             fontWeight: '500',
                             transition: 'all 0.2s ease',
-                            minWidth: window.innerWidth <= 360 ? '100%' : '120px',
+                            width: '100%',
                             justifyContent: 'center'
                           }}
                           onMouseEnter={(e) => {

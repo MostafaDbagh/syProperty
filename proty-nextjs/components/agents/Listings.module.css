@@ -1,14 +1,36 @@
+/* Full Width Container */
+.wgListing {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Grid Layout */
 .rootGrid {
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .rootGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .rootGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
 }
 
 .imageWrap {
-  width: 600px;
-  height: 401px;
+  width: 100%;
+  height: 280px;
   overflow: hidden;
+  border-radius: 12px;
+  position: relative;
 }
 
 .propertyImage {
@@ -16,6 +38,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
+}
+
+.imageWrap:hover .propertyImage {
+  transform: scale(1.05);
 }
 
 .priceSection {
@@ -33,9 +60,17 @@
 
 .contactSection {
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
+
 .callButtonContainer {
   position: relative;
+  flex: 1;
+  min-width: 120px;
 }
 .callButton {
   background: white;
@@ -50,7 +85,8 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
-  min-width: 120px;
+  width: 100%;
+  height: 40px;
   justify-content: center;
 }
 .phoneOptions {
@@ -113,9 +149,17 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
+  flex: 1;
   min-width: 120px;
+  height: 40px;
   justify-content: center;
 }
+
+.emailBtn:hover {
+  background: #F97316;
+  color: white;
+}
+
 .detailsBtn {
   background: #F97316;
   border: none;
@@ -129,10 +173,45 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
+  flex: 1;
   min-width: 120px;
+  height: 40px;
   justify-content: center;
   text-decoration: none;
 }
+
+.detailsBtn:hover {
+  background: #d96513;
+}
 .wrapPagination {
   margin-top: 40px;
+}
+
+.listingCard {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.listingCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.listingCard .box-house {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.listingCard .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
