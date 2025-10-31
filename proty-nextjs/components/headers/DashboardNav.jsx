@@ -105,7 +105,8 @@ export default function DashboardNav({ color = "" }) {
       className={`box-user tf-action-btns dashboard-nav-user ${isDDOpen && isLoggedIn ? "active" : ""} `}
       onClick={handleUserIconClick}
     >
-      <div className="user dashboard-nav-user-inner" style={{ cursor: 'pointer',borderRadius: '24px' }}>
+      <div className="user dashboard-nav-user-inner" 
+      style={{ cursor: 'pointer',borderRadius: '24px' }}>
         <UserAvatarIcon />
       </div>
       <div className={`name ${color} dashboard-nav-name`}>
@@ -199,7 +200,8 @@ export default function DashboardNav({ color = "" }) {
             style={{
               padding: '14px 12px',
               border: '1px solid #d1d5db',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderRadius: '24px'
             }}
           >
             <AddPropertyIcon />

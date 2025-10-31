@@ -118,64 +118,24 @@ export default function GlobalStatusModal({
 
               {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                {isSuccess && (
-                  <button
-                    onClick={() => {
-                      logger.debug('🔑 Login Now button clicked - closing success modal and opening login modal');
-                      onClose();
-                      // Open login modal after a short delay
-                      setTimeout(() => {
-                        logger.debug('🔑 Opening login modal via GlobalModalContext');
-                        showLoginModal();
-                      }, 200);
-                    }}
-                    className="tf-btn bg-color-primary"
-                    style={{
-                      padding: '12px 24px',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      minWidth: window.innerWidth <= 360 ? '100%' : '120px',
-                      background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                      color: 'white'
-                    }}
-                  >
-                    🔑 Login Now
-                  </button>
-                )}
-                
                 <button
                   onClick={onClose}
-                  className="tf-btn style-border"
+                  className="tf-btn bg-color-primary"
                   style={{
                     padding: '12px 24px',
-                    border: '2px solid var(--Line)',
+                    border: 'none',
                     borderRadius: '8px',
                     fontSize: '16px',
                     fontWeight: '600',
                     cursor: 'pointer',
                     minWidth: window.innerWidth <= 360 ? '100%' : '120px',
-                    backgroundColor: 'transparent',
-                    color: 'var(--Text)'
+                    background: isSuccess ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : 'var(--Primary)',
+                    color: 'white'
                   }}
                 >
                   {isSuccess ? 'Continue' : 'Close'}
                 </button>
               </div>
-
-              {/* Additional Info */}
-              {isSuccess && (
-                <p style={{ 
-                  margin: '24px 0 0 0', 
-                  color: 'var(--Note)', 
-                  fontSize: '14px',
-                  fontStyle: 'italic'
-                }}>
-                  You can now use the "Sign In" button to login to your account.
-                </p>
-              )}
             </div>
           </div>
         </div>

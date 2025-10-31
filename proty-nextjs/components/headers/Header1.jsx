@@ -74,6 +74,7 @@ export default function Header1({ parentClass = "header" }) {
                       <Link
                         className="tf-btn style-border pd-23"
                         href={`/add-property`}
+                        style={{ borderRadius: '12px' }}
                       >
                         Add property
                       </Link>
@@ -91,7 +92,8 @@ export default function Header1({ parentClass = "header" }) {
                           background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                           color: 'white',
                           border: 'none',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          borderRadius: '12px'
                         }}
                       >
                         🎯 Make Me Agent
