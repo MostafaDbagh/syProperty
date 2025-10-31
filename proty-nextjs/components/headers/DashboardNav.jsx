@@ -5,6 +5,7 @@ import { useAuthState } from "@/store/hooks/useAuth";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 import FavoritesCount from "@/components/common/FavoritesCount";
+import MessagesCount from "@/components/common/MessagesCount";
 import { 
   UserAvatarIcon, 
   DashboardIcon, 
@@ -188,6 +189,20 @@ export default function DashboardNav({ color = "" }) {
           >
             <ReviewIcon />
             Reviews
+          </Link>
+        )}
+
+        {/* Messages - Only for logged in agents */}
+        {isLoggedIn && isAgentUser && (
+          <Link 
+            className="dropdown-item" 
+            href={`/messages`}
+            style={{
+              padding: '14px 12px',
+              border: '1px solid #d1d5db'
+            }}
+          >
+            <MessagesCount />
           </Link>
         )}
 
