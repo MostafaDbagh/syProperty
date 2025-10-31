@@ -13,8 +13,8 @@ export default function AgentDetails({ agentId }) {
   
   // Fetch agent data from API
   const { data: agentData, isLoading, isError, error } = useAgent(agentId);
-  // API returns agent object directly, not wrapped in data property
-  const agent = agentData;
+  // API returns { success: true, data: agent }, extract the agent object
+  const agent = agentData?.data || agentData;
 
   if (isLoading) {
     return (

@@ -396,7 +396,7 @@ export default function Register({ isOpen, onClose }) {
                 href="#"
                 onClick={handleSwitchToLogin}
               >
-                Sign In
+                Login
               </a>
             </div>
           </form>

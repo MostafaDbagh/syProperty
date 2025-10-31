@@ -105,7 +105,7 @@ export default function DashboardNav({ color = "" }) {
       className={`box-user tf-action-btns dashboard-nav-user ${isDDOpen && isLoggedIn ? "active" : ""} `}
       onClick={handleUserIconClick}
     >
-      <div className="user dashboard-nav-user-inner">
+      <div className="user dashboard-nav-user-inner" style={{ cursor: 'pointer',borderRadius: '24px' }}>
         <UserAvatarIcon />
       </div>
       <div className={`name ${color} dashboard-nav-name`}>
