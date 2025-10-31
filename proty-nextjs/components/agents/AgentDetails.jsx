@@ -57,133 +57,141 @@ export default function AgentDetails({ agentId }) {
       <div className="tf-container">
         <div className="row">
           <div className="col-lg-8">
-              <div className={`agent-details hover-img effec-overlay ${styles.agentDetailsContainer}`}>
-              <div className={`image-wrap ${styles.imageWrap}`}>
-                <Link href={`/agents-details/${agent._id}`}>
-                  <Image
-                    alt={agent.fullName || "Agent"}
-                    width={400}
-                    height={400}
-                    src={agent.avatar || "/images/section/agent-details.jpg"}
-                    className={styles.agentImage}
-                  />
-                </Link>
-                <ul className="tf-social style-3">
-                  <li>
-                    <a 
-                      href={agent.facebook || "#"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      title={agent.facebook ? "Facebook" : "Facebook (Coming Soon)"}
-                    >
-                      <i className="icon-fb" />
-                    </a>
-                  </li>
-                  <li>
-                    <a 
-                      href={agent.twitter || "#"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      title={agent.twitter ? "Twitter" : "Twitter (Coming Soon)"}
-                    >
-                      <i className="icon-X" />
-                    </a>
-                  </li>
-                  <li>
-                    <a 
-                      href={agent.linkedin || "#"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      title={agent.linkedin ? "LinkedIn" : "LinkedIn (Coming Soon)"}
-                    >
-                      <i className="icon-linked" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" title="Instagram (Coming Soon)">
-                      <i className="icon-ins" />
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className={`content-inner ${styles.contentInner}`}>
-                <div className="author">
-                  <h4 className="name">
-                    <Link href={`/agents-details/${agent._id}`}>
-                      {agent.fullName || "Agent Name"}
-                    </Link>
-                  </h4>
-                  <p className="font-poppins">
-                    {agent.position || agent.job || "Real Estate Agent"} at{" "}
-                    <a href="#" className="fw-7">
-                      {agent.companyName || "Proty Real Estate"}
-                    </a>
-                  </p>
+            <div className={`agent-details hover-img effec-overlay ${styles.agentDetailsContainer}`}>
+              {/* First Row: Image and Info */}
+              <div className={styles.firstRow}>
+                <div className={`image-wrap ${styles.imageWrap}`}>
+                  <Link href={`/agents-details/${agent._id}`}>
+                    <Image
+                      alt={agent.fullName || "Agent"}
+                      width={400}
+                      height={400}
+                      src={agent.avatar || "/images/section/agent-details.jpg"}
+                      className={styles.agentImage}
+                    />
+                  </Link>
                 </div>
-                <ul className="info">
-                  {agent.phone && (
-                  <li>
-                    <svg width={16}
-                      height={17}
-                      viewBox="0 0 16 17"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                     aria-hidden="true">
-                      <path
-                        d="M9.5 7V4M9.5 7H12.5M9.5 7L13.5 3M11.5 15C5.97733 15 1.5 10.5227 1.5 5V3.5C1.5 3.10218 1.65804 2.72064 1.93934 2.43934C2.22064 2.15804 2.60218 2 3 2H3.91467C4.25867 2 4.55867 2.234 4.642 2.568L5.37933 5.51667C5.45267 5.81 5.34333 6.118 5.10133 6.29867L4.23933 6.94533C4.11595 7.03465 4.02467 7.16138 3.97903 7.3067C3.93339 7.45202 3.93584 7.60818 3.986 7.752C4.38725 8.84341 5.02094 9.83456 5.84319 10.6568C6.66544 11.4791 7.65659 12.1128 8.748 12.514C9.042 12.622 9.36667 12.5113 9.55467 12.2607L10.2013 11.3987C10.2898 11.2805 10.4113 11.1911 10.5504 11.1416C10.6895 11.0922 10.8401 11.0849 10.9833 11.1207L13.932 11.858C14.2653 11.9413 14.5 12.2413 14.5 12.5853V13.5C14.5 13.8978 14.342 14.2794 14.0607 14.5607C13.7794 14.842 13.3978 15 13 15H11.5Z"
-                        stroke="#8E8E93"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                      <a href={`tel:${agent.phone}`} className="font-mulish fw-7">
-                        {agent.phone}
+                <div className={`content-inner ${styles.contentInner}`}>
+                  <div className="author">
+                    <h4 className="name">
+                      <Link href={`/agents-details/${agent._id}`}>
+                        {agent.fullName || "Agent Name"}
+                      </Link>
+                    </h4>
+                    <p className="font-poppins">
+                      {agent.position || agent.job || "Real Estate Agent"} at{" "}
+                      <a href="#" className="fw-7">
+                        {agent.companyName || "Proty Real Estate"}
                       </a>
-                  </li>
-                  )}
-                  {agent.email && (
-                  <li>
-                    <svg width={16}
-                      height={16}
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                     aria-hidden="true">
-                      <path
-                        d="M14.5 4.5V11.5C14.5 11.8978 14.342 12.2794 14.0607 12.5607C13.7794 12.842 13.3978 13 13 13H3C2.60218 13 2.22064 12.842 1.93934 12.5607C1.65804 12.2794 1.5 11.8978 1.5 11.5V4.5M14.5 4.5C14.5 4.10218 14.342 3.72064 14.0607 3.43934C13.7794 3.15804 13.3978 3 13 3H3C2.60218 3 2.22064 3.15804 1.93934 3.43934C1.65804 3.72064 1.5 4.10218 1.5 4.5M14.5 4.5V4.662C14.5 4.9181 14.4345 5.16994 14.3096 5.39353C14.1848 5.61712 14.0047 5.80502 13.7867 5.93933L8.78667 9.016C8.55014 9.16169 8.2778 9.23883 8 9.23883C7.7222 9.23883 7.44986 9.16169 7.21333 9.016L2.21333 5.94C1.99528 5.80569 1.81525 5.61779 1.69038 5.3942C1.56551 5.1706 1.49997 4.91876 1.5 4.66267V4.5"
-                        stroke="#8E8E93"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                      <a href={`mailto:${agent.email}`}>{agent.email}</a>
-                  </li>
-                  )}
-                  {agent.location && (
-                  <li>
-                    <svg width={16}
-                      height={16}
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                     aria-hidden="true">
-                      <path
-                        d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
-                        stroke="#8E8E93"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
-                        stroke="#8E8E93"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                      {agent.location}
-                  </li>
-                  )}
-                </ul>
+                    </p>
+                  </div>
+                  <ul className="info">
+                    {agent.phone && (
+                    <li>
+                      <svg width={16}
+                        height={17}
+                        viewBox="0 0 16 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                       aria-hidden="true">
+                        <path
+                          d="M9.5 7V4M9.5 7H12.5M9.5 7L13.5 3M11.5 15C5.97733 15 1.5 10.5227 1.5 5V3.5C1.5 3.10218 1.65804 2.72064 1.93934 2.43934C2.22064 2.15804 2.60218 2 3 2H3.91467C4.25867 2 4.55867 2.234 4.642 2.568L5.37933 5.51667C5.45267 5.81 5.34333 6.118 5.10133 6.29867L4.23933 6.94533C4.11595 7.03465 4.02467 7.16138 3.97903 7.3067C3.93339 7.45202 3.93584 7.60818 3.986 7.752C4.38725 8.84341 5.02094 9.83456 5.84319 10.6568C6.66544 11.4791 7.65659 12.1128 8.748 12.514C9.042 12.622 9.36667 12.5113 9.55467 12.2607L10.2013 11.3987C10.2898 11.2805 10.4113 11.1911 10.5504 11.1416C10.6895 11.0922 10.8401 11.0849 10.9833 11.1207L13.932 11.858C14.2653 11.9413 14.5 12.2413 14.5 12.5853V13.5C14.5 13.8978 14.342 14.2794 14.0607 14.5607C13.7794 14.842 13.3978 15 13 15H11.5Z"
+                          stroke="#8E8E93"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                        <a href={`tel:${agent.phone}`} className="font-mulish fw-7">
+                          {agent.phone}
+                        </a>
+                    </li>
+                    )}
+                    {agent.email && (
+                    <li>
+                      <svg width={16}
+                        height={16}
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                       aria-hidden="true">
+                        <path
+                          d="M14.5 4.5V11.5C14.5 11.8978 14.342 12.2794 14.0607 12.5607C13.7794 12.842 13.3978 13 13 13H3C2.60218 13 2.22064 12.842 1.93934 12.5607C1.65804 12.2794 1.5 11.8978 1.5 11.5V4.5M14.5 4.5C14.5 4.10218 14.342 3.72064 14.0607 3.43934C13.7794 3.15804 13.3978 3 13 3H3C2.60218 3 2.22064 3.15804 1.93934 3.43934C1.65804 3.72064 1.5 4.10218 1.5 4.5M14.5 4.5V4.662C14.5 4.9181 14.4345 5.16994 14.3096 5.39353C14.1848 5.61712 14.0047 5.80502 13.7867 5.93933L8.78667 9.016C8.55014 9.16169 8.2778 9.23883 8 9.23883C7.7222 9.23883 7.44986 9.16169 7.21333 9.016L2.21333 5.94C1.99528 5.80569 1.81525 5.61779 1.69038 5.3942C1.56551 5.1706 1.49997 4.91876 1.5 4.66267V4.5"
+                          stroke="#8E8E93"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                        <a href={`mailto:${agent.email}`}>{agent.email}</a>
+                    </li>
+                    )}
+                    {agent.location && (
+                    <li>
+                      <svg width={16}
+                        height={16}
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                       aria-hidden="true">
+                        <path
+                          d="M10 7C10 7.53043 9.78929 8.03914 9.41421 8.41421C9.03914 8.78929 8.53043 9 8 9C7.46957 9 6.96086 8.78929 6.58579 8.41421C6.21071 8.03914 6 7.53043 6 7C6 6.46957 6.21071 5.96086 6.58579 5.58579C6.96086 5.21071 7.46957 5 8 5C8.53043 5 9.03914 5.21071 9.41421 5.58579C9.78929 5.96086 10 6.46957 10 7Z"
+                          stroke="#8E8E93"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13 7C13 11.7613 8 14.5 8 14.5C8 14.5 3 11.7613 3 7C3 5.67392 3.52678 4.40215 4.46447 3.46447C5.40215 2.52678 6.67392 2 8 2C9.32608 2 10.5979 2.52678 11.5355 3.46447C12.4732 4.40215 13 5.67392 13 7Z"
+                          stroke="#8E8E93"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                        {agent.location}
+                    </li>
+                    )}
+                  </ul>
+                  {/* Social Media */}
+                  <ul className={`tf-social style-3 ${styles.socialMedia}`}>
+                    <li>
+                      <a 
+                        href={agent.facebook || "#"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title={agent.facebook ? "Facebook" : "Facebook (Coming Soon)"}
+                      >
+                        <i className="icon-fb" />
+                      </a>
+                    </li>
+                    <li>
+                      <a 
+                        href={agent.twitter || "#"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title={agent.twitter ? "Twitter" : "Twitter (Coming Soon)"}
+                      >
+                        <i className="icon-X" />
+                      </a>
+                    </li>
+                    <li>
+                      <a 
+                        href={agent.linkedin || "#"} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title={agent.linkedin ? "LinkedIn" : "LinkedIn (Coming Soon)"}
+                      >
+                        <i className="icon-linked" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" title="Instagram (Coming Soon)">
+                        <i className="icon-ins" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Second Row: Description and See More Button */}
+              <div className={`${styles.descriptionRow} agent-content-section`}>
                 <div className="content">
                   <h6 className="title">About {agent.fullName || "This Agent"}</h6>
                   <p className="text-1">
@@ -405,7 +413,6 @@ export default function AgentDetails({ agentId }) {
                 </div>
               </div>
             </div>
-            <Listings agentId={agentId} />
           </div>
           <div className="col-lg-4">
             <div className="tf-sidebar">
@@ -496,6 +503,13 @@ export default function AgentDetails({ agentId }) {
               </form>
         
             </div>
+          </div>
+        </div>
+        
+        {/* Listings - Full Width */}
+        <div className="row">
+          <div className="col-12">
+            <Listings agentId={agentId} />
           </div>
         </div>
       </div>

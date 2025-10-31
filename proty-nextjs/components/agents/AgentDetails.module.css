@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  align-items: center;
   margin-bottom: 60px;
   padding: 30px;
   background: #ffffff;
@@ -16,8 +15,6 @@
 
 @media (min-width: 768px) {
   .agentDetailsContainer {
-    flex-direction: row;
-    align-items: flex-start;
     gap: 40px;
     margin-bottom: 80px;
     padding: 40px;
@@ -26,6 +23,22 @@
 
 .agentDetailsContainer:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* First Row: Image and Info */
+.firstRow {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .firstRow {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+  }
 }
 
 /* Image Wrapper */
@@ -82,25 +95,51 @@
   }
 }
 
-/* Agent Content Section (Separate Full Row) */
-.agentContentSection {
-  margin-top: 0;
-  padding: 30px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+/* Second Row: Description Section */
+.descriptionRow {
+  padding-top: 30px;
+  border-top: 2px solid #f1f5f9;
   width: 100%;
 }
 
 @media (min-width: 768px) {
-  .agentContentSection {
-    padding: 40px;
+  .descriptionRow {
+    padding-top: 40px;
   }
 }
 
-.agentContentSection:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+/* Social Media Icons in Info Section */
+.socialMedia {
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.socialMedia li {
+  margin: 0;
+}
+
+.socialMedia li a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f8f9fa;
+  color: #64748b;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.socialMedia li a:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 /* Additional Details */
