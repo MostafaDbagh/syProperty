@@ -149,44 +149,48 @@ export default function AgentDetails({ agentId }) {
                     </li>
                     )}
                   </ul>
-                  {/* Social Media */}
-                  <ul className={`tf-social style-3 ${styles.socialMedia}`}>
-                    <li>
-                      <a 
-                        href={agent.facebook || "#"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        title={agent.facebook ? "Facebook" : "Facebook (Coming Soon)"}
-                      >
-                        <i className="icon-fb" />
-                      </a>
-                    </li>
-                    <li>
-                      <a 
-                        href={agent.twitter || "#"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        title={agent.twitter ? "Twitter" : "Twitter (Coming Soon)"}
-                      >
-                        <i className="icon-X" />
-                      </a>
-                    </li>
-                    <li>
-                      <a 
-                        href={agent.linkedin || "#"} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        title={agent.linkedin ? "LinkedIn" : "LinkedIn (Coming Soon)"}
-                      >
-                        <i className="icon-linked" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" title="Instagram (Coming Soon)">
-                        <i className="icon-ins" />
-                      </a>
-                    </li>
-                  </ul>
+                  
+                  {/* Follow Me Section */}
+                  <div className={styles.followMeSection}>
+                    <h6 className={styles.followMeTitle}>Follow Me</h6>
+                    <ul className={`tf-social style-3 ${styles.socialMedia}`}>
+                      <li>
+                        <a 
+                          href={agent.facebook || "#"} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          title={agent.facebook ? "Facebook" : "Facebook (Coming Soon)"}
+                        >
+                          <i className="icon-fb" />
+                        </a>
+                      </li>
+                      <li>
+                        <a 
+                          href={agent.twitter || "#"} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          title={agent.twitter ? "Twitter" : "Twitter (Coming Soon)"}
+                        >
+                          <i className="icon-X" />
+                        </a>
+                      </li>
+                      <li>
+                        <a 
+                          href={agent.linkedin || "#"} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          title={agent.linkedin ? "LinkedIn" : "LinkedIn (Coming Soon)"}
+                        >
+                          <i className="icon-linked" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" title="Instagram (Coming Soon)">
+                          <i className="icon-ins" />
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
               
