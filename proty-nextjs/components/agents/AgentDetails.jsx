@@ -207,176 +207,176 @@ export default function AgentDetails({ agentId }) {
                   {/* Additional Details Section */}
                   {showMoreDetails && (
                     <div className={`additional-details ${styles.additionalDetails}`}>
-                      {/* Professional Details */}
-                      <div className={`details-section ${styles.detailsSection}`}>
-                        <h6 className={`title ${styles.sectionTitle}`}>Professional Details</h6>
+                    {/* Professional Details */}
+                    <div className={`details-section ${styles.detailsSection}`}>
+                      <h6 className={`title ${styles.sectionTitle}`}>Professional Details</h6>
+                      
+                      <div className={`details-grid ${styles.detailsGrid}`}>
+                        <div className={`detail-item ${styles.detailItem}`}>
+                          <strong className={styles.detailLabel}>Company:</strong>
+                          <span className={styles.detailValue}>
+                            {agent.companyName || "Proty Real Estate"}
+                          </span>
+                        </div>
                         
-                        <div className={`details-grid ${styles.detailsGrid}`}>
+                        <div className={`detail-item ${styles.detailItem}`}>
+                          <strong className={styles.detailLabel}>Position:</strong>
+                          <span className={styles.detailValue}>
+                            {agent.position || agent.job || "Real Estate Agent"}
+                          </span>
+                        </div>
+                        
+                        {agent.officeNumber && (
                           <div className={`detail-item ${styles.detailItem}`}>
-                            <strong className={styles.detailLabel}>Company:</strong>
+                            <strong className={styles.detailLabel}>Office Phone:</strong>
                             <span className={styles.detailValue}>
-                              {agent.companyName || "Proty Real Estate"}
+                              {agent.officeNumber}
                             </span>
                           </div>
-                          
+                        )}
+                        
+                        {agent.officeAddress && (
                           <div className={`detail-item ${styles.detailItem}`}>
-                            <strong className={styles.detailLabel}>Position:</strong>
+                            <strong className={styles.detailLabel}>Office Address:</strong>
                             <span className={styles.detailValue}>
-                              {agent.position || agent.job || "Real Estate Agent"}
+                              {agent.officeAddress}
                             </span>
                           </div>
-                          
-                          {agent.officeNumber && (
-                            <div className={`detail-item ${styles.detailItem}`}>
-                              <strong className={styles.detailLabel}>Office Phone:</strong>
-                              <span className={styles.detailValue}>
-                                {agent.officeNumber}
-                              </span>
-                            </div>
-                          )}
-                          
-                          {agent.officeAddress && (
-                            <div className={`detail-item ${styles.detailItem}`}>
-                              <strong className={styles.detailLabel}>Office Address:</strong>
-                              <span className={styles.detailValue}>
-                                {agent.officeAddress}
-                              </span>
-                            </div>
-                          )}
-                          
-                          <div className={`detail-item ${styles.detailItem}`}>
-                            <strong className={styles.detailLabel}>Member Since:</strong>
-                            <span className={styles.detailValue}>
-                              {new Date(agent.createdAt).toLocaleDateString('en-US', { 
-                                year: 'numeric', 
-                                month: 'long' 
-                              })}
-                            </span>
-                          </div>
-                          
-                          <div className={`detail-item ${styles.detailItem}`}>
-                            <strong className={styles.detailLabel}>Specialization:</strong>
-                            <span className={styles.detailValue}>
-                              Residential & Commercial Properties
-                            </span>
-                          </div>
+                        )}
+                        
+                        <div className={`detail-item ${styles.detailItem}`}>
+                          <strong className={styles.detailLabel}>Member Since:</strong>
+                          <span className={styles.detailValue}>
+                            {new Date(agent.createdAt).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long' 
+                            })}
+                          </span>
+                        </div>
+                        
+                        <div className={`detail-item ${styles.detailItem}`}>
+                          <strong className={styles.detailLabel}>Specialization:</strong>
+                          <span className={styles.detailValue}>
+                            Residential & Commercial Properties
+                          </span>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Services & Expertise */}
-                      <div className={`services-section ${styles.servicesSection}`}>
-                        <h6 className={`title ${styles.sectionTitle}`}>Services & Expertise</h6>
+                    {/* Services & Expertise */}
+                    <div className={`services-section ${styles.servicesSection}`}>
+                      <h6 className={`title ${styles.sectionTitle}`}>Services & Expertise</h6>
+                      
+                      <div className={`services-grid ${styles.servicesGrid}`}>
+                        <div className={`service-item ${styles.serviceItem}`}>
+                          <div className={styles.serviceIcon}>🏠</div>
+                          <strong className={styles.serviceTitle}>Property Sales</strong>
+                          <span className={styles.serviceDescription}>Residential & Commercial</span>
+                        </div>
                         
-                        <div className={`services-grid ${styles.servicesGrid}`}>
-                          <div className={`service-item ${styles.serviceItem}`}>
-                            <div className={styles.serviceIcon}>🏠</div>
-                            <strong className={styles.serviceTitle}>Property Sales</strong>
-                            <span className={styles.serviceDescription}>Residential & Commercial</span>
-                          </div>
-                          
-                          <div className={`service-item ${styles.serviceItem}`}>
-                            <div className={styles.serviceIcon}>🔑</div>
-                            <strong className={styles.serviceTitle}>Property Rentals</strong>
-                            <span className={styles.serviceDescription}>Long & Short Term</span>
-                          </div>
-                          
-                          <div className={`service-item ${styles.serviceItem}`}>
-                            <div className={styles.serviceIcon}>📊</div>
-                            <strong className={styles.serviceTitle}>Market Analysis</strong>
-                            <span className={styles.serviceDescription}>Price & Trend Reports</span>
-                          </div>
-                          
-                          <div className={`service-item ${styles.serviceItem}`}>
-                            <div className={styles.serviceIcon}>🤝</div>
-                            <strong className={styles.serviceTitle}>Negotiation</strong>
-                            <span className={styles.serviceDescription}>Expert Deal Making</span>
-                          </div>
+                        <div className={`service-item ${styles.serviceItem}`}>
+                          <div className={styles.serviceIcon}>🔑</div>
+                          <strong className={styles.serviceTitle}>Property Rentals</strong>
+                          <span className={styles.serviceDescription}>Long & Short Term</span>
+                        </div>
+                        
+                        <div className={`service-item ${styles.serviceItem}`}>
+                          <div className={styles.serviceIcon}>📊</div>
+                          <strong className={styles.serviceTitle}>Market Analysis</strong>
+                          <span className={styles.serviceDescription}>Price & Trend Reports</span>
+                        </div>
+                        
+                        <div className={`service-item ${styles.serviceItem}`}>
+                          <div className={styles.serviceIcon}>🤝</div>
+                          <strong className={styles.serviceTitle}>Negotiation</strong>
+                          <span className={styles.serviceDescription}>Expert Deal Making</span>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Professional Summary */}
-                      <div className={`professional-summary ${styles.professionalSummary}`}>
-                        <h6 className={`title ${styles.sectionTitle}`}>Professional Summary</h6>
-                        <p className={`text-1 ${styles.summaryText}`}>
-                          {agent.fullName || "This agent"} brings extensive experience in real estate transactions, 
-                          market analysis, and client relations. With a proven track record of successful property 
-                          sales and satisfied clients, {agent.fullName?.split(' ')[0] || "they"} are committed to 
-                          providing personalized service and expert guidance throughout the buying and selling process.
-                        </p>
+                    {/* Professional Summary */}
+                    <div className={`professional-summary ${styles.professionalSummary}`}>
+                      <h6 className={`title ${styles.sectionTitle}`}>Professional Summary</h6>
+                      <p className={`text-1 ${styles.summaryText}`}>
+                        {agent.fullName || "This agent"} brings extensive experience in real estate transactions, 
+                        market analysis, and client relations. With a proven track record of successful property 
+                        sales and satisfied clients, {agent.fullName?.split(' ')[0] || "they"} are committed to 
+                        providing personalized service and expert guidance throughout the buying and selling process.
+                      </p>
+                      
+                      <div className={`achievements ${styles.achievements}`}>
+                        <div className={`achievement-item ${styles.achievementItem}`}>
+                          <div className={styles.achievementNumber}>50+</div>
+                          <span className={styles.achievementLabel}>Properties Sold</span>
+                        </div>
                         
-                        <div className={`achievements ${styles.achievements}`}>
-                          <div className={`achievement-item ${styles.achievementItem}`}>
-                            <div className={styles.achievementNumber}>50+</div>
-                            <span className={styles.achievementLabel}>Properties Sold</span>
-                          </div>
-                          
-                          <div className={`achievement-item ${styles.achievementItem}`}>
-                            <div className={styles.achievementNumber}>5+</div>
-                            <span className={styles.achievementLabel}>Years Experience</span>
-                          </div>
-                          
-                          <div className={`achievement-item ${styles.achievementItem}`}>
-                            <div className={styles.achievementNumber}>98%</div>
-                            <span className={styles.achievementLabel}>Client Satisfaction</span>
-                          </div>
-                          
-                          <div className={`achievement-item ${styles.achievementItem}`}>
-                            <div className={styles.achievementNumber}>24/7</div>
-                            <span className={styles.achievementLabel}>Availability</span>
-                          </div>
+                        <div className={`achievement-item ${styles.achievementItem}`}>
+                          <div className={styles.achievementNumber}>5+</div>
+                          <span className={styles.achievementLabel}>Years Experience</span>
+                        </div>
+                        
+                        <div className={`achievement-item ${styles.achievementItem}`}>
+                          <div className={styles.achievementNumber}>98%</div>
+                          <span className={styles.achievementLabel}>Client Satisfaction</span>
+                        </div>
+                        
+                        <div className={`achievement-item ${styles.achievementItem}`}>
+                          <div className={styles.achievementNumber}>24/7</div>
+                          <span className={styles.achievementLabel}>Availability</span>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Contact Information */}
-                      <div className={`contact-info ${styles.contactInfo}`}>
-                        <h6 className={`title ${styles.sectionTitle}`}>Contact Information</h6>
+                    {/* Contact Information */}
+                    <div className={`contact-info ${styles.contactInfo}`}>
+                      <h6 className={`title ${styles.sectionTitle}`}>Contact Information</h6>
+                      
+                      <div className={`contact-grid ${styles.contactGrid}`}>
+                        <div className={`contact-item ${styles.contactItem}`}>
+                          <div className={styles.contactIcon}>📧</div>
+                          <div>
+                            <strong className={styles.contactLabel}>Email</strong>
+                            <span className={styles.contactValue}>{agent.email || 'contact@property.com'}</span>
+                          </div>
+                        </div>
                         
-                        <div className={`contact-grid ${styles.contactGrid}`}>
+                        {agent.phone && (
                           <div className={`contact-item ${styles.contactItem}`}>
-                            <div className={styles.contactIcon}>📧</div>
+                            <div className={styles.contactIcon}>📞</div>
                             <div>
-                              <strong className={styles.contactLabel}>Email</strong>
-                              <span className={styles.contactValue}>{agent.email || 'contact@property.com'}</span>
+                              <strong className={styles.contactLabel}>Phone</strong>
+                              <span className={styles.contactValue}>{agent.phone}</span>
                             </div>
                           </div>
-                          
-                          {agent.phone && (
-                            <div className={`contact-item ${styles.contactItem}`}>
-                              <div className={styles.contactIcon}>📞</div>
-                              <div>
-                                <strong className={styles.contactLabel}>Phone</strong>
-                                <span className={styles.contactValue}>{agent.phone}</span>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {agent.location && (
-                            <div className={`contact-item ${styles.contactItem}`}>
-                              <div className={styles.contactIcon}>📍</div>
-                              <div>
-                                <strong className={styles.contactLabel}>Location</strong>
-                                <span className={styles.contactValue}>{agent.location}</span>
-                              </div>
-                            </div>
-                          )}
-                          
+                        )}
+                        
+                        {agent.location && (
                           <div className={`contact-item ${styles.contactItem}`}>
-                            <div className={styles.contactIcon}>⏰</div>
+                            <div className={styles.contactIcon}>📍</div>
                             <div>
-                              <strong className={styles.contactLabel}>Response Time</strong>
-                              <span className={styles.contactValue}>Within 2 hours</span>
+                              <strong className={styles.contactLabel}>Location</strong>
+                              <span className={styles.contactValue}>{agent.location}</span>
                             </div>
+                          </div>
+                        )}
+                        
+                        <div className={`contact-item ${styles.contactItem}`}>
+                          <div className={styles.contactIcon}>⏰</div>
+                          <div>
+                            <strong className={styles.contactLabel}>Response Time</strong>
+                            <span className={styles.contactValue}>Within 2 hours</span>
                           </div>
                         </div>
                       </div>
                     </div>
+                  </div>
                   )}
                   
                   <button 
                     onClick={() => setShowMoreDetails(!showMoreDetails)}
                     className={`tf-btn-link ${styles.toggleButton}`}
                   >
-                    <span>{showMoreDetails ? 'Show Less' : 'Read More'}</span>
+                    <span>{showMoreDetails ? 'Show Less' : 'Show More'}</span>
                     <svg width={20}
                       height={20}
                       viewBox="0 0 20 20"

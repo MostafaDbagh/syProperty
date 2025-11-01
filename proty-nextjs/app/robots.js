@@ -1,17 +1,4 @@
 export default function robots() {
-  return {
-    rules: [
-      {
-        userAgent: '*',
-        allow: '/',
-      },
-    ],
-    sitemap: 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com/sitemap.xml',
-    host: 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com',
-  };
-}
-
-export default function robots() {
   const baseUrl = 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com'
   
   return {

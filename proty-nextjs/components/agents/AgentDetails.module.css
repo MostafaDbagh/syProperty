@@ -176,6 +176,55 @@
 /* Additional Details */
 .additionalDetails {
   margin-top: 20px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toggle Button */
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 0;
+  color: #F1913D;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+  color: #d96513;
+  transform: translateX(4px);
+}
+
+.toggleButton svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.chevronIcon {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.chevronIconRotated {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
 }
 
 /* Details Section */
@@ -331,24 +380,4 @@
   font-size: 14px;
 }
 
-/* Toggle Button */
-.toggleButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 15px;
-}
-
-.chevronIcon {
-  transform: rotate(0deg);
-  transition: transform 0.3s ease;
-}
-
-.chevronIconRotated {
-  transform: rotate(180deg);
-  transition: transform 0.3s ease;
-}
 

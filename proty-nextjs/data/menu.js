@@ -67,14 +67,7 @@ export const propertyLinks = [
 ];
 
 export const otherPages = [
-  {
-    title: "Agents",
-    className: "has-child",
-    submenu: [
-      { href: "/agents", label: "Agents" },
-      { href: "/agents-details/1", label: "Agents Details" },
-    ],
-  },
+  { href: "/agents", label: "Agents" },
   // {
   //   title: "Agencies",
   //   className: "has-child",
