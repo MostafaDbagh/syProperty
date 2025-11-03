@@ -177,7 +177,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -207,7 +207,7 @@ export default function PrivacyPolicy() {
                   We may collect personal information that you voluntarily provide to us when you:
                 </p>
                 <ul style={{ 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   paddingLeft: '20px',
                   listStyle: 'disc'
                 }}>
@@ -288,7 +288,7 @@ export default function PrivacyPolicy() {
                   We automatically collect certain information when you visit our website:
                 </p>
                 <ul style={{ 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   paddingLeft: '20px',
                   listStyle: 'disc'
                 }}>
@@ -350,7 +350,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -369,7 +369,7 @@ export default function PrivacyPolicy() {
                   We use the information we collect to:
                 </p>
                 <ul style={{ 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   paddingLeft: '20px',
                   listStyle: 'disc'
                 }}>
@@ -449,7 +449,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -479,7 +479,7 @@ export default function PrivacyPolicy() {
                   3.1 With Real Estate Professionals
                 </h3>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -500,7 +500,7 @@ export default function PrivacyPolicy() {
                   3.2 Service Providers
                 </h3>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -521,7 +521,7 @@ export default function PrivacyPolicy() {
                   3.3 Legal Requirements
                 </h3>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -533,7 +533,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -552,7 +552,7 @@ export default function PrivacyPolicy() {
                   We use cookies and similar technologies to:
                 </p>
                 <ul style={{ 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   paddingLeft: '20px',
                   listStyle: 'disc'
                 }}>
@@ -594,7 +594,7 @@ export default function PrivacyPolicy() {
                   </li>
                 </ul>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -606,7 +606,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -615,7 +615,7 @@ export default function PrivacyPolicy() {
                   5. Data Security
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -627,7 +627,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -646,7 +646,7 @@ export default function PrivacyPolicy() {
                   Depending on your location, you may have the following rights regarding your personal information:
                 </p>
                 <ul style={{ 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   paddingLeft: '20px',
                   listStyle: 'disc'
                 }}>
@@ -708,7 +708,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -717,7 +717,7 @@ export default function PrivacyPolicy() {
                   7. Data Retention
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -729,7 +729,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -738,7 +738,7 @@ export default function PrivacyPolicy() {
                   8. International Data Transfers
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -750,7 +750,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -759,7 +759,7 @@ export default function PrivacyPolicy() {
                   9. Children's Privacy
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -771,7 +771,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -780,7 +780,7 @@ export default function PrivacyPolicy() {
                   10. Third-Party Links
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -792,7 +792,7 @@ export default function PrivacyPolicy() {
 
                 <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -801,7 +801,7 @@ export default function PrivacyPolicy() {
                   11. Changes to This Privacy Policy
                 </h2>
                 <p style={{ 
-                  marginBottom: '30px',
+                  marginBottom: '16px',
                   fontSize: '16px',
                   color: '#000000',
                   lineHeight: '1.6',
@@ -811,15 +811,121 @@ export default function PrivacyPolicy() {
                   We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. We encourage you to review this Privacy Policy periodically for any changes.
                 </p>
 
-                <h2 style={{ 
+                                <h2 style={{ 
                   color: '#000000', 
-                  marginBottom: '30px', 
+                  marginBottom: '16px', 
                   fontSize: '24px',
                   fontWeight: '700',
                   textAlign: 'left',
                   fontFamily: 'sans-serif'
                 }}>
-                  12. Contact Us
+                  13. SyProperty's Business Model and Usage
+                </h2>
+                <p style={{ 
+                  marginBottom: '20px',
+                  fontSize: '16px',
+                  color: '#000000',
+                  lineHeight: '1.8',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif',
+                  fontWeight: '600'
+                }}>
+                  <strong>Platform Role - No Interference Between Sellers and Buyers:</strong> SyProperty operates solely as a listing platform that displays property information. <strong>We do NOT interfere between sellers and buyers.</strong> All communications, negotiations, agreements, and transactions occur directly and exclusively between property sellers (or their agents) and property buyers. SyProperty is not involved, does not participate, and has no role in any aspect of real estate transactions between parties.
+                </p>
+                <p style={{ 
+                  marginBottom: '20px',
+                  fontSize: '16px',
+                  color: '#000000',
+                  lineHeight: '1.8',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif',
+                  fontWeight: '600'
+                }}>
+                  <strong>Revenue Model - Points from Listing Publications:</strong> SyProperty's revenue and profit come from points that agents pay when they publish property listings on our platform. <strong>We do NOT receive any commission, fee, or benefit from property sales or rentals between sellers and buyers.</strong> Our revenue is generated exclusively through:
+                </p>
+                <ul style={{ 
+                  marginBottom: '20px', 
+                  paddingLeft: '20px',
+                  listStyle: 'disc'
+                }}>
+                  <li style={{ 
+                    marginBottom: '10px',
+                    fontSize: '16px',
+                    color: '#000000',
+                    lineHeight: '1.8',
+                    fontFamily: 'sans-serif'
+                  }}>
+                    <strong>Listing Publication Points:</strong> Points deducted from agent accounts when they publish property listings on our platform
+                  </li>
+                  <li style={{ 
+                    marginBottom: '10px',
+                    fontSize: '16px',
+                    color: '#000000',
+                    lineHeight: '1.8',
+                    fontFamily: 'sans-serif'
+                  }}>
+                    <strong>Agent Subscription Packages:</strong> Package subscriptions (basic, premium, enterprise) purchased by agents
+                  </li>
+                  <li style={{ 
+                    marginBottom: '10px',
+                    fontSize: '16px',
+                    color: '#000000',
+                    lineHeight: '1.8',
+                    fontFamily: 'sans-serif'
+                  }}>
+                    <strong>Points Purchases:</strong> Points purchased by agents to maintain their account balance for listing publications
+                  </li>
+                  <li style={{ 
+                    marginBottom: '10px',
+                    fontSize: '16px',
+                    color: '#000000',
+                    lineHeight: '1.8',
+                    fontFamily: 'sans-serif'
+                  }}>
+                    <strong>Platform Usage Fees:</strong> Other platform usage fees (if applicable in the future)
+                  </li>
+                </ul>
+                <p style={{ 
+                  marginBottom: '20px',
+                  fontSize: '16px',
+                  color: '#000000',
+                  lineHeight: '1.8',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif'
+                }}>
+                  SyProperty has NO financial interest, benefits, commissions, or any other form of compensation from transactions between sellers and buyers. We do not participate in, facilitate, or benefit from any real estate transactions between parties.
+                </p>
+                <p style={{ 
+                  marginBottom: '20px',
+                  fontSize: '16px',
+                  color: '#000000',
+                  lineHeight: '1.8',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif',
+                  fontWeight: '600'
+                }}>
+                  <strong>Advance Notification of Changes:</strong> If there are any changes to our business model, revenue structure, points system, fees, services, privacy practices, or policies that affect users, we will notify ALL types of users (regular users and agents) in advance. Material changes will be communicated with at least one (1) full month's advance notice via email and our communication channels. Continued use of the Service after such changes constitutes acceptance of the modified terms.
+                </p>
+                <p style={{ 
+                  marginBottom: '30px',
+                  fontSize: '16px',
+                  color: '#000000',
+                  lineHeight: '1.8',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif'
+                }}>
+                  By using our Service, you acknowledge that you understand SyProperty operates as a listing platform only, does not interfere between sellers and buyers, and generates revenue solely from listing publications and agent subscriptions, not from property transactions.
+                </p>
+
+<h2 style={{ 
+                  color: '#000000', 
+                  marginBottom: '16px', 
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  textAlign: 'left',
+                  fontFamily: 'sans-serif'
+                }}>
+                  14. Contact Us
                 </h2>
                 <p style={{ 
                   marginBottom: '20px',
@@ -852,26 +958,6 @@ export default function PrivacyPolicy() {
                   </p>
                 </div>
 
-                <h2 style={{ 
-                  color: '#000000', 
-                  marginBottom: '30px', 
-                  fontSize: '24px',
-                  fontWeight: '700',
-                  textAlign: 'left',
-                  fontFamily: 'sans-serif'
-                }}>
-                  13. GDPR Compliance Notice
-                </h2>
-                <p style={{ 
-                  marginBottom: '40px',
-                  fontSize: '16px',
-                  color: '#000000',
-                  lineHeight: '1.6',
-                  textAlign: 'left',
-                  fontFamily: 'sans-serif'
-                }}>
-                  For users in the European Union, this Privacy Policy complies with the General Data Protection Regulation (GDPR). You have additional rights under GDPR, including the right to lodge a complaint with a supervisory authority.
-                </p>
 
               </div>
             </div>
