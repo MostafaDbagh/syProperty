@@ -36,5 +36,9 @@
     "redux": "^5.0.1",
     "sass": "^1.85.0",
     "swiper": "^11.2.4"
+  },
+  "devDependencies": {
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.0.1"
   }
 }

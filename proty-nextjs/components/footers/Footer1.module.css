@@ -17,6 +17,11 @@
   text-decoration: underline;
 }
 
+.developerName {
+  color: #f1913d;
+  margin-left: 2px;
+}
+
 .appStoreContainer {
   display: flex;
   flex-direction: column;

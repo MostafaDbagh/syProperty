@@ -136,7 +136,7 @@ function Footer1({ logo = "/images/logo/logo-2@2x.png" }) {
               Copyright © {new Date().getFullYear()}{" "}
               <span className="fw-7">AqaarGate - REAL ESTATE</span> . Designed &amp;
               Developed by
-              <a href="#" style={{color:'#f1913d',marginLeft:'2px'}}>Mostafa Dbagh</a>
+              <a href="#" className={styles.developerName}>Mostafa Dbagh</a>
             </p>
             <div className="wrap-social">
               <div className="text-3  fw-6 text_white">Follow us</div>
