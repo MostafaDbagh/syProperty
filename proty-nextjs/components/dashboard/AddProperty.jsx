@@ -707,7 +707,7 @@ export default function AddProperty() {
 
         {/* Footer */}
         <div className="footer-dashboard">
-          <p>Copyright © {new Date().getFullYear()} Proty</p>
+          <p>Copyright © {new Date().getFullYear()} AqaarGate</p>
           <ul className="list">
             <li><a href="#">Privacy</a></li>
             <li><a href="#">Terms</a></li>

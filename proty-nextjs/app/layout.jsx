@@ -6,10 +6,10 @@ import PerformanceOptimization from '@/components/seo/PerformanceOptimization'
 
 export const metadata = {
   title: {
-    default: 'Proty Real Estate - Find Your Dream Property',
-    template: '%s | Proty Real Estate'
+    default: 'AqaarGate Real Estate - Find Your Dream Property',
+    template: '%s | AqaarGate Real Estate'
   },
-  description: 'Discover premium properties for sale and rent in Syria and Lattakia. Proty Real Estate offers luxury homes, apartments, holiday homes, and commercial properties with expert guidance and personalized service throughout Syria.',
+  description: 'Discover premium properties for sale and rent in Syria and Lattakia. AqaarGate Real Estate offers luxury homes, apartments, holiday homes, and commercial properties with expert guidance and personalized service throughout Syria.',
   keywords: [
     'real estate syria',
     'properties syria',
@@ -59,37 +59,37 @@ export const metadata = {
     'syria rental properties',
     'lattakia rental properties'
   ],
-  authors: [{ name: 'Proty Real Estate Team' }],
-  creator: 'Proty Real Estate',
-  publisher: 'Proty Real Estate',
+  authors: [{ name: 'AqaarGate Real Estate Team' }],
+  creator: 'AqaarGate Real Estate',
+  publisher: 'AqaarGate Real Estate',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com'),
+  metadataBase: new URL('https://AqaarGate-frontend-mostafa-4a0069a6dba8.herokuapp.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com',
-    siteName: 'Proty Real Estate',
-    title: 'Proty Real Estate - Find Your Dream Property',
+    url: 'https://AqaarGate-frontend-mostafa-4a0069a6dba8.herokuapp.com',
+    siteName: 'AqaarGate Real Estate',
+    title: 'AqaarGate Real Estate - Find Your Dream Property',
     description: 'Discover premium properties for sale and rent. Expert guidance and personalized service for all your real estate needs.',
     images: [
       {
         url: '/images/logo/logo-2@2x.png',
         width: 1200,
         height: 630,
-        alt: 'Proty Real Estate',
+        alt: 'AqaarGate Real Estate',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Proty Real Estate - Find Your Dream Property',
+    title: 'AqaarGate Real Estate - Find Your Dream Property',
     description: 'Discover premium properties for sale and rent. Expert guidance and personalized service.',
     images: ['/images/logo/logo-2@2x.png'],
   },
@@ -141,13 +141,13 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Proty Real Estate" />
+        <meta name="apple-mobile-web-app-title" content="AqaarGate Real Estate" />
         
         {/* Performance Optimization */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* Cache Control */}
         <meta httpEquiv="Cache-Control" content="public, max-age=31536000" />

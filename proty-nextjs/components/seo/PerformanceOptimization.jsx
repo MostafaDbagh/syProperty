@@ -6,7 +6,7 @@ export default function PerformanceOptimization() {
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Proty Real Estate" />
+    <meta name="apple-mobile-web-app-title" content="AqaarGate Real Estate" />
     
     <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -36,13 +36,13 @@ export default function PerformanceOptimization() {
   const performanceSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Proty Real Estate",
-    "url": "https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com",
+    "name": "AqaarGate Real Estate",
+    "url": "https://AqaarGate-frontend-mostafa-4a0069a6dba8.herokuapp.com",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://proty-frontend-mostafa-4a0069a6dba8.herokuapp.com/property-list?search={search_term_string}"
+        "urlTemplate": "https://AqaarGate-frontend-mostafa-4a0069a6dba8.herokuapp.com/property-list?search={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     },
