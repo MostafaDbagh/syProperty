@@ -30,6 +30,15 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
       onSearchChange({ [key]: value });
     }
   };
+
+  // Check if property type should hide beds, baths, and furnished (show by default)
+  const shouldHideResidentialOptions = () => {
+    const propertyType = searchParams.propertyType || "";
+    const nonResidentialTypes = ["Commercial", "Land"];
+    return nonResidentialTypes.includes(propertyType);
+  };
+
+  const shouldShowResidentialOptions = !shouldHideResidentialOptions();
   
   return (
     <>
@@ -140,8 +149,23 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 data-bs-dismiss="modal"
               />
             </div>
-            
-            {/* Syria Cities Dropdown */}
+            {/* Property Type - First Input */}
+            <div className="group-input mb-30">
+              <div className="box-input">
+                <label className="mb-2" htmlFor="propertyTypeSelect">
+                  Property Type
+                </label>
+                <DropdownSelect
+                  id="propertyTypeSelect"
+                  options={["Any", "Apartment", "Commercial", "Land", "Holiday Home", "Villa/farms", "Office"]}
+                  addtionalParentClass=""
+                  selectedValue={searchParams.propertyType || "Any"}
+                  onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
+                />
+              </div>
+            </div>
+
+                        {/* Syria Cities Dropdown */}
     
 
             {/* Property ID Input Field */}
@@ -242,23 +266,9 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 />
               </div>
             </div>
-            <div className="group-select">
-        
-              
-              <div className="box-select">
-                <label className="mb-2" htmlFor="propertyTypeSelect">
-                  Property Type
-                </label>
-                <DropdownSelect
-                  id="propertyTypeSelect"
-                  options={["Any", "Holiday Homes", "Apartment", "House", "Villa", "Commercial", "Land"]}
-                  addtionalParentClass=""
-                  value={searchParams.propertyType || "Any"}
-                  onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
-                />
-              </div>
-              
-              <div className="box-select">
+            {shouldShowResidentialOptions && (
+              <div className="group-select">
+                <div className="box-select">
                 <DropdownTagSelect
                   id="bathsSelect"
                   label="Baths"
@@ -279,7 +289,8 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                   onChange={(value) => handleChange("bedrooms", value)}
                 />
               </div>
-            </div>
+              </div>
+            )}
             <div className="group-checkbox">
               <div className="title text-4 fw-6">Amenities:</div>
               <div className="group-amenities">

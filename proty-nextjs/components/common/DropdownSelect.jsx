@@ -17,10 +17,16 @@ export default function DropdownSelect({
   };
   useEffect(() => {
     // Update selected state when selectedValue changes
-    if (selectedValue) {
-      setSelected(selectedValue);
+    // Handle both defined values (including empty string) and undefined
+    if (selectedValue !== undefined) {
+      // If selectedValue is in options, use it; otherwise use default
+      if (selectedValue === "" || options.includes(selectedValue)) {
+        setSelected(selectedValue || options[0]);
+      } else {
+        setSelected(options[0]);
+      }
     }
-  }, [selectedValue]);
+  }, [selectedValue, options]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -79,11 +85,8 @@ export default function DropdownSelect({
                 toggleDropdown();
               }}
               className={`option ${
-                !selectedValue
-                  ? selected == elm
-                    ? "selected"
-                    : ""
-                  : selectedValue == elm
+                (selectedValue !== undefined && selectedValue == elm) || 
+                (selectedValue === undefined && selected == elm)
                   ? "selected"
                   : ""
               }  text text-1`}

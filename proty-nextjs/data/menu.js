@@ -67,7 +67,6 @@ export const propertyLinks = [
 ];
 
 export const otherPages = [
-  { href: "/agents", label: "Agents" },
   // {
   //   title: "Agencies",
   //   className: "has-child",
@@ -79,6 +78,8 @@ export const otherPages = [
   // },
   { href: "/career", label: "Career" },
   { href: "/faq", label: "Faq's" },
+  { href: "/vision", label: "Our Vision" },
+  { href: "/blog-grid", label: "Blog" },
   // { href: "/project-list", label: "Project List" },
   // { href: "/project-details/1", label: "Project Details" },
   // { href: "/404", label: "Page 404" },

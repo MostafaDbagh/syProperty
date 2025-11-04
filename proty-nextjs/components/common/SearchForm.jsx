@@ -65,6 +65,15 @@ export default function SearchForm({
     handleChange("amenities", Array.from(newAmenities));
   };
 
+  // Check if property type should hide beds, baths, and furnished (show by default)
+  const shouldHideResidentialOptions = () => {
+    const propertyType = searchParams.propertyType || "";
+    const nonResidentialTypes = ["Commercial", "Land"];
+    return nonResidentialTypes.includes(propertyType);
+  };
+
+  const shouldShowResidentialOptions = !shouldHideResidentialOptions();
+
   return (
     <>
       <style jsx>{`
@@ -278,7 +287,23 @@ export default function SearchForm({
           <h4 className="advanced-search-title">Advanced Search</h4>
         </div>
         
-        {/* Syria Cities and Property ID Row */}
+        {/* Property Type - First Input */}
+        <div className="group-input mb-30 form-row-flex">
+          <div className="box-input form-row-item" style={{ maxWidth: '50%', flex: '0 0 50%' }}>
+            <label className="mb-2 form-label" htmlFor="propertyTypeSelect">
+              Property Type
+            </label>
+            <DropdownSelect
+              id="propertyTypeSelect"
+              options={["Any", "Apartment", "Commercial", "Land", "Holiday Home", "Villa/farms", "Office"]}
+              addtionalParentClass=""
+              selectedValue={searchParams.propertyType || "Any"}
+              onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
+            />
+          </div>
+        </div>
+        
+                {/* Syria Cities and Property ID Row */}
         <div className="group-input mb-30 form-row-flex">
           <div className="box-input form-row-item">
             <label className="mb-2 form-label" htmlFor="syriaCitiesSelect">
@@ -415,9 +440,9 @@ export default function SearchForm({
           />
         </div>
       </div>
-      <div className="group-select">
-    
-        <div className="box-select">
+      {shouldShowResidentialOptions && (
+        <div className="group-select">
+          <div className="box-select">
           <DropdownTagSelect
             id="bedsSelect"
             label="Beds"
@@ -463,7 +488,8 @@ export default function SearchForm({
     }}
   />
 </div>
-      </div>
+        </div>
+      )}
       <div className="group-checkbox">
         <div className="title text-4 fw-6 mb-2">Amenities:</div>
         <div className="group-amenities">

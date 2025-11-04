@@ -1,5 +1,5 @@
 "use client";
-import { blogMenu, homes, otherPages, propertyLinks } from "@/data/menu";
+import { homes, otherPages, propertyLinks } from "@/data/menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -81,11 +81,10 @@ export default function Nav() {
       </li>
       <li
         className={` ${
-          isParentActive(blogMenu) ? "current-menu" : ""
+          pathname?.split("/")[1] === "agents" ? "current-menu" : ""
         } `}
       >
-        <a href="/blog-grid">Blog</a>
- 
+        <Link href="/agents">Agents</Link>
       </li>
       <li className={"/contact" == pathname ? "current-menu" : ""}>
         <Link href={`/contact`}>Contact</Link>
