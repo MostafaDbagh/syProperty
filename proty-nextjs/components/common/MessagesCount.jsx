@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { useDashboardStats } from '@/apis/hooks';
 
 export default function MessagesCount({ 
@@ -8,7 +9,10 @@ export default function MessagesCount({
   icon = true,
   format = 'parentheses' // 'parentheses', 'badge', 'text'
 }) {
-  const { data: dashboardStats, isLoading } = useDashboardStats();
+  const pathname = usePathname();
+  // Only fetch dashboard stats if we're on a dashboard page
+  const isDashboardPage = pathname?.startsWith('/dashboard') || pathname?.startsWith('/review') || pathname?.startsWith('/messages') || pathname?.startsWith('/my-property');
+  const { data: dashboardStats, isLoading } = useDashboardStats(isDashboardPage);
   const messagesCount = dashboardStats?.data?.totalMessages || 0;
 
   if (isLoading) {

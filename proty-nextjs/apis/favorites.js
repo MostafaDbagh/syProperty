@@ -16,7 +16,12 @@ export const favoriteAPI = {
       });
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      // Extract error message from response
+      const errorData = error.response?.data;
+      if (errorData?.message) {
+        throw { message: errorData.message, error: errorData.error, response: error.response };
+      }
+      throw { message: error.message || 'Failed to add favorite', error: error.message, response: error.response };
     }
   },
 
@@ -33,7 +38,12 @@ export const favoriteAPI = {
       });
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      // Extract error message from response
+      const errorData = error.response?.data;
+      if (errorData?.message) {
+        throw { message: errorData.message, error: errorData.error, response: error.response };
+      }
+      throw { message: error.message || 'Failed to remove favorite', error: error.message, response: error.response };
     }
   },
 
@@ -50,7 +60,12 @@ export const favoriteAPI = {
       });
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      // Extract error message from response
+      const errorData = error.response?.data;
+      if (errorData?.message) {
+        throw { message: errorData.message, error: errorData.error, response: error.response };
+      }
+      throw { message: error.message || 'Failed to add favorite', error: error.message, response: error.response };
     }
   },
 
@@ -89,7 +104,12 @@ export const favoriteAPI = {
         return await favoriteAPI.addFavorite(propertyId);
       }
     } catch (error) {
-      throw error.response?.data || error.message;
+      // Extract error message from response
+      const errorData = error.response?.data;
+      if (errorData?.message) {
+        throw { message: errorData.message, error: errorData.error, response: error.response };
+      }
+      throw { message: error.message || 'Failed to add favorite', error: error.message, response: error.response };
     }
   }
 };

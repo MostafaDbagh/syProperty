@@ -1,9 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { favoriteAPI } from '@/apis/favorites';
-import { useRouter } from 'next/navigation';
 import { useFavorites } from '@/components/contexts/FavoritesContext';
+import { useGlobalModal } from '@/components/contexts/GlobalModalContext';
 import logger from '@/utils/logger';
+import Toast from './Toast';
 
 export default function FavoriteButton({ 
   propertyId, 
@@ -16,8 +18,17 @@ export default function FavoriteButton({
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const router = useRouter();
+  const [toast, setToast] = useState(null);
+  const { showLoginModal } = useGlobalModal();
   const { incrementFavoritesCount, decrementFavoritesCount } = useFavorites();
+
+  // Show toast notification
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
 
   // Check if user is logged in and if property is favorited
   useEffect(() => {
@@ -50,8 +61,8 @@ export default function FavoriteButton({
     const token = localStorage.getItem('token');
     
     if (!token) {
-      // Redirect to login
-      router.push('/login');
+      // Show login modal instead of redirecting
+      showLoginModal();
       return;
     }
 
@@ -60,9 +71,13 @@ export default function FavoriteButton({
     try {
       if (isFavorited) {
         // Remove from favorites
-        await favoriteAPI.removeFavorite(propertyId);
+        const response = await favoriteAPI.removeFavorite(propertyId);
         setIsFavorited(false);
         decrementFavoritesCount(); // Update global count
+        
+        // Show success message
+        const message = response?.message || 'Property removed from favorites successfully!';
+        showToast(message, 'success');
         
         // Call callback if provided
         if (onToggle) {
@@ -70,9 +85,13 @@ export default function FavoriteButton({
         }
       } else {
         // Add to favorites
-        await favoriteAPI.addFavorite(propertyId);
+        const response = await favoriteAPI.addFavorite(propertyId);
         setIsFavorited(true);
         incrementFavoritesCount(); // Update global count
+        
+        // Show success message
+        const message = response?.message || 'Property added to favorites successfully!';
+        showToast(message, 'success');
         
         // Call callback if provided
         if (onToggle) {
@@ -83,35 +102,47 @@ export default function FavoriteButton({
       logger.error('Error toggling favorite:', error);
       
       // Show error message
-      alert(error?.message || error?.error || 'Failed to update favorites. Please try again.');
+      const errorMessage = error?.message || error?.error || error?.response?.data?.message || 'Failed to update favorites. Please try again.';
+      showToast(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <button
-      onClick={handleToggleFavorite}
-      disabled={isLoading || isCheckingAuth}
-      className={`${className || "btn-icon save hover-tooltip"} favorite-button`}
-      title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-    >
-      <i 
-        className={`${iconClassName} favorite-icon ${isFavorited ? 'favorite-icon-favorited' : ''}`}
-      />
-      {showLabel && (
-        <span className="tooltip">
-          {isLoading ? 'Loading...' : isFavorited ? 'Remove from Favorites' : 'Add to Favorites'}
-        </span>
+    <>
+      <button
+        onClick={handleToggleFavorite}
+        disabled={isLoading || isCheckingAuth}
+        className={`${className || "btn-icon save hover-tooltip"} favorite-button`}
+        title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+      >
+        <i 
+          className={`${iconClassName} favorite-icon ${isFavorited ? 'favorite-icon-favorited' : ''}`}
+        />
+        {showLabel && (
+          <span className="tooltip">
+            {isLoading ? 'Loading...' : isFavorited ? 'Remove from Favorites' : 'Add to Favorites'}
+          </span>
+        )}
+        
+        {/* Loading indicator */}
+        {isLoading && (
+          <span className="favorite-loading-overlay">
+            <span className="favorite-loading-spinner" />
+          </span>
+        )}
+      </button>
+      {/* Toast Notification - Rendered at root level using Portal */}
+      {toast && typeof window !== 'undefined' && createPortal(
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />,
+        document.body
       )}
-      
-      {/* Loading indicator */}
-      {isLoading && (
-        <span className="favorite-loading-overlay">
-          <span className="favorite-loading-spinner" />
-        </span>
-      )}
-    </button>
+    </>
   );
 }
 

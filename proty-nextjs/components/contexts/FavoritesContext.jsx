@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { favoriteAPI } from '@/apis/favorites';
 import logger from '@/utils/logger';
 
@@ -16,11 +17,14 @@ export const useFavorites = () => {
 export const FavoritesProvider = ({ children }) => {
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
 
-  // Load favorites count on mount and when user changes
-  useEffect(() => {
-    loadFavoritesCount();
-  }, []);
+  // Check if we're on a dashboard or favorites page
+  const isDashboardOrFavoritesPage = pathname?.startsWith('/dashboard') || 
+                                      pathname?.startsWith('/my-favorites') || 
+                                      pathname?.startsWith('/my-property') ||
+                                      pathname?.startsWith('/review') ||
+                                      pathname?.startsWith('/messages');
 
   const loadFavoritesCount = async () => {
     const token = localStorage.getItem('token');
@@ -49,6 +53,19 @@ export const FavoritesProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+
+  // Load favorites count on mount and when user changes
+  // Only fetch if we're on a dashboard/favorites page or if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    // Only load favorites if user is logged in AND on dashboard/favorites pages
+    if (token && isDashboardOrFavoritesPage) {
+      loadFavoritesCount();
+    } else {
+      // Reset count if not on dashboard/favorites page
+      setFavoritesCount(0);
+    }
+  }, [pathname, isDashboardOrFavoritesPage]);
 
   const incrementFavoritesCount = () => {
     setFavoritesCount(prev => prev + 1);

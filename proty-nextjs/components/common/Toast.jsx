@@ -43,8 +43,8 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
         padding: '12px 20px',
         borderRadius: '8px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-        zIndex: 10001,
-        display: 'flex',
+        zIndex: 99999,
+        display: isVisible ? 'flex' : 'none',
         alignItems: 'center',
         gap: '8px',
         minWidth: '300px',
@@ -52,7 +52,8 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateX(0)' : 'translateX(100%)',
         transition: 'all 0.3s ease-in-out',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        pointerEvents: isVisible ? 'auto' : 'none'
       }}
       onClick={() => {
         setIsVisible(false);

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../utils/verifyUser');
 const {
   addFavorite,
   removeFavorite,
@@ -7,9 +8,10 @@ const {
   isFavorited
 } = require('../controllers/favorite.controller');
 
-router.post('/', addFavorite);
-router.delete('/:propertyId', removeFavorite);
-router.get('/', getFavorites);
-router.get('/check/:propertyId', isFavorited);
+// Apply authentication middleware to all routes
+router.post('/', verifyToken, addFavorite);
+router.delete('/:propertyId', verifyToken, removeFavorite);
+router.get('/', verifyToken, getFavorites);
+router.get('/check/:propertyId', verifyToken, isFavorited);
 
 module.exports = router;

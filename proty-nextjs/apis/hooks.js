@@ -462,12 +462,13 @@ export const useNewsletterStats = () => {
 };
 
 // Dashboard hooks
-export const useDashboardStats = () => {
+export const useDashboardStats = (enabled = true) => {
   return useQuery({
     queryKey: ['dashboard', 'stats'],
     queryFn: dashboardAPI.getDashboardStats,
+    enabled: enabled, // Only fetch when enabled (e.g., on dashboard pages)
     staleTime: 2 * 60 * 1000, // 2 minutes
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    refetchInterval: enabled ? 5 * 60 * 1000 : false, // Refetch every 5 minutes only if enabled
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });

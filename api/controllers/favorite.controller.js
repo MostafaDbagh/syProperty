@@ -22,61 +22,122 @@ const getUserIdFromToken = (req) => {
 const addFavorite = async (req, res, next) => {
   try {
     const { propertyId } = req.body;
-    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
+    // Use req.user.id from middleware (verifyToken sets it)
+    const userId = req.user?.id || req.user?._id?.toString() || getUserIdFromToken(req);
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
     }
 
-    // Check if property exists
-    const listing = await Listing.findById(propertyId);
-    if (!listing) return next(errorHandler(404, 'Property not found'));
-
-    // Convert userId to ObjectId for proper matching
-    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
-    
-    // Create or ignore if already exists - try both formats
-    let favorite = await Favorite.findOneAndUpdate(
-      { userId: userIdObj, propertyId },
-      { $setOnInsert: { addedAt: new Date() } },
-      { new: true, upsert: true }
-    );
-    
-    // If not found with ObjectId, try string format
-    if (!favorite) {
-      favorite = await Favorite.findOneAndUpdate(
-        { userId: userId, propertyId },
-        { $setOnInsert: { addedAt: new Date() } },
-        { new: true, upsert: true }
-      );
+    if (!propertyId) {
+      return next(errorHandler(400, 'Property ID is required'));
     }
 
-    res.status(200).json(favorite);
+    // Convert IDs to ObjectId for proper matching
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    const propertyIdObj = mongoose.Types.ObjectId.isValid(propertyId) ? new mongoose.Types.ObjectId(propertyId) : propertyId;
+
+    // Check if property exists
+    const listing = await Listing.findById(propertyIdObj);
+    if (!listing) return next(errorHandler(404, 'Property not found'));
+
+    // Check if favorite already exists (try both formats)
+    let existingFavorite = await Favorite.findOne({
+      $or: [
+        { userId: userIdObj, propertyId: propertyIdObj },
+        { userId: userId, propertyId: propertyId }
+      ]
+    });
+
+    if (existingFavorite) {
+      // Already favorited, return existing
+      return res.status(200).json({
+        success: true,
+        message: 'Property already in favorites',
+        data: existingFavorite
+      });
+    }
+
+    // Create new favorite with ObjectId
+    const favorite = await Favorite.create({
+      userId: userIdObj,
+      propertyId: propertyIdObj,
+      addedAt: new Date()
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Favorite added successfully',
+      data: favorite
+    });
   } catch (error) {
+    // Handle duplicate key error (unique index)
+    if (error.code === 11000) {
+      try {
+        const userIdForError = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
+        const propertyIdForError = req.body?.propertyId;
+        
+        if (userIdForError && propertyIdForError) {
+          const userIdObjForError = mongoose.Types.ObjectId.isValid(userIdForError) ? new mongoose.Types.ObjectId(userIdForError) : userIdForError;
+          const propertyIdObjForError = mongoose.Types.ObjectId.isValid(propertyIdForError) ? new mongoose.Types.ObjectId(propertyIdForError) : propertyIdForError;
+          
+          const existingFavorite = await Favorite.findOne({
+            $or: [
+              { userId: userIdObjForError, propertyId: propertyIdObjForError },
+              { userId: userIdForError, propertyId: propertyIdForError }
+            ]
+          });
+          
+          if (existingFavorite) {
+            return res.status(200).json({
+              success: true,
+              message: 'Property already in favorites',
+              data: existingFavorite
+            });
+          }
+        }
+      } catch (err) {
+        // If error handling fails, continue to next error handler
+      }
+    }
     next(error);
   }
 };
 
 const removeFavorite = async (req, res, next) => {
   try {
-    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
+    // Use req.user.id from middleware (verifyToken sets it)
+    const userId = req.user?.id || req.user?._id?.toString() || getUserIdFromToken(req);
     const propertyId = req.params.propertyId;
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
     }
 
-    // Convert userId to ObjectId for proper matching
-    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
-    
-    // Try both formats
-    let result = await Favorite.findOneAndDelete({ userId: userIdObj, propertyId });
-    if (!result) {
-      result = await Favorite.findOneAndDelete({ userId: userId, propertyId });
+    if (!propertyId) {
+      return next(errorHandler(400, 'Property ID is required'));
     }
-    if (!result) return next(errorHandler(404, 'Favorite not found'));
 
-    res.status(200).json({ message: 'Favorite removed successfully' });
+    // Convert IDs to ObjectId for proper matching
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    const propertyIdObj = mongoose.Types.ObjectId.isValid(propertyId) ? new mongoose.Types.ObjectId(propertyId) : propertyId;
+    
+    // Try both formats (ObjectId and string)
+    const result = await Favorite.findOneAndDelete({ 
+      $or: [
+        { userId: userIdObj, propertyId: propertyIdObj },
+        { userId: userId, propertyId: propertyId }
+      ]
+    });
+    
+    if (!result) {
+      return next(errorHandler(404, 'Favorite not found'));
+    }
+
+    res.status(200).json({ 
+      success: true,
+      message: 'Favorite removed successfully' 
+    });
   } catch (error) {
     next(error);
   }
@@ -84,7 +145,8 @@ const removeFavorite = async (req, res, next) => {
 
 const getFavorites = async (req, res, next) => {
   try {
-    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
+    // Use req.user.id from middleware (verifyToken sets it)
+    const userId = req.user?.id || req.user?._id?.toString() || getUserIdFromToken(req);
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
@@ -137,7 +199,8 @@ const getFavorites = async (req, res, next) => {
 const isFavorited = async (req, res, next) => {
   try {
     const { propertyId } = req.params;
-    const userId = getUserIdFromToken(req) || req.user?.id || req.user?._id?.toString();
+    // Use req.user.id from middleware (verifyToken sets it)
+    const userId = req.user?.id || req.user?._id?.toString() || getUserIdFromToken(req);
 
     if (!userId) {
       return next(errorHandler(401, 'User not authenticated'));
@@ -147,14 +210,17 @@ const isFavorited = async (req, res, next) => {
       return next(errorHandler(400, 'Property ID is required'));
     }
 
-    // Convert userId to ObjectId for proper matching
+    // Convert IDs to ObjectId for proper matching
     const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    const propertyIdObj = mongoose.Types.ObjectId.isValid(propertyId) ? new mongoose.Types.ObjectId(propertyId) : propertyId;
     
     // Check if property is favorited - try both formats
-    let favorite = await Favorite.findOne({ userId: userIdObj, propertyId });
-    if (!favorite) {
-      favorite = await Favorite.findOne({ userId: userId, propertyId });
-    }
+    const favorite = await Favorite.findOne({ 
+      $or: [
+        { userId: userIdObj, propertyId: propertyIdObj },
+        { userId: userId, propertyId: propertyId }
+      ]
+    });
     
     res.status(200).json({
       success: true,
