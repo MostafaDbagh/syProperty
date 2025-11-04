@@ -105,22 +105,24 @@ const getDashboardStats = async (req, res) => {
       // Unread messages for this agent - check both user and agent IDs
       Message.countDocuments({ 
         $or: [
-          { agentId: userId },
-          { agentId: queryId }
+          { recipientId: userIdObj },
+          { agentId: userIdObj },
+          { agentId: queryIdObj }
         ],
         status: 'unread'
       }),
       
       // Total messages for this agent - check both user and agent IDs
-      Message.countDocuments({ 
+      Message.countDocuments({
         $or: [
-          { agentId: userId },
-          { agentId: queryId }
+          { recipientId: userIdObj },
+          { agentId: userIdObj },
+          { agentId: queryIdObj }
         ]
       }),
       
       // Point balance
-      Point.findOne({ userId: userId }).select('balance')
+      Point.findOne({ userId: userIdObj }).select('balance')
     ]);
 
     // Calculate additional metrics
@@ -542,6 +544,11 @@ const getDashboardNotifications = async (req, res) => {
     const user = await User.findById(userId).select('agentId role');
     const queryId = (user && user.role === 'agent' && user.agentId) ? user.agentId.toString() : userId;
 
+    // Build ObjectId for proper matching
+    const isObjectId = mongoose.Types.ObjectId.isValid(queryId);
+    const queryIdObj = isObjectId ? new mongoose.Types.ObjectId(queryId) : queryId;
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+
     // Get various notifications
     const [
       unreadMessages,
@@ -553,9 +560,9 @@ const getDashboardNotifications = async (req, res) => {
       // Unread messages - check both recipientId and agentId
       Message.find({
         $or: [
-          { recipientId: userId },
-          { agentId: userId },
-          { agentId: queryId }
+          { recipientId: userIdObj },
+          { agentId: userIdObj },
+          { agentId: queryIdObj }
         ],
         isRead: false
       }).select('senderId subject createdAt').limit(5),
@@ -571,7 +578,7 @@ const getDashboardNotifications = async (req, res) => {
       }).select('propertyTitle createdAt').limit(5),
 
       // Low balance check
-      Point.findOne({ userId: userId }).select('balance'),
+      Point.findOne({ userId: userIdObj }).select('balance'),
 
       // Expiring listings (older than 90 days)
       Listing.find({

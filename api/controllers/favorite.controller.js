@@ -75,12 +75,16 @@ const getFavorites = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Convert userId to ObjectId for proper matching
+    const mongoose = require('mongoose');
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+
     // Get total count for pagination
-    const totalFavorites = await Favorite.countDocuments({ userId });
+    const totalFavorites = await Favorite.countDocuments({ userId: userIdObj });
     const totalPages = Math.ceil(totalFavorites / limit);
 
     // Get paginated favorites
-    const favorites = await Favorite.find({ userId })
+    const favorites = await Favorite.find({ userId: userIdObj })
       .populate('propertyId')
       .sort({ createdAt: -1 }) // Newest first
       .skip(skip)
