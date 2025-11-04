@@ -32,12 +32,24 @@ const addFavorite = async (req, res, next) => {
     const listing = await Listing.findById(propertyId);
     if (!listing) return next(errorHandler(404, 'Property not found'));
 
-    // Create or ignore if already exists
-    const favorite = await Favorite.findOneAndUpdate(
-      { userId, propertyId },
+    // Convert userId to ObjectId for proper matching
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    
+    // Create or ignore if already exists - try both formats
+    let favorite = await Favorite.findOneAndUpdate(
+      { userId: userIdObj, propertyId },
       { $setOnInsert: { addedAt: new Date() } },
       { new: true, upsert: true }
     );
+    
+    // If not found with ObjectId, try string format
+    if (!favorite) {
+      favorite = await Favorite.findOneAndUpdate(
+        { userId: userId, propertyId },
+        { $setOnInsert: { addedAt: new Date() } },
+        { new: true, upsert: true }
+      );
+    }
 
     res.status(200).json(favorite);
   } catch (error) {
@@ -54,7 +66,14 @@ const removeFavorite = async (req, res, next) => {
       return next(errorHandler(401, 'User not authenticated'));
     }
 
-    const result = await Favorite.findOneAndDelete({ userId, propertyId });
+    // Convert userId to ObjectId for proper matching
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    
+    // Try both formats
+    let result = await Favorite.findOneAndDelete({ userId: userIdObj, propertyId });
+    if (!result) {
+      result = await Favorite.findOneAndDelete({ userId: userId, propertyId });
+    }
     if (!result) return next(errorHandler(404, 'Favorite not found'));
 
     res.status(200).json({ message: 'Favorite removed successfully' });
@@ -128,8 +147,14 @@ const isFavorited = async (req, res, next) => {
       return next(errorHandler(400, 'Property ID is required'));
     }
 
-    // Check if property is favorited
-    const favorite = await Favorite.findOne({ userId, propertyId });
+    // Convert userId to ObjectId for proper matching
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    
+    // Check if property is favorited - try both formats
+    let favorite = await Favorite.findOne({ userId: userIdObj, propertyId });
+    if (!favorite) {
+      favorite = await Favorite.findOne({ userId: userId, propertyId });
+    }
     
     res.status(200).json({
       success: true,

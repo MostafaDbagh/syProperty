@@ -37,6 +37,8 @@ const getDashboardStats = async (req, res) => {
     // Build listing filter to check both agent (legacy) and agentId fields
     const isObjectId = mongoose.Types.ObjectId.isValid(queryId);
     const queryIdObj = isObjectId ? new mongoose.Types.ObjectId(queryId) : queryId;
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
+    
     const listingFilter = {
       $or: [
         { agent: queryId },
@@ -72,9 +74,12 @@ const getDashboardStats = async (req, res) => {
         approvalStatus: 'approved'
       }),
       
-      // Total favorites by this user
+      // Total favorites by this user - use ObjectId for proper matching
       Favorite.countDocuments({ 
-        userId: userId
+        $or: [
+          { userId: userIdObj },
+          { userId: userId }
+        ]
       }),
       
       // Total reviews for this user's listings (need to join with listings)
@@ -139,7 +144,7 @@ const getDashboardStats = async (req, res) => {
         createdAt: { $gte: sevenDaysAgo }
       }),
       Favorite.countDocuments({
-        userId: userId,
+        userId: userIdObj,
         createdAt: { $gte: sevenDaysAgo }
       }),
       Message.countDocuments({
@@ -277,6 +282,7 @@ const getDashboardAnalytics = async (req, res) => {
     // Build ObjectId for proper matching
     const isObjectId = mongoose.Types.ObjectId.isValid(queryId);
     const queryIdObj = isObjectId ? new mongoose.Types.ObjectId(queryId) : queryId;
+    const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
 
     // Calculate date range based on period
     const now = new Date();
@@ -337,7 +343,7 @@ const getDashboardAnalytics = async (req, res) => {
       Favorite.aggregate([
         {
           $match: {
-            userId: userId,
+            userId: userIdObj,
             createdAt: { $gte: startDate }
           }
         },

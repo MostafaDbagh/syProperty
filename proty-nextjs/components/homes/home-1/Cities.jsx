@@ -37,11 +37,11 @@ export default function Cities() {
       'Homs': '/images/cities/Homs.jpg',
       'Idlib': '/images/cities/idlib.jpg',
       'Latakia': '/images/cities/latakia.jpeg',
-      'Tartous': '/images/cities/tartous.jpg'
+      'Tartus': '/images/cities/tartous.jpg'
     };
     
     // Return the mapped image or fallback to hero image
-    return cityImageMap[cityName] || '/images/cities/hero.jpg';
+    return cityImageMap[cityName] || '/images/cities/SY.webp';
   };
 
   // Memoize locations array to prevent recreation on every render

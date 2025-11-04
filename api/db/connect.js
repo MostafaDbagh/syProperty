@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
 // Get MongoDB URI from environment variables
-const mongoURI = process.env.MONGO_URI;
+// Support both MONGO_URI and MONGODB_URI for compatibility
+const mongoURI = process.env.MONGO_URI || process.env.MONGODB_URI;
 
 if (!mongoURI) {
   logger.error('MONGO_URI is not defined in environment variables!');

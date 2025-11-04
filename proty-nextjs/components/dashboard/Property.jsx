@@ -9,6 +9,7 @@ import EditPropertyModal from "../modals/EditPropertyModal";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
+import { EyeIcon } from "../icons/EyeIcon";
 import logger from "@/utils/logger";
 import styles from "./Property.module.css";
 
@@ -512,7 +513,13 @@ export default function Property() {
                                   fontWeight: '600',
                                   border: '1px solid rgba(255, 255, 255, 0.2)'
                                 }}>
-                                  <i className="icon-eye" style={{ fontSize: '12px', color: 'white' }} />
+                                  <EyeIcon 
+                                    width={14} 
+                                    height={14} 
+                                    stroke="#333"
+                                    fill="none"
+                                    style={{ flexShrink: 0 }}
+                                  />
                                   <span>{listing.visitCount || 0} views</span>
                                 </div>
                               </div>
