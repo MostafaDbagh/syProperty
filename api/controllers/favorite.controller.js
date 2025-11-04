@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Listing = require('../models/listing.model');
 const Favorite = require('../models/favorite.model')
 const { errorHandler } = require('../utils/error');
@@ -76,15 +77,22 @@ const getFavorites = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     // Convert userId to ObjectId for proper matching
-    const mongoose = require('mongoose');
     const userIdObj = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
 
+    // Query with $or to match both string and ObjectId formats (for legacy data)
+    const favoriteFilter = {
+      $or: [
+        { userId: userId }, // String format
+        { userId: userIdObj } // ObjectId format
+      ]
+    };
+
     // Get total count for pagination
-    const totalFavorites = await Favorite.countDocuments({ userId: userIdObj });
+    const totalFavorites = await Favorite.countDocuments(favoriteFilter);
     const totalPages = Math.ceil(totalFavorites / limit);
 
     // Get paginated favorites
-    const favorites = await Favorite.find({ userId: userIdObj })
+    const favorites = await Favorite.find(favoriteFilter)
       .populate('propertyId')
       .sort({ createdAt: -1 }) // Newest first
       .skip(skip)
