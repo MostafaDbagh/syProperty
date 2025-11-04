@@ -167,10 +167,77 @@ const getReviewsByProperty = async (req, res) => {
 
       const mongoose = require('mongoose');
       const User = require('../models/user.model');
+      const jwt = require('jsonwebtoken');
       
       // Convert to ObjectId
       const isObjectId = mongoose.Types.ObjectId.isValid(agentId);
-      const agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
+      let agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
+      let finalAgentId = agentIdObj;
+
+      // Check if user is authenticated (optional - don't require auth)
+      let authenticatedUserId = null;
+      try {
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.startsWith('Bearer ') 
+          ? authHeader.slice(7)
+          : req.cookies?.access_token;
+        
+        if (token && token !== 'null') {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET || '5345jkj5kl34j5kl34j5');
+          authenticatedUserId = decoded.id;
+          logger.debug('getReviewsByAgent - Authenticated user ID:', authenticatedUserId);
+        }
+      } catch (err) {
+        // Token invalid or missing - that's okay, we'll use mapping logic
+        logger.debug('getReviewsByAgent - No valid authentication token');
+      }
+
+      // Check if this is an old orphaned agent ID and find the new user account
+      // Map of old orphaned agent IDs to new user accounts
+      const orphanedToNewMapping = {
+        '68ff3cf7cbb96ae0f6c49528': '69011eb4094125c9d18233d2', // Tarek Farouk
+        '68ff3cf6cbb96ae0f6c49512': '690124b4e02150e669d14ca1', // Ahmad Al-Hassan
+        '68ff3cf6cbb96ae0f6c49515': '690124b6e02150e669d14ca2', // Mohammad Ali
+        '68ff3cf6cbb96ae0f6c4951a': '690124b8e02150e669d14ca3', // Omar Mahmoud
+        '68ff3cf6cbb96ae0f6c4951d': '690124b9e02150e669d14ca4', // Khalil Abdullah
+        '68ff3cf7cbb96ae0f6c49520': '690124bbe02150e669d14ca5', // Youssef Salim
+        '68ff3cf7cbb96ae0f6c49522': '690124bce02150e669d14ca6', // Ziad Malek
+        '68ff3cf7cbb96ae0f6c49524': '690124bee02150e669d14ca7', // Rami Nasser
+        '68ff3cf7cbb96ae0f6c49526': '690124bfe02150e669d14ca8', // Bassam Hamdi
+        '68ff3cf6cbb96ae0f6c49518': '68ff97d83bb30c2519e463ae'  // Hassan Ibrahim
+      };
+      
+      try {
+        const agentIdStr = agentIdObj.toString();
+        
+        // Priority 1: If user is authenticated, use their ID
+        if (authenticatedUserId) {
+          const authUserIdObj = new mongoose.Types.ObjectId(authenticatedUserId);
+          const userExists = await User.findById(authUserIdObj);
+          if (userExists) {
+            logger.debug(`getReviewsByAgent - Using authenticated user ID: ${authenticatedUserId}`);
+            finalAgentId = authUserIdObj;
+          }
+        }
+        
+        // Priority 2: Check if this is in our mapping
+        if (finalAgentId === agentIdObj && orphanedToNewMapping[agentIdStr]) {
+          logger.debug(`getReviewsByAgent - Mapping old agent ID ${agentIdStr} to new ID ${orphanedToNewMapping[agentIdStr]}`);
+          finalAgentId = new mongoose.Types.ObjectId(orphanedToNewMapping[agentIdStr]);
+        } 
+        // Priority 3: Check if the agentId is already a valid user ID
+        else if (finalAgentId === agentIdObj) {
+          const userExists = await User.findById(agentIdObj);
+          if (userExists) {
+            logger.debug(`getReviewsByAgent - Agent ID ${agentIdStr} is a valid user ID`);
+            finalAgentId = agentIdObj;
+          } else {
+            logger.debug(`getReviewsByAgent - Agent ID ${agentIdStr} not found as user, using original`);
+          }
+        }
+      } catch (err) {
+        logger.error('getReviewsByAgent - Error checking for orphaned agent:', err);
+      }
 
       // Get pagination parameters from query
       const page = parseInt(req.query.page) || 1;
@@ -178,18 +245,31 @@ const getReviewsByProperty = async (req, res) => {
       const skip = (page - 1) * limit;
   
       // Find properties for this agent (used to include property-based reviews)
+      // Use both the original agentId and finalAgentId to find properties
       const properties = await Listing.find({ 
-        agentId: agentIdObj,
+        $or: [
+          { agentId: agentIdObj },
+          { agentId: finalAgentId }
+        ],
         isDeleted: { $ne: true }
       }).select('_id');
 
       const propertyIds = properties.map(p => p._id);
 
+      logger.debug('getReviewsByAgent - Debug:', {
+        originalAgentId: agentId,
+        finalAgentId: finalAgentId.toString(),
+        propertiesFound: properties.length,
+        propertyIds: propertyIds.length
+      });
+
       // Match both direct agentId reviews and reviews tied to the agent's properties
+      // Use both original and final agent IDs for matching
       const match = {
         hiddenFromDashboard: { $ne: true },
         $or: [
           { agentId: agentIdObj },
+          { agentId: finalAgentId },
           { propertyId: { $in: propertyIds } }
         ]
       };
@@ -197,6 +277,9 @@ const getReviewsByProperty = async (req, res) => {
       // Counts and pagination
       const totalReviews = await Review.countDocuments(match);
       const totalPages = Math.ceil(totalReviews / limit);
+
+      logger.debug('getReviewsByAgent - Match query:', JSON.stringify(match));
+      logger.debug('getReviewsByAgent - Total reviews found:', totalReviews);
 
       const reviews = await Review.find(match)
         .sort({ createdAt: -1 })
@@ -212,13 +295,19 @@ const getReviewsByProperty = async (req, res) => {
         ? allReviews.reduce((sum, review) => sum + (review.rating || 0), 0) / allReviews.length
         : 0;
   
+      logger.debug('getReviewsByAgent - Results:', {
+        reviewsReturned: reviews.length,
+        totalReviews: allReviews.length,
+        averageRating
+      });
+
       res.status(200).json({
         success: true,
         data: reviews,
         stats: {
           totalReviews: allReviews.length,
           averageRating: Math.round(averageRating * 10) / 10,
-          totalProperties: 0 // Can be calculated from properties if needed
+          totalProperties: properties.length
         },
         pagination: {
           currentPage: page,
