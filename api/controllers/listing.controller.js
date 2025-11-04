@@ -302,13 +302,33 @@ const getListingsByAgent = async (req, res, next) => {
     // Convert agentId to ObjectId for proper MongoDB querying
     const ObjectId = mongoose.Types.ObjectId;
     const User = require('../models/user.model');
+    const jwt = require('jsonwebtoken');
     let agentIdObj;
+    let finalUserId;
     
     try {
       agentIdObj = ObjectId.isValid(agentId) ? new ObjectId(agentId) : agentId;
     } catch (error) {
       logger.error('Invalid agentId:', agentId, error);
       return next(errorHandler(400, 'Invalid agent ID'));
+    }
+
+    // Check if user is authenticated (optional - don't require auth)
+    let authenticatedUserId = null;
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader && authHeader.startsWith('Bearer ') 
+        ? authHeader.slice(7)
+        : req.cookies?.access_token;
+      
+      if (token && token !== 'null') {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || '5345jkj5kl34j5kl34j5');
+        authenticatedUserId = decoded.id;
+        logger.debug('Authenticated user ID:', authenticatedUserId);
+      }
+    } catch (err) {
+      // Token invalid or missing - that's okay, we'll use mapping logic
+      logger.debug('No valid authentication token');
     }
 
     // Check if this is an old orphaned agent ID and find the new user account
@@ -329,45 +349,70 @@ const getListingsByAgent = async (req, res, next) => {
     try {
       const oldAgentIdStr = agentIdObj.toString();
       
-      // Check if this is in our mapping
-      if (orphanedToNewMapping[oldAgentIdStr]) {
+      // Priority 1: If user is authenticated, use their ID
+      if (authenticatedUserId) {
+        const authUserIdObj = new ObjectId(authenticatedUserId);
+        const userExists = await User.findById(authUserIdObj);
+        if (userExists) {
+          logger.debug(`Using authenticated user ID: ${authenticatedUserId}`);
+          finalUserId = authUserIdObj;
+        }
+      }
+      
+      // Priority 2: Check if this is in our mapping
+      if (!finalUserId && orphanedToNewMapping[oldAgentIdStr]) {
         logger.debug(`Mapping old agent ID ${oldAgentIdStr} to new ID ${orphanedToNewMapping[oldAgentIdStr]}`);
-        agentIdObj = new ObjectId(orphanedToNewMapping[oldAgentIdStr]);
-      } else {
-        // Check if user exists
+        finalUserId = new ObjectId(orphanedToNewMapping[oldAgentIdStr]);
+      } 
+      // Priority 3: Check if the agentId is already a valid user ID
+      else if (!finalUserId) {
         const userExists = await User.findById(agentIdObj);
-        
-        if (!userExists) {
+        if (userExists) {
+          logger.debug(`Agent ID ${oldAgentIdStr} is a valid user ID`);
+          finalUserId = agentIdObj;
+        } else {
           logger.debug(`Agent ID ${oldAgentIdStr} not found as user`);
           // Try to find by checking all listings with this old agentId
-          const oldAgentListings = await Listing.find({ agentId: agentIdObj }).limit(1).toArray();
+          const oldAgentListings = await Listing.find({ agentId: agentIdObj }).limit(1);
           
           if (oldAgentListings.length > 0 && oldAgentListings[0].agent) {
-            // Find the user by agent name
-            const agentName = oldAgentListings[0].agent;
+            // Find the user by agent name/email
+            const agentEmail = oldAgentListings[0].agent;
             const newUser = await User.findOne({ 
               $or: [
-                { username: { $regex: new RegExp(agentName, 'i') }},
-                { email: { $regex: new RegExp(agentName, 'i') }}
+                { username: { $regex: new RegExp(agentEmail, 'i') }},
+                { email: { $regex: new RegExp(agentEmail, 'i') }},
+                { email: agentEmail }
               ],
               role: 'agent'
             });
             
             if (newUser) {
-              logger.debug(`Redirecting to new user: ${newUser.username} (${newUser._id})`);
-              agentIdObj = newUser._id;
+              logger.debug(`Found user by email: ${newUser.email} (${newUser._id})`);
+              finalUserId = newUser._id;
             }
+          }
+          
+          // If still not found, use the original agentId as fallback
+          if (!finalUserId) {
+            logger.debug(`Using original agentId as fallback: ${oldAgentIdStr}`);
+            finalUserId = agentIdObj;
           }
         }
       }
     } catch (err) {
       logger.error('Error checking for orphaned agent:', err);
+      // Fallback to original agentId
+      finalUserId = agentIdObj;
     }
 
-    // Build filter object - only search by agentId (ObjectId field)
-    // The 'agent' field stores email and is not reliable for querying by user ID
+    // Build filter object - search by both agentId and userRef (legacy field)
+    // This ensures we catch all listings regardless of which field was used
     let filter = { 
-      agentId: agentIdObj, // Use ObjectId field for reliable matching
+      $or: [
+        { agentId: finalUserId },
+        { userRef: finalUserId } // Legacy field support
+      ],
       isDeleted: { $ne: true } // Exclude deleted listings
     };
 
@@ -376,8 +421,9 @@ const getListingsByAgent = async (req, res, next) => {
       filter.status = status;
     }
 
-    logger.debug('getListingsByAgent - Filter:', filter);
-    logger.debug('getListingsByAgent - agentId:', agentId);
+    logger.debug('getListingsByAgent - Filter:', JSON.stringify(filter));
+    logger.debug('getListingsByAgent - Original agentId:', agentId);
+    logger.debug('getListingsByAgent - Final userId:', finalUserId?.toString());
 
     // Get listings with pagination
     const listings = await Listing.find(filter)
@@ -393,7 +439,8 @@ const getListingsByAgent = async (req, res, next) => {
     logger.debug('getListingsByAgent - Results:', {
       total,
       found: listings.length,
-      agentId
+      originalAgentId: agentId,
+      finalUserId: finalUserId?.toString()
     });
 
     res.status(200).json({
