@@ -23,7 +23,8 @@ export const GlobalModalProvider = ({ children }) => {
     type: 'success',
     title: '',
     message: '',
-    userEmail: ''
+    userEmail: '',
+    showLoginButton: false
   });
   
   const [registerModalState, setRegisterModalState] = useState({
@@ -45,13 +46,14 @@ export const GlobalModalProvider = ({ children }) => {
     type: 'signup'
   });
 
-  const showSuccessModal = (title, message, userEmail = '') => {
+  const showSuccessModal = (title, message, userEmail = '', showLoginButton = false) => {
     setModalState({
       isOpen: true,
       type: 'success',
       title,
       message,
-      userEmail
+      userEmail,
+      showLoginButton
     });
   };
 
@@ -181,6 +183,7 @@ export const GlobalModalProvider = ({ children }) => {
         title={modalState.title}
         message={modalState.message}
         userEmail={modalState.userEmail}
+        showLoginButton={modalState.showLoginButton}
       />
       <Register
         isOpen={registerModalState.isOpen}

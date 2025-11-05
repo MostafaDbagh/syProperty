@@ -92,7 +92,8 @@ export default function OTPVerification({
             showSuccessModal(
               "Registration Successful!",
               "Your account has been created successfully. You can now login with your credentials.",
-              userData?.email
+              userData?.email,
+              true // showLoginButton - only for registration
             );
             onClose();
           } else {

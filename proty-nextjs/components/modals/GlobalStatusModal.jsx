@@ -10,7 +10,8 @@ export default function GlobalStatusModal({
   type = "success", // "success" or "warning"
   title,
   message,
-  userEmail
+  userEmail,
+  showLoginButton = false
 }) {
   // Use GlobalModal context for opening login modal
   const { showLoginModal } = useGlobalModal();
@@ -117,24 +118,66 @@ export default function GlobalStatusModal({
               )}
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                <button
-                  onClick={onClose}
-                  className="tf-btn bg-color-primary"
-                  style={{
-                    padding: '12px 24px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    minWidth: window.innerWidth <= 360 ? '100%' : '120px',
-                    background: isSuccess ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : 'var(--Primary)',
-                    color: 'white'
-                  }}
-                >
-                  {isSuccess ? 'Continue' : 'Close'}
-                </button>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                {showLoginButton && isSuccess ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        onClose();
+                        showLoginModal();
+                      }}
+                      className="tf-btn bg-color-primary"
+                      style={{
+                        padding: '12px 24px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        minWidth: window.innerWidth <= 360 ? '100%' : '120px',
+                        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                        color: 'white'
+                      }}
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={onClose}
+                      className="tf-btn style-border"
+                      style={{
+                        padding: '12px 24px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        backgroundColor: 'transparent',
+                        color: 'var(--Text)',
+                        minWidth: window.innerWidth <= 360 ? '100%' : '120px'
+                      }}
+                    >
+                      Close
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={onClose}
+                    className="tf-btn bg-color-primary"
+                    style={{
+                      padding: '12px 24px',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      minWidth: window.innerWidth <= 360 ? '100%' : '120px',
+                      background: isSuccess ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : 'var(--Primary)',
+                      color: 'white'
+                    }}
+                  >
+                    {isSuccess ? 'Continue' : 'Close'}
+                  </button>
+                )}
               </div>
             </div>
           </div>
