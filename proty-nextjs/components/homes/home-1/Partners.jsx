@@ -21,7 +21,6 @@ export default function Partners() {
                   website.
                 </p>
               </div>
-              <BrandSlider />
             </div>
           </div>
         </div>

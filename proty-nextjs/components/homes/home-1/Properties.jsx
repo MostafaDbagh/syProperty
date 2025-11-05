@@ -111,8 +111,14 @@ export default function Properties({ listings, isLoading, isError }) {
                 Featured
               </li>
             )}
-            <li className="flat-tag text-4 bg-3 fw-6 text_white">
-              {listing.status}
+            <li 
+              className="flat-tag text-4 fw-6 text_white"
+              style={{
+                backgroundColor: listing.status?.toLowerCase() === 'rent' ? '#3B82F6' : '#10B981',
+                color: 'white'
+              }}
+            >
+              {listing.status?.toLowerCase() === 'rent' ? 'For Rent' : 'For Sale'}
             </li>
           </ul>
 

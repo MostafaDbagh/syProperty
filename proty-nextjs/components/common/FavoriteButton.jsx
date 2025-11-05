@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { usePathname } from 'next/navigation';
 import { favoriteAPI } from '@/apis/favorites';
 import { useFavorites } from '@/components/contexts/FavoritesContext';
 import { useGlobalModal } from '@/components/contexts/GlobalModalContext';
@@ -30,12 +31,30 @@ export default function FavoriteButton({
     }, 3000);
   };
 
+  const pathname = usePathname();
+  
+  // Check if we're on a dashboard or favorites page
+  const isDashboardOrFavoritesPage = pathname?.startsWith('/dashboard') || 
+                                      pathname?.startsWith('/my-favorites') || 
+                                      pathname?.startsWith('/my-property') ||
+                                      pathname?.startsWith('/review') ||
+                                      pathname?.startsWith('/messages') ||
+                                      pathname?.startsWith('/property-detail');
+
   // Check if user is logged in and if property is favorited
+  // Only check on dashboard/favorites pages or property detail pages
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       const token = localStorage.getItem('token');
       
       if (!token) {
+        setIsCheckingAuth(false);
+        return;
+      }
+
+      // Only check favorite status on dashboard/favorites pages or property detail pages
+      // Skip on home page to avoid unnecessary API calls
+      if (!isDashboardOrFavoritesPage) {
         setIsCheckingAuth(false);
         return;
       }
@@ -51,7 +70,7 @@ export default function FavoriteButton({
     };
 
     checkFavoriteStatus();
-  }, [propertyId]);
+  }, [propertyId, isDashboardOrFavoritesPage]);
 
   const handleToggleFavorite = async (e) => {
     e.preventDefault();
