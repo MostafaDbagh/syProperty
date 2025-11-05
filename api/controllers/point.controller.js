@@ -101,6 +101,24 @@ const deductPoints = async (req, res, next) => {
       return next(errorHandler(400, 'Listing ID is required'));
     }
 
+    // Check if user is on trial or has unlimited points
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+
+    // Skip deduction if user is on trial or has unlimited points
+    if (user.isTrial === true || user.hasUnlimitedPoints === true) {
+      return res.status(200).json({
+        success: true,
+        message: `Points not deducted. User is on trial or has unlimited points.`,
+        data: {
+          skipped: true,
+          reason: user.isTrial ? 'trial_period' : 'unlimited_points'
+        }
+      });
+    }
+
     // Get user's point record
     let userPoints = await Point.findOne({ userId });
     if (!userPoints) {

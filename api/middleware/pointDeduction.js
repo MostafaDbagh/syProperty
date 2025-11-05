@@ -83,6 +83,22 @@ const checkAndDeductPoints = async (req, res, next) => {
     const userId = req.user.id;
     const listingData = req.body;
 
+    // Get user to check trial and unlimited points flags
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Skip point checking if user is on trial OR has unlimited points
+    if (user.isTrial === true || user.hasUnlimitedPoints === true) {
+      // Store flag to skip deduction later
+      req.skipPointDeduction = true;
+      return next();
+    }
+
     // Calculate points needed for this listing
     const pointsNeeded = calculateListingPoints(listingData);
 

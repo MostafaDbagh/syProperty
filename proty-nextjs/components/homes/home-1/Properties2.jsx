@@ -254,7 +254,7 @@ export default function Properties2() {
                         
                         {/* Action Buttons - Tab Style */}
                         <div className={styles.actionButtonsSection}>
-                          <p className="contact-agent-title">contact Agent</p>
+                          <p className="contact-agent-title" style={{fontWeight:'bold',fontStyle:'oblique',fontSize:'12px'}}>Contact Agent</p>
                           <div className={styles.actionButtonsVertical} style={{ marginTop: '4px',fontWeight: '600' }}>
                             <button 
                               className={`${styles.actionTab} ${styles.callTab}`}

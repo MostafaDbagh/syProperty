@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    city: {
+      type: String,
+      default: '',
+    },
     // Social media links
     facebook: {
       type: String,
@@ -77,6 +81,23 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    servicesAndExpertise: {
+      type: [String],
+      default: [],
+    },
+    responseTime: {
+      type: String,
+      default: '',
+    },
+    availability: {
+      type: String,
+      default: '',
+    },
+    yearsExperience: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     // Point system fields
     pointsBalance: {
       type: Number,
@@ -91,6 +112,16 @@ const userSchema = new mongoose.Schema(
     packageExpiry: {
       type: Date,
       default: null,
+    },
+    // Trial period flag - allows free posting during trial
+    isTrial: {
+      type: Boolean,
+      default: true,
+    },
+    // Unlimited points flag - bypasses point checking
+    hasUnlimitedPoints: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

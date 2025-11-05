@@ -31,11 +31,36 @@ const updateUser = async (req, res, next) => {
     if (req.body.job !== undefined) updateData.job = req.body.job;
     if (req.body.phone !== undefined) updateData.phone = req.body.phone;
     if (req.body.location !== undefined) updateData.location = req.body.location;
+    if (req.body.city !== undefined) updateData.city = req.body.city;
     
     // Social media fields
     if (req.body.facebook !== undefined) updateData.facebook = req.body.facebook;
     if (req.body.twitter !== undefined) updateData.twitter = req.body.twitter;
     if (req.body.linkedin !== undefined) updateData.linkedin = req.body.linkedin;
+    
+    // Services & Expertise - handle array
+    if (req.body.servicesAndExpertise !== undefined) {
+      // Handle both array and comma-separated string
+      if (Array.isArray(req.body.servicesAndExpertise)) {
+        updateData.servicesAndExpertise = req.body.servicesAndExpertise;
+      } else if (typeof req.body.servicesAndExpertise === 'string') {
+        updateData.servicesAndExpertise = req.body.servicesAndExpertise.split(',').map(s => s.trim()).filter(s => s);
+      } else {
+        updateData.servicesAndExpertise = [];
+      }
+    }
+    
+    // Response Time
+    if (req.body.responseTime !== undefined) updateData.responseTime = req.body.responseTime;
+    
+    // Availability
+    if (req.body.availability !== undefined) updateData.availability = req.body.availability;
+    
+    // Years Experience
+    if (req.body.yearsExperience !== undefined) {
+      const years = parseInt(req.body.yearsExperience);
+      updateData.yearsExperience = isNaN(years) ? 0 : years;
+    }
     
     // Hash password if provided
     if (req.body.password) {

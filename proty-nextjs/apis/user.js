@@ -21,9 +21,26 @@ export const userAPI = {
   updateProfile: async (userId, userData) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await Axios.post(`/user/update/${userId}`, userData, {
+      const formData = new FormData();
+      
+      // Add all user data to FormData
+      Object.keys(userData).forEach(key => {
+        if (key === 'avatar' && userData[key] instanceof File) {
+          formData.append('avatar', userData[key]);
+        } else if (key === 'servicesAndExpertise' && Array.isArray(userData[key])) {
+          // Handle array by joining with comma or appending each item
+          userData[key].forEach(item => {
+            formData.append('servicesAndExpertise', item);
+          });
+        } else if (userData[key] !== null && userData[key] !== undefined) {
+          formData.append(key, userData[key]);
+        }
+      });
+
+      const response = await Axios.post(`/user/update/${userId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
       return response.data;

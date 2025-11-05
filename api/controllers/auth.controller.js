@@ -7,7 +7,15 @@ const logger = require('../utils/logger');
 const signup = async (req, res, next) => {
   const { username, email, password, role } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashedPassword, role });
+  // Set isTrial to true for new users (allows free posting during trial)
+  const newUser = new User({ 
+    username, 
+    email, 
+    password: hashedPassword, 
+    role,
+    isTrial: true, // New users get trial period
+    hasUnlimitedPoints: false // Default to false, can be set to true later
+  });
   try {
     await newUser.save();
     res.status(201).json({
