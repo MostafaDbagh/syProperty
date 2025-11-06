@@ -50,11 +50,13 @@ export default function Dashboard() {
   } = useReviewsByAgent(userData?.id, { limit: 5 });
 
   // Fetch most visited listings (last 5)
+  // Use userData?.id or userData?._id or userData?.agentId
+  const agentId = userData?.id || userData?._id || userData?.agentId || '68ef776e8cd8a7ccd23eedbd';
   const { 
     data: mostVisitedData, 
     isLoading: mostVisitedLoading, 
     error: mostVisitedError 
-  } = useMostVisitedListings(userData?.id || '68ef776e8cd8a7ccd23eedbd', { limit: 5 });
+  } = useMostVisitedListings(agentId, { limit: 5 });
 
   // Fetch dashboard stats from API
   const { 
@@ -79,7 +81,7 @@ export default function Dashboard() {
 
   const recentMessages = messagesData?.data || [];
   const recentReviews = reviewsData?.data || [];
-  const mostVisitedListings = mostVisitedData?.data || [];
+  const mostVisitedListings = Array.isArray(mostVisitedData) ? mostVisitedData : (mostVisitedData?.data || []);
   
   // Memoize dashboard data to prevent unnecessary re-renders
   const stats = useMemo(() => dashboardStats?.data || {}, [dashboardStats?.data]);

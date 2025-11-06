@@ -17,11 +17,6 @@ const errorHandler = require('../utils/error')
   
   jwt.verify(token, jwtSecret, (err, user) => {
     if (err) {
-      // Log the error for debugging
-      console.error('JWT Verification Error:', err.message);
-      console.error('Token:', token.substring(0, 50) + '...');
-      console.error('JWT_SECRET exists:', !!process.env.JWT_SECRET);
-      
       // Return more specific error messages
       if (err.name === 'TokenExpiredError') {
         return next(errorHandler(401, 'Token expired'));

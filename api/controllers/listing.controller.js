@@ -470,6 +470,8 @@ const incrementVisitCount = async (req, res, next) => {
 const getMostVisitedListings = async (req, res, next) => {
   try {
     const agentId = req.params.agentId;
+    logger.debug('getMostVisitedListings - agentId:', agentId);
+    
     const isObjectId = mongoose.Types.ObjectId.isValid(agentId);
     const agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
     
@@ -482,10 +484,20 @@ const getMostVisitedListings = async (req, res, next) => {
       isDeleted: { $ne: true }
     })
       .sort({ visitCount: -1 })
-      .limit(10);
+      .limit(10)
+      .lean();
+    
+    logger.debug('getMostVisitedListings - found listings:', listings.length);
+    logger.debug('getMostVisitedListings - sample listing:', listings[0] ? {
+      id: listings[0]._id,
+      visitCount: listings[0].visitCount,
+      agentId: listings[0].agentId,
+      agent: listings[0].agent
+    } : 'none');
     
     res.status(200).json(listings);
   } catch (error) {
+    logger.error('getMostVisitedListings error:', error);
     next(error);
   }
 };

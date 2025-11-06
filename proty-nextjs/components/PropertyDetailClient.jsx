@@ -35,7 +35,6 @@ export default function PropertyDetailClient({ id }) {
         }
       } catch (error) {
         // If localStorage fails, still increment visit count
-        console.error('Error handling visit count:', error);
         incrementVisitCount.mutate(property._id);
       }
       hasIncremented.current = true;

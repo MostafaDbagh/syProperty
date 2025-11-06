@@ -191,19 +191,12 @@ export default function AddProperty() {
 
     setErrors(newErrors);
     
-    // Log validation errors immediately
-    if (Object.keys(newErrors).length > 0) {
-      console.log("❌ Validation errors found:", newErrors);
-    }
-    
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    console.log("🔄 handleSubmit called!");
-    console.log("Event:", e);
     logger.debug("🔄 Form submitted - Starting validation");
     
     const isValid = validateForm();
@@ -271,9 +264,7 @@ export default function AddProperty() {
       logger.debug("📤 Images count:", images.length);
       logger.debug("📤 createListingMutation:", createListingMutation);
       
-      console.log("🚀 Making API call now...");
       const result = await createListingMutation.mutateAsync(submitData);
-      console.log("✅ API call successful:", result);
       
       logger.debug("Property created successfully:", result);
       
@@ -319,9 +310,6 @@ export default function AddProperty() {
       
     } catch (error) {
       logger.error("Error creating property:", error);
-      console.error("Full error object:", error);
-      console.error("Error response:", error?.response);
-      console.error("Error response data:", error?.response?.data);
       
       let errorMessage = "Failed to create property";
       
@@ -336,7 +324,6 @@ export default function AddProperty() {
         errorMessage = error;
       }
       
-      console.error("Final error message:", errorMessage);
       
       // Check for insufficient points error
       if (errorMessage.includes("Insufficient points") || errorMessage.includes("points")) {
@@ -769,7 +756,6 @@ export default function AddProperty() {
               className="tf-btn bg-color-primary pd-13"
               disabled={isSubmitting}
               onClick={(e) => {
-                console.log("🔘 Button clicked!");
                 // Directly call handleSubmit to ensure API call happens
                 handleSubmit(e);
               }}
