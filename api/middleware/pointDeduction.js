@@ -1,7 +1,7 @@
 const Point = require('../models/point.model');
 const PointTransaction = require('../models/pointTransaction.model');
 const User = require('../models/user.model');
-const { errorHandler } = require('../utils/error');
+const errorHandler = require('../utils/error');
 
 // Calculate points needed for listing based on various factors
 const calculateListingPoints = (listingData) => {
@@ -80,8 +80,28 @@ const calculateListingPoints = (listingData) => {
 // Middleware to check and deduct points before creating a listing
 const checkAndDeductPoints = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const logger = require('../utils/logger');
+    logger.debug('checkAndDeductPoints - req.user:', req.user);
+    logger.debug('checkAndDeductPoints - req.body keys:', Object.keys(req.body || {}));
+    
+    // Get userId from req.user - handle both id and _id properties
+    const userId = req.user?.id || req.user?._id || req.user?.userId;
+    
+    logger.debug('checkAndDeductPoints - userId:', userId);
+    
+    if (!userId) {
+      logger.error('checkAndDeductPoints - User ID not found in token. req.user:', req.user);
+      return res.status(401).json({
+        success: false,
+        message: 'User ID not found in token'
+      });
+    }
+    
     const listingData = req.body;
+    
+    logger.debug('checkAndDeductPoints - req.body keys:', Object.keys(req.body || {}));
+    logger.debug('checkAndDeductPoints - req.body:', req.body);
+    logger.debug('checkAndDeductPoints - listingData:', listingData);
 
     // Get user to check trial and unlimited points flags
     const user = await User.findById(userId);

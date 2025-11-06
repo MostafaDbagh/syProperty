@@ -23,20 +23,58 @@ export default function Categories({
   });
   
   // Memoize listings data to prevent unnecessary re-renders
-  const allListings = useMemo(() => allListingsResponse?.data || [], [allListingsResponse?.data]);
+  // API returns array directly, not wrapped in data property
+  const allListings = useMemo(() => {
+    // Handle both array response and wrapped response
+    if (Array.isArray(allListingsResponse)) {
+      return allListingsResponse;
+    }
+    return allListingsResponse?.data || [];
+  }, [allListingsResponse]);
 
   // Memoize categories calculation to prevent recalculation on every render
   const categories = useMemo(() => {
-    const propertyTypes = ['Apartment', 'Villa/farms' , 'Office', 'Commercial', 'Land','Holiday Home'];
+    const propertyTypes = ['Apartment', 'Villa/farms', 'Office', 'Commercial', 'Land', 'Holiday Home'];
     const icons = ['icon-apartment1', 'icon-villa', 'icon-office1', 'icon-commercial', 'icon-land', 'icon-studio'];
+    
+    // Debug: Log all property types found in listings
+    if (allListings.length > 0) {
+      const uniqueTypes = [...new Set(allListings.map(p => p.propertyType))];
+      console.log('Categories - Found property types:', uniqueTypes);
+      console.log('Categories - Total listings:', allListings.length);
+    }
     
     return propertyTypes.map((type, index) => {
       const displayName = type === 'Land' ? 'Land/Plot' : type;
-      // Count listings that match either the type or the display name
-      const count = allListings.filter(p => 
-        p.propertyType === type || 
-        (type === 'Land' && (p.propertyType === 'Land' || p.propertyType === 'Land/Plot'))
-      ).length;
+      // Count listings that match the type (case-insensitive and flexible matching)
+      const count = allListings.filter(p => {
+        if (!p.propertyType) return false;
+        const listingType = p.propertyType.trim();
+        const searchType = type.trim();
+        
+        // Exact match
+        if (listingType === searchType) return true;
+        
+        // Case-insensitive match
+        if (listingType.toLowerCase() === searchType.toLowerCase()) return true;
+        
+        // Special handling for Land/Plot
+        if (type === 'Land' && (listingType === 'Land' || listingType === 'Land/Plot' || listingType.toLowerCase() === 'land')) {
+          return true;
+        }
+        
+        // Special handling for Villa/farms
+        if (type === 'Villa/farms' && (listingType.includes('Villa') || listingType.includes('villa') || listingType.includes('Farm') || listingType.includes('farm'))) {
+          return true;
+        }
+        
+        // Special handling for Holiday Home
+        if (type === 'Holiday Home' && (listingType === 'Holiday Home' || listingType === 'Holiday Homes' || listingType.toLowerCase().includes('holiday'))) {
+          return true;
+        }
+        
+        return false;
+      }).length;
       
       return {
         name: displayName,

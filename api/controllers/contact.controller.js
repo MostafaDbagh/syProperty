@@ -1,5 +1,5 @@
 const Contact = require('../models/contact.model');
-const { errorHandler } = require('../utils/error');
+const errorHandler = require('../utils/error');
 
 const createContact = async (req, res, next) => {
   try {

@@ -47,15 +47,27 @@ function Properties1Content({ defaultGrid = false }) {
     error
   } = useSearchListings(apiParams);
 
-
-  const listings = searchResponse?.data || [];
+  // API returns array directly, not wrapped in data property
+  // Handle both array response and wrapped response
+  const listings = Array.isArray(searchResponse) 
+    ? searchResponse 
+    : searchResponse?.data || [];
+  
+  // Calculate pagination from listings array since backend doesn't return pagination metadata
+  const limit = apiParams.limit || 12;
+  const total = listings.length;
+  const totalPages = Math.ceil(total / limit);
+  const startIndex = (currentPage - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedListings = listings.slice(startIndex, endIndex);
+  
   const pagination = {
-    total: searchResponse?.total || 0,
-    page: searchResponse?.page || 1,
-    limit: searchResponse?.limit || 12,
-    totalPages: searchResponse?.totalPages || 0,
-    hasNextPage: searchResponse?.hasNextPage || false,
-    hasPrevPage: searchResponse?.hasPrevPage || false
+    total: total,
+    page: currentPage,
+    limit: limit,
+    totalPages: totalPages,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1
   };
 
   // Debug: Log the API response
@@ -334,7 +346,7 @@ function Properties1Content({ defaultGrid = false }) {
                           <p>Error loading properties: {error?.message || 'Unknown error'}</p>
                         </div>
                       ) : (
-                        <PropertyGridItems listings={listings} />
+                        <PropertyGridItems listings={paginatedListings} />
                       )}
                     </div>
                   </div>
@@ -356,7 +368,7 @@ function Properties1Content({ defaultGrid = false }) {
                           <p>Error loading properties: {error?.message || 'Unknown error'}</p>
                         </div>
                       ) : (
-                        <PropertyListItems listings={listings} />
+                        <PropertyListItems listings={paginatedListings} />
                       )}
                     </div>
                   </div>

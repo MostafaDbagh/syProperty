@@ -1,6 +1,6 @@
 const Agent = require('../models/agent.model');
 const User = require('../models/user.model');
-const { errorHandler } = require('../utils/error');
+const errorHandler = require('../utils/error');
 
 // Create agent
 const createAgent = async (req, res, next) => {

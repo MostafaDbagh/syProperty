@@ -8,34 +8,191 @@
  * - furnished MUST be true (always furnished)
  * 
  * These rules are automatically enforced in createListing() and updateListing()
- * See HOLIDAY_HOMES_REQUIREMENTS.md for full documentation
  */
 
 const Listing = require('../models/listing.model.js');
-const { errorHandler } = require('../utils/error.js');
-const cloudinary = require('../utils/cloudinary.js');
+const errorHandler = require('../utils/error.js');
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
+/**
+ * Helper function to convert string to number
+ */
+const toNumber = (value, defaultValue = 0) => {
+  if (value === null || value === undefined || value === '') return defaultValue;
+  const num = Number(value);
+  return isNaN(num) ? defaultValue : num;
+};
 
+/**
+ * Helper function to convert string to boolean
+ */
+const toBoolean = (value, defaultValue = false) => {
+  if (value === null || value === undefined || value === '') return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    return value.toLowerCase() === 'true' || value === '1';
+  }
+  return Boolean(value);
+};
 
+/**
+ * Helper function to ensure array
+ */
+const toArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (value === null || value === undefined || value === '') return [];
+  if (typeof value === 'string') return [value];
+  return [];
+};
 
-
+/**
+ * Create a new listing
+ * Frontend sends FormData with:
+ * - All form fields as strings/numbers/booleans
+ * - images: File objects (already processed by middleware into objects)
+ * - imageNames: array of strings
+ */
 const createListing = async (req, res, next) => {
   try {
-    const listingData = {
-      ...req.body,
-      // Ensure images and imageNames are properly set
-      images: req.body.images || [],
-      imageNames: req.body.imageNames || [],
-      // Set agentId from authenticated user or request body
-      // req.user.id is set by authentication middleware (from JWT token)
-      agentId: req.body.agentId || req.body.userId || req.user?.id || null
+    logger.info('📝 Creating new listing');
+    logger.debug('Request body keys:', Object.keys(req.body || {}));
+    logger.debug('Request body:', req.body);
+    logger.debug('req.user:', req.user);
+    logger.debug('req.files:', req.files ? `${req.files.length} files` : 'no files');
+    
+    // Ensure req.body exists
+    if (!req.body) {
+      return next(errorHandler(400, 'Request body is empty'));
+    }
+
+    // Extract and validate required fields
+    const {
+      propertyType,
+      propertyKeyword,
+      propertyDesc,
+      propertyPrice,
+      status,
+      rentType,
+      bedrooms,
+      bathrooms,
+      size,
+      furnished,
+      garages,
+      address,
+      country,
+      state, // Frontend sends 'state', backend needs 'city'
+      neighborhood,
+      agent,
+      agentId,
+      agentEmail,
+      agentNumber,
+      agentWhatsapp,
+      amenities,
+      images, // Already processed by uploadListingImagesMiddleware (array of objects)
+      imageNames, // Already processed by uploadListingImagesMiddleware (array of strings)
+      propertyId,
+      landArea,
+      yearBuilt,
+      garageSize,
+      approvalStatus,
+      isSold,
+      isDeleted
+    } = req.body;
+
+    // Validate required fields
+    const requiredFields = {
+      propertyType,
+      propertyKeyword,
+      propertyDesc,
+      propertyPrice,
+      status,
+      bedrooms,
+      bathrooms,
+      size,
+      furnished,
+      garages,
+      address,
+      country,
+      neighborhood,
+      agent
     };
 
-    logger.debug('createListing - agentId set to:', listingData.agentId);
-    logger.debug('createListing - req.user:', req.user);
-    logger.debug('createListing - req.body.agentId:', req.body.agentId);
+    // Log all required fields for debugging
+    logger.debug('Required fields check:', Object.entries(requiredFields).map(([key, value]) => ({
+      key,
+      value,
+      type: typeof value,
+      isNull: value === null,
+      isUndefined: value === undefined,
+      isEmpty: value === ''
+    })));
+    
+    // Handle boolean fields - they can be false, which is valid
+    const missingFields = Object.entries(requiredFields)
+      .filter(([key, value]) => {
+        // Boolean fields (furnished, garages) can be false, which is valid
+        if (key === 'furnished' || key === 'garages') {
+          return value === null || value === undefined;
+        }
+        // Other fields cannot be null, undefined, or empty string
+        return value === null || value === undefined || value === '';
+      })
+      .map(([key]) => key);
+
+    if (missingFields.length > 0) {
+      logger.error('Missing required fields:', missingFields);
+      logger.error('Required fields values:', requiredFields);
+      return next(errorHandler(400, `Missing required fields: ${missingFields.join(', ')}`));
+    }
+
+    // Validate status enum
+    if (!['sale', 'rent'].includes(status)) {
+      return next(errorHandler(400, 'Status must be either "sale" or "rent"'));
+    }
+
+    // Validate rentType if status is rent
+    if (status === 'rent' && rentType && !['monthly', 'yearly', 'weekly'].includes(rentType)) {
+      return next(errorHandler(400, 'RentType must be "monthly", "yearly", or "weekly"'));
+    }
+
+    // Map state to city (backend schema requires 'city')
+    const city = state || req.body.city || 'Unknown';
+
+    // Build listing data object with proper type conversions
+    const listingData = {
+      propertyId: propertyId || `PROP_${Date.now()}`,
+      propertyType: String(propertyType),
+      propertyKeyword: String(propertyKeyword),
+      propertyDesc: String(propertyDesc),
+      propertyPrice: toNumber(propertyPrice),
+      status: String(status),
+      rentType: status === 'rent' ? (rentType || 'monthly') : undefined,
+      bedrooms: toNumber(bedrooms),
+      bathrooms: toNumber(bathrooms),
+      size: toNumber(size),
+      landArea: landArea ? toNumber(landArea) : toNumber(size), // Default to size if not provided
+      furnished: toBoolean(furnished),
+      garages: toBoolean(garages),
+      garageSize: garages && garageSize ? toNumber(garageSize) : 0,
+      yearBuilt: yearBuilt ? toNumber(yearBuilt) : new Date().getFullYear(),
+      amenities: toArray(amenities),
+      address: String(address),
+      country: String(country),
+      city: String(city),
+      state: state ? String(state) : undefined, // Keep for backward compatibility
+      neighborhood: String(neighborhood),
+      agent: String(agent), // Required legacy field
+      agentId: agentId ? (mongoose.Types.ObjectId.isValid(agentId) ? new mongoose.Types.ObjectId(agentId) : null) : null,
+      agentEmail: agentEmail ? String(agentEmail) : undefined,
+      agentNumber: agentNumber ? String(agentNumber) : undefined,
+      agentWhatsapp: agentWhatsapp ? String(agentWhatsapp) : undefined,
+      approvalStatus: approvalStatus || 'pending',
+      isSold: toBoolean(isSold, false),
+      isDeleted: toBoolean(isDeleted, false),
+      images: Array.isArray(images) ? images : [],
+      imageNames: toArray(imageNames)
+    };
 
     // Holiday Homes Requirements Enforcement
     if (listingData.propertyType === 'Holiday Home') {
@@ -43,21 +200,48 @@ const createListing = async (req, res, next) => {
       listingData.furnished = true; // Force furnished true
     }
 
+    // Log the prepared data
+    logger.debug('Listing data prepared:', {
+      propertyId: listingData.propertyId,
+      propertyType: listingData.propertyType,
+      status: listingData.status,
+      city: listingData.city,
+      agentId: listingData.agentId,
+      imagesCount: listingData.images.length,
+      amenitiesCount: listingData.amenities.length
+    });
+
+    // Create listing in database
     const newListing = await Listing.create(listingData);
     
+    logger.info(`✅ Listing created successfully: ${newListing._id}`);
+
     // Store listing ID for point deduction middleware
     req.listingId = newListing._id;
     res.locals.listingId = newListing._id;
 
     // Prepare response with points info if available
     const response = {
+      success: true,
       ...newListing.toObject(),
       pointsInfo: res.locals.pointsDeducted || null
     };
 
     res.status(201).json(response);
-  }
-     catch (error) {
+  } catch (error) {
+    logger.error('Error creating listing:', error);
+    
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message).join(', ');
+      return next(errorHandler(400, `Validation error: ${messages}`));
+    }
+    
+    // Handle duplicate key error (propertyId)
+    if (error.code === 11000) {
+      return next(errorHandler(400, 'Property ID already exists'));
+    }
+    
     next(error);
   }
 };
@@ -77,35 +261,15 @@ const deleteListing = async (req, res, next) => {
 
     // Get user ID from req.user (could be req.user.id or req.user._id)
     const userId = req.user.id || req.user._id?.toString();
-
-    // Check authorization - support both old and new agent systems
-    // Compare with string representations to ensure proper matching
-    const listingUserRef = listing.userRef?.toString();
     const listingAgentId = listing.agentId?.toString();
-    
-    const isAuthorized = 
-      (listingUserRef && userId === listingUserRef) || // Old system
-      (listingAgentId && userId === listingAgentId); // New system
 
-    if (!isAuthorized) {
-      logger.warn('Authorization failed for delete:', {
-        userId,
-        listingUserRef,
-        listingAgentId,
-        reqUser: req.user
-      });
-      return next(errorHandler(401, 'You can only delete your own listings!'));
+    // Check if user is the owner or admin
+    if (userId !== listingAgentId && req.user.role !== 'admin') {
+      return next(errorHandler(403, 'You can only delete your own listings!'));
     }
 
     await Listing.findByIdAndDelete(req.params.id);
-    
-    // Prepare response with refund info if available
-    const response = {
-      message: 'Listing has been deleted!',
-      pointsRefunded: res.locals.pointsRefunded || null
-    };
-
-    res.status(200).json(response);
+    res.status(200).json('Listing has been deleted!');
   } catch (error) {
     next(error);
   }
@@ -113,6 +277,16 @@ const deleteListing = async (req, res, next) => {
 
 const updateListing = async (req, res, next) => {
   try {
+    const logger = require('../utils/logger');
+    
+    // Ensure req.body exists
+    if (!req.body) {
+      return next(errorHandler(400, 'Request body is empty'));
+    }
+    
+    logger.debug('updateListing - req.body:', req.body);
+    logger.debug('updateListing - req.body keys:', Object.keys(req.body || {}));
+    
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return next(errorHandler(404, 'Listing not found!'));
@@ -123,60 +297,30 @@ const updateListing = async (req, res, next) => {
       return next(errorHandler(401, 'You must be logged in to update listings!'));
     }
 
-    // Get user ID from req.user (could be req.user.id or req.user._id)
+    // Get user ID from req.user
     const userId = req.user.id || req.user._id?.toString();
-
-    // Check authorization - support both old and new agent systems
-    // Compare with string representations to ensure proper matching
-    const listingUserRef = listing.userRef?.toString();
     const listingAgentId = listing.agentId?.toString();
-    
-    const isAuthorized = 
-      (listingUserRef && userId === listingUserRef) || // Old system
-      (listingAgentId && userId === listingAgentId); // New system
 
-    if (!isAuthorized) {
-      logger.warn('Authorization failed:', {
-        userId,
-        listingUserRef,
-        listingAgentId,
-        reqUser: req.user
-      });
-      return next(errorHandler(401, 'You can only update your own listings!'));
+    // Check if user is the owner or admin
+    if (userId !== listingAgentId && req.user.role !== 'admin') {
+      return next(errorHandler(403, 'You can only update your own listings!'));
     }
 
-    // Remove fields that shouldn't be updated directly
-    const updateData = { ...req.body };
-    delete updateData._id;
-    delete updateData.createdAt;
-    delete updateData.updatedAt;
-
     // Holiday Homes Requirements Enforcement
-    // Check if updating to Holiday Home OR if existing property is Holiday Home
-    if (updateData.propertyType === 'Holiday Home' || listing.propertyType === 'Holiday Home') {
-      updateData.status = 'rent'; // Force rent only
-      updateData.furnished = true; // Force furnished true
-      
-      // If trying to change from Holiday Home, prevent invalid status/furnished
-      if (listing.propertyType === 'Holiday Home') {
-        updateData.propertyType = 'Holiday Home'; // Keep it as Holiday Home
-      }
+    if (req.body && req.body.propertyType === 'Holiday Home') {
+      req.body.status = 'rent';
+      req.body.furnished = true;
     }
 
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
-      updateData,
-      { 
-        new: true, 
-        runValidators: true 
-      }
-    ).populate('agentId', 'firstName lastName email phone');
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
 
-    res.status(200).json({
-      success: true,
-      message: 'Listing updated successfully',
-      data: updatedListing
-    });
+    res.status(200).json(updatedListing);
   } catch (error) {
     next(error);
   }
@@ -188,369 +332,127 @@ const getListingById = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, 'Listing not found!'));
     }
-    
-    // Return listing with image information
-    const response = {
-      ...listing.toObject(),
-      imageCount: listing.images ? listing.images.length : 0,
-      hasImages: listing.images && listing.images.length > 0
-    };
-    
-    res.status(200).json(response);
+    res.status(200).json(listing);
   } catch (error) {
     next(error);
   }
 };
 
-// Get listing images specifically
 const getListingImages = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return next(errorHandler(404, 'Listing not found!'));
     }
-
-    const imageData = {
-      imageNames: listing.imageNames || [],
-      images: listing.images || [],
-      imageCount: listing.images ? listing.images.length : 0,
-      hasImages: listing.images && listing.images.length > 0
-    };
-
     res.status(200).json({
-      success: true,
-      data: imageData
+      images: listing.images || [],
+      imageNames: listing.imageNames || []
     });
   } catch (error) {
     next(error);
-  }
-};
-
-const getFilteredListings = async (req, res) => {
-  try {
-    const filter = req.filter || {};
-    const sortOptions = req.sortOptions || { createdAt: -1 };
-    
-    // Add filter to exclude deleted listings
-    filter.isDeleted = { $ne: true };
-    
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12; // Default to 12 items per page
-    const skip = (page - 1) * limit;
-
-    const listings = await Listing.find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort(sortOptions); // Use dynamic sort options
-
-    const total = await Listing.countDocuments(filter);
-    const totalPages = Math.ceil(total / limit);
-
-    logger.debug('API Debug:', {
-      filter,
-      total,
-      page,
-      limit,
-      totalPages,
-      listingsCount: listings.length
-    });
-
-    // Debug first listing structure
-    if (listings.length > 0) {
-      logger.debug('First listing structure:', {
-        _id: listings[0]._id,
-        propertyTitle: listings[0].propertyTitle,
-        images: listings[0].images,
-        imageNames: listings[0].imageNames,
-        hasImages: listings[0].images && listings[0].images.length > 0,
-        imageCount: listings[0].images ? listings[0].images.length : 0
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      total,
-      page,
-      limit,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-      data: listings
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching filtered listings',
-      error: error.message
-    });
   }
 };
 
 const getListingsByAgent = async (req, res, next) => {
   try {
-    const agentId = req.params.agentId;
-    if (!agentId) {
-      return next(errorHandler(400, 'Agent ID is required'));
-    }
-
-    // Get pagination and filter parameters
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6; // Default to 6 items per page
-    const skip = (page - 1) * limit;
-    const status = req.query.status; // 'rent' or 'sale' filter
-
-    // Convert agentId to ObjectId for proper MongoDB querying
-    const ObjectId = mongoose.Types.ObjectId;
-    const User = require('../models/user.model');
-    const jwt = require('jsonwebtoken');
-    let agentIdObj;
-    let finalUserId;
-    
-    try {
-      agentIdObj = ObjectId.isValid(agentId) ? new ObjectId(agentId) : agentId;
-    } catch (error) {
-      logger.error('Invalid agentId:', agentId, error);
-      return next(errorHandler(400, 'Invalid agent ID'));
-    }
-
-    // Check if user is authenticated (optional - don't require auth)
-    let authenticatedUserId = null;
-    try {
-      const authHeader = req.headers.authorization;
-      const token = authHeader && authHeader.startsWith('Bearer ') 
-        ? authHeader.slice(7)
-        : req.cookies?.access_token;
-      
-      if (token && token !== 'null') {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || '5345jkj5kl34j5kl34j5');
-        authenticatedUserId = decoded.id;
-        logger.debug('Authenticated user ID:', authenticatedUserId);
-      }
-    } catch (err) {
-      // Token invalid or missing - that's okay, we'll use mapping logic
-      logger.debug('No valid authentication token');
-    }
-
-    // Check if this is an old orphaned agent ID and find the new user account
-    // Map of old orphaned agent IDs to new user accounts
-    const orphanedToNewMapping = {
-      '68ff3cf7cbb96ae0f6c49528': '69011eb4094125c9d18233d2', // Tarek Farouk
-      '68ff3cf6cbb96ae0f6c49512': '690124b4e02150e669d14ca1', // Ahmad Al-Hassan
-      '68ff3cf6cbb96ae0f6c49515': '690124b6e02150e669d14ca2', // Mohammad Ali
-      '68ff3cf6cbb96ae0f6c4951a': '690124b8e02150e669d14ca3', // Omar Mahmoud
-      '68ff3cf6cbb96ae0f6c4951d': '690124b9e02150e669d14ca4', // Khalil Abdullah
-      '68ff3cf7cbb96ae0f6c49520': '690124bbe02150e669d14ca5', // Youssef Salim
-      '68ff3cf7cbb96ae0f6c49522': '690124bce02150e669d14ca6', // Ziad Malek
-      '68ff3cf7cbb96ae0f6c49524': '690124bee02150e669d14ca7', // Rami Nasser
-      '68ff3cf7cbb96ae0f6c49526': '690124bfe02150e669d14ca8', // Bassam Hamdi
-      '68ff3cf6cbb96ae0f6c49518': '68ff97d83bb30c2519e463ae'  // Hassan Ibrahim
-    };
-    
-    try {
-      const oldAgentIdStr = agentIdObj.toString();
-      
-      // Priority 1: If user is authenticated, use their ID
-      if (authenticatedUserId) {
-        const authUserIdObj = new ObjectId(authenticatedUserId);
-        const userExists = await User.findById(authUserIdObj);
-        if (userExists) {
-          logger.debug(`Using authenticated user ID: ${authenticatedUserId}`);
-          finalUserId = authUserIdObj;
-        }
-      }
-      
-      // Priority 2: Check if this is in our mapping
-      if (!finalUserId && orphanedToNewMapping[oldAgentIdStr]) {
-        logger.debug(`Mapping old agent ID ${oldAgentIdStr} to new ID ${orphanedToNewMapping[oldAgentIdStr]}`);
-        finalUserId = new ObjectId(orphanedToNewMapping[oldAgentIdStr]);
-      } 
-      // Priority 3: Check if the agentId is already a valid user ID
-      else if (!finalUserId) {
-        const userExists = await User.findById(agentIdObj);
-        if (userExists) {
-          logger.debug(`Agent ID ${oldAgentIdStr} is a valid user ID`);
-          finalUserId = agentIdObj;
-        } else {
-          logger.debug(`Agent ID ${oldAgentIdStr} not found as user`);
-          // Try to find by checking all listings with this old agentId
-          const oldAgentListings = await Listing.find({ agentId: agentIdObj }).limit(1);
-          
-          if (oldAgentListings.length > 0 && oldAgentListings[0].agent) {
-            // Find the user by agent name/email
-            const agentEmail = oldAgentListings[0].agent;
-            const newUser = await User.findOne({ 
-              $or: [
-                { username: { $regex: new RegExp(agentEmail, 'i') }},
-                { email: { $regex: new RegExp(agentEmail, 'i') }},
-                { email: agentEmail }
-              ],
-              role: 'agent'
-            });
-            
-            if (newUser) {
-              logger.debug(`Found user by email: ${newUser.email} (${newUser._id})`);
-              finalUserId = newUser._id;
-            }
-          }
-          
-          // If still not found, use the original agentId as fallback
-          if (!finalUserId) {
-            logger.debug(`Using original agentId as fallback: ${oldAgentIdStr}`);
-            finalUserId = agentIdObj;
-          }
-        }
-      }
-    } catch (err) {
-      logger.error('Error checking for orphaned agent:', err);
-      // Fallback to original agentId
-      finalUserId = agentIdObj;
-    }
-
-    // Build filter object - search by both agentId and userRef (legacy field)
-    // This ensures we catch all listings regardless of which field was used
-    let filter = { 
-      $or: [
-        { agentId: finalUserId },
-        { userRef: finalUserId } // Legacy field support
-      ],
-      isDeleted: { $ne: true } // Exclude deleted listings
-    };
-
-    // Add status filter if provided
-    if (status && status !== 'all') {
-      filter.status = status;
-    }
-
-    logger.debug('getListingsByAgent - Filter:', JSON.stringify(filter));
-    logger.debug('getListingsByAgent - Original agentId:', agentId);
-    logger.debug('getListingsByAgent - Final userId:', finalUserId?.toString());
-
-    // Get listings with pagination
-    const listings = await Listing.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('agentId', 'username email avatar'); // Populate agent details if available
-
-    // Get total count for pagination
-    const total = await Listing.countDocuments(filter);
-    const totalPages = Math.ceil(total / limit);
-
-    logger.debug('getListingsByAgent - Results:', {
-      total,
-      found: listings.length,
-      originalAgentId: agentId,
-      finalUserId: finalUserId?.toString()
-    });
-
-    res.status(200).json({
-      success: true,
-      data: listings,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalListings: total,
-        limit,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1
-      }
-    });
+    const listings = await Listing.find({ agentId: req.params.agentId });
+    res.status(200).json(listings);
   } catch (error) {
-    logger.error('getListingsByAgent - Error:', error);
     next(error);
   }
 };
 
-
-// Utility to get image data for a state
-const getImageDataByState = (state) => {
-  const commonDimensions = { width: 339, height: 245 };
-
-  const map = {
-    Damascus: {
-      imageSrc: "/images/section/location-9.jpg",
-      width: 689,
-      height: 245,
-    },
-    Latakia: { imageSrc: "/images/section/location-10.jpg", ...commonDimensions },
-    Aleppo: { imageSrc: "/images/section/location-11.jpg", ...commonDimensions },
-    Homs: { imageSrc: "/images/section/location-12.jpg", ...commonDimensions },
-    Hama: { imageSrc: "/images/section/location-13.jpg", ...commonDimensions },
-    "Deir ez-zor": { imageSrc: "/images/section/location-14.jpg", ...commonDimensions },
-    Tartus: { imageSrc: "/images/section/location-15.jpg", ...commonDimensions },
-  };
-
-  return map[state] || {
-    imageSrc: "/images/default.jpg",
-    width: 689,
-    height: 467,
-  };
+const getFilteredListings = async (req, res, next) => {
+  try {
+    const logger = require('../utils/logger');
+    
+    // Get filters and sort options from middleware
+    const filters = req.filter || {};
+    const sortOptions = req.sortOptions || { createdAt: -1 };
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = parseInt(req.query.skip) || 0;
+    
+    // Add filter to exclude deleted listings
+    filters.isDeleted = { $ne: true };
+    
+    // For public search, show approved listings only
+    // Don't filter by approvalStatus for now - show all non-deleted listings
+    // This allows pending listings to be visible while waiting for approval
+    // filters.approvalStatus = 'approved';  // Commented out to show all listings
+    
+    logger.debug('getFilteredListings - filters:', filters);
+    logger.debug('getFilteredListings - sortOptions:', sortOptions);
+    logger.debug('getFilteredListings - limit:', limit, 'skip:', skip);
+    
+    // Query the database with filters
+    const listings = await Listing.find(filters)
+      .sort(sortOptions)
+      .limit(limit)
+      .skip(skip)
+      .lean(); // Use lean() for better performance
+    
+    logger.debug('getFilteredListings - found', listings.length, 'listings');
+    
+    // Log sample of listings for debugging
+    if (listings.length > 0) {
+      logger.debug('Sample listing:', {
+        id: listings[0]._id,
+        propertyType: listings[0].propertyType,
+        city: listings[0].city,
+        state: listings[0].state,
+        approvalStatus: listings[0].approvalStatus,
+        isDeleted: listings[0].isDeleted
+      });
+    } else {
+      logger.warn('No listings found with filters:', filters);
+      // Log total count of listings in database
+      const totalCount = await Listing.countDocuments({});
+      logger.debug('Total listings in database:', totalCount);
+      const nonDeletedCount = await Listing.countDocuments({ isDeleted: { $ne: true } });
+      logger.debug('Non-deleted listings in database:', nonDeletedCount);
+    }
+    
+    res.status(200).json(listings);
+  } catch (error) {
+    logger.error('getFilteredListings error:', error);
+    next(error);
+  }
 };
 
-const getEachStateListing = async (req, res) => {
+const getEachStateListing = async (req, res, next) => {
   try {
-    const listingsByState = await Listing.aggregate([
-      { $match: { isDeleted: false } },
+    const stateCounts = await Listing.aggregate([
       {
         $group: {
-          _id: "$city", // Use 'city' field instead of 'state'
-          count: { $sum: 1 },
-        },
+          _id: '$city', // Using city field instead of state
+          count: { $sum: 1 }
+        }
       },
-      { $sort: { count: -1 } },
+      {
+        $project: {
+          state: '$_id',
+          count: 1,
+          _id: 0
+        }
+      }
     ]);
-
-    let formatted = listingsByState.map((item, index) => {
-      const city = item._id;
-      const { imageSrc, width, height } = getImageDataByState(city);
-
-      return {
-        id: index + 1,
-        imageSrc,
-        alt: "syProperties",
-        width,
-        height,
-        state: city, // Keep 'state' key for backward compatibility with frontend
-        city: city,
-        properties: `${item.count.toLocaleString()} Properties`,
-      };
-    });
-
-    const damascusIndex = formatted.findIndex(item => item.city === "Damascus");
-    if (damascusIndex !== -1) {
-      const [damascusItem] = formatted.splice(damascusIndex, 1);
-      formatted.splice(formatted.length - 1, 0, damascusItem);
-    }
-
-    res.status(200).json({ success: true, data: formatted });
+    res.status(200).json(stateCounts);
   } catch (error) {
-    logger.error("Error in getEachStateListing:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message || error,
-    });
+    next(error);
   }
 };
 
 const incrementVisitCount = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    
     const listing = await Listing.findByIdAndUpdate(
-      id,
+      req.params.id,
       { $inc: { visitCount: 1 } },
       { new: true }
     );
-
     if (!listing) {
       return next(errorHandler(404, 'Listing not found!'));
     }
-
-    res.status(200).json({
-      success: true,
-      visitCount: listing.visitCount
-    });
+    res.status(200).json({ visitCount: listing.visitCount });
   } catch (error) {
     next(error);
   }
@@ -558,43 +460,14 @@ const incrementVisitCount = async (req, res, next) => {
 
 const getMostVisitedListings = async (req, res, next) => {
   try {
-    const { agentId } = req.params;
-    const { limit = 10, page = 1 } = req.query;
-
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    const filter = {
-      agentId: agentId,
-      isDeleted: { $ne: true },
-      visitCount: { $gt: 0 } // Only listings with visits
-    };
-
-    const listings = await Listing.find(filter)
-      .sort({ visitCount: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .populate('agentId', 'username email fullName');
-
-    const total = await Listing.countDocuments(filter);
-
-    res.status(200).json({
-      success: true,
-      data: listings,
-      pagination: {
-        total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(total / parseInt(limit)),
-        hasNextPage: skip + parseInt(limit) < total,
-        hasPrevPage: parseInt(page) > 1
-      }
-    });
+    const listings = await Listing.find({ agentId: req.params.agentId })
+      .sort({ visitCount: -1 })
+      .limit(10);
+    res.status(200).json(listings);
   } catch (error) {
     next(error);
   }
 };
-
-
 
 module.exports = {
   createListing,
@@ -602,9 +475,9 @@ module.exports = {
   updateListing,
   getListingById,
   getListingImages,
-  getFilteredListings,
   getListingsByAgent,
+  getFilteredListings,
   getEachStateListing,
   incrementVisitCount,
-  getMostVisitedListings
+  getMostVisitedListings,
 };

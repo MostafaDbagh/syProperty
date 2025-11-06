@@ -136,15 +136,18 @@ export default function PropertyListItems({ listings = [] }) {
             <p className="location text-1 flex items-center gap-6">
               <i className="icon-location" /> {property.state || property.location || 'Location not specified'}
             </p>
-            <ul className="meta-list flex">
-              <li className="text-1 flex">
-                <span>{property.bedrooms || 0}</span>Beds
+            <ul className="meta-list flex" style={{ gap: '24px' }}>
+              <li className="text-1 flex items-center">
+                <i className="icon-bed" />
+                <span style={{ marginLeft: '4px' }}>{property.bedrooms || 0}</span>
               </li>
-              <li className="text-1 flex">
-                <span>{property.bathrooms || 0}</span>Baths
+              <li className="text-1 flex items-center">
+                <i className="icon-bath" />
+                <span style={{ marginLeft: '4px' }}>{property.bathrooms || 0}</span>
               </li>
-              <li className="text-1 flex">
-                <span>{property.size || 0}</span>Sqft
+              <li className="text-1 flex items-center">
+                <i className="icon-sqft" />
+                <span style={{ marginLeft: '4px' }}>{property.size || 0}</span> Sqft
               </li>
             </ul>
             <div className="bot flex justify-between items-center">

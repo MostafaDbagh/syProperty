@@ -9,8 +9,33 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Don't parse JSON for routes that handle file uploads
+// express.json() will interfere with multer's ability to parse multipart/form-data
+// We'll apply it only to routes that don't handle file uploads
 app.use(cookieParser());
+
+// Apply express.json() only to routes that don't handle multipart/form-data
+app.use('/api/auth', express.json());
+app.use('/api/user', express.json());
+app.use('/api/review', express.json());
+app.use('/api/contacts', express.json());
+app.use('/api/favorites', express.json());
+app.use('/api/points', express.json());
+app.use('/api/message', express.json());
+app.use('/api/newsletter', express.json());
+app.use('/api/blog', express.json());
+app.use('/api/dashboard', express.json());
+// Apply express.json() to listing routes (but NOT to /create which uses multipart/form-data)
+// We'll handle this in the route handler itself
+app.use('/api/listing', (req, res, next) => {
+  // Skip JSON parsing for /create route (uses multipart/form-data)
+  // req.path will be like '/create' or '/update/:id' when mounted at /api/listing
+  if (req.path.startsWith('/create') && req.method === 'POST') {
+    return next();
+  }
+  // For all other listing routes, parse JSON
+  express.json()(req, res, next);
+});
 
 // Routes
 const authRouter = require('./routes/auth.route');
@@ -42,6 +67,34 @@ app.use('/api/dashboard', dashboardRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'All routes loaded successfully' });
 });
+
+
+// Error handling middleware - must be after all routes
+app.use((err, req, res, next) => {
+  const logger = require('./utils/logger');
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  logger.error('Error:', {
+    statusCode,
+    message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method
+  });
+  
+  const response = {
+    success: false,
+    message: message
+  };
+  
+  if (process.env.NODE_ENV === 'development') {
+    response.stack = err.stack;
+  }
+  
+  res.status(statusCode).json(response);
+});
+
 
 const PORT = process.env.PORT || 5500;
 

@@ -13,14 +13,23 @@ export default function Cities() {
   });
   
   // Memoize listings data to prevent unnecessary re-renders
-  const listings = useMemo(() => searchResponse?.data || [], [searchResponse?.data]);
+  // API returns array directly, not wrapped in data property
+  const listings = useMemo(() => {
+    // Handle both array response and wrapped response
+    if (Array.isArray(searchResponse)) {
+      return searchResponse;
+    }
+    return searchResponse?.data || [];
+  }, [searchResponse]);
 
   // Memoize state counts calculation to prevent recalculation on every render
+  // Use city field (primary) or state field (fallback) for backward compatibility
   const stateCounts = useMemo(() => {
     return listings.reduce((acc, listing) => {
-      const state = listing.state;
-      if (state) {
-        acc[state] = (acc[state] || 0) + 1;
+      // Use city field (backend uses city), fallback to state for backward compatibility
+      const cityOrState = listing.city || listing.state;
+      if (cityOrState) {
+        acc[cityOrState] = (acc[cityOrState] || 0) + 1;
       }
       return acc;
     }, {});

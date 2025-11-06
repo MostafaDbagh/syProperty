@@ -2,7 +2,7 @@ import axios from 'axios'
 const localhost = 'http://localhost:5500/api'
 const heroku = 'https://proty-api-mostafa-56627d8ca9aa.herokuapp.com/api'
 export const Axios = axios.create({
-  baseURL: heroku, // Use Heroku for production
+  baseURL: localhost, // Use Heroku for production
   timeout: 30000, // Request timeout in milliseconds (increased to 30 seconds)
   headers: {
     'Content-Type': 'application/json',
@@ -21,6 +21,11 @@ Axios.interceptors.request.use(
     
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // If sending FormData, remove Content-Type header to let axios set it automatically with boundary
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
     }
     
     return config;

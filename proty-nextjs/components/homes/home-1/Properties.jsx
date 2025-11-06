@@ -24,6 +24,21 @@ export default function Properties({ listings, isLoading, isError }) {
     window.open(whatsappUrl, '_blank');
   };
 
+  // Function to get image source from listing
+  const getImageSource = (listing) => {
+    // Try to get first image from images array
+    if (listing.images && Array.isArray(listing.images) && listing.images.length > 0) {
+      const firstImage = listing.images[0];
+      return firstImage.url || firstImage || "/images/section/box-house-2.jpg";
+    }
+    // Fallback to imageNames
+    if (listing.imageNames && Array.isArray(listing.imageNames) && listing.imageNames.length > 0) {
+      return listing.imageNames[0];
+    }
+    // Default fallback image
+    return "/images/section/box-house-2.jpg";
+  };
+
   if (isLoading) return (
     <section className="section-listing tf-spacing-1">
       <div className="tf-container">
@@ -75,6 +90,36 @@ export default function Properties({ listings, isLoading, isError }) {
     </section>
   );
   
+  // Handle cases where listings might be undefined or have different structure
+  const listingsArray = listings?.data || listings || [];
+  
+  if (!listingsArray || listingsArray.length === 0) {
+    return (
+      <section className="section-listing tf-spacing-1">
+        <div className="tf-container">
+          <div className="row">
+            <div className="col-12">
+              <div className="heading-section text-center">
+                <h2 className="title split-text effect-right">
+                  <SplitTextAnimation text="Today's  Listings" />
+                </h2>
+                <p className="text-1 split-text split-lines-transform">
+                  Alot of  homes enthusiasts just like you visit our
+                  website.
+                </p>
+              </div>
+              <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+                <div style={{ color: '#6B7280', fontSize: '18px', fontWeight: '500' }}>
+                  No properties available at the moment
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
   return (
     <section className="section-listing tf-spacing-1">
       <div className="tf-container">
@@ -82,7 +127,7 @@ export default function Properties({ listings, isLoading, isError }) {
           <div className="col-12">
             <div className="heading-section text-center ">
               <h2 className="title split-text effect-right">
-                <SplitTextAnimation text="Today’s  Listings" />
+                <SplitTextAnimation text="Today's  Listings" />
               </h2>
               <p className="text-1 split-text split-lines-transform">
                 Alot of  homes enthusiasts just like you visit our
@@ -91,17 +136,20 @@ export default function Properties({ listings, isLoading, isError }) {
             </div>
             
             <div className="tf-layout-mobile-md md-col-2 lg-col-3 gap-15">
-              {listings.data.map((listing, i) => (
+              {listingsArray.map((listing, i) => (
                 <div key={i}>
       <div className="box-house hover-img">
         <div className="image-wrap">
           <Link href={`/property-detail/${listing._id}`}>
             <Image
               className="lazyload"
-              alt={listing.name}
-              src="https://res.cloudinary.com/dgavyfooy/image/upload/v1749591601/listings/p4u5w3xaawjuxuqussbo.jpg"
+              alt={listing.propertyKeyword || listing.propertyType || 'Property'}
+              src={getImageSource(listing)}
               width={600}
               height={401}
+              onError={(e) => {
+                e.target.src = "/images/section/box-house-2.jpg";
+              }}
             />
           </Link>
 
@@ -141,15 +189,18 @@ export default function Properties({ listings, isLoading, isError }) {
             <i className="icon-location" /> {listing.address}
           </p>
 
-          <ul className="meta-list flex">
-            <li className="text-1 flex">
-              <span>{listing.bedrooms}</span> Beds
+          <ul className="meta-list flex" style={{ gap: '24px' }}>
+            <li className="text-1 flex items-center">
+              <i className="icon-bed" />
+              <span style={{ marginLeft: '4px' }}>{listing.bedrooms}</span>
             </li>
-            <li className="text-1 flex">
-              <span>{listing.bathrooms}</span> Baths
+            <li className="text-1 flex items-center">
+              <i className="icon-bath" />
+              <span style={{ marginLeft: '4px' }}>{listing.bathrooms}</span>
             </li>
-            <li className="text-1 flex">
-              <span>{listing.size ?? "N/A"}</span> Sqft
+            <li className="text-1 flex items-center">
+              <i className="icon-sqft" />
+              <span style={{ marginLeft: '4px' }}>{listing.size ?? "N/A"}</span> Sqft
             </li>
           </ul>
 

@@ -29,26 +29,49 @@ export const listingAPI = {
       
       // Add all listing data to FormData
       Object.keys(listingData).forEach(key => {
-        if (key === 'images' && Array.isArray(listingData[key])) {
-          // Handle multiple image files
-          listingData[key].forEach((image, index) => {
-            formData.append('images', image);
+        const value = listingData[key];
+        
+        // Skip null or undefined values
+        if (value === null || value === undefined) {
+          return;
+        }
+        
+        if (key === 'images' && Array.isArray(value)) {
+          // Handle multiple image files - only append File objects
+          value.forEach((image) => {
+            if (image instanceof File) {
+              formData.append('images', image);
+            }
           });
-        } else if (key === 'imageNames' && Array.isArray(listingData[key])) {
+        } else if (key === 'imageNames' && Array.isArray(value)) {
           // Handle image names
-          listingData[key].forEach((name, index) => {
+          value.forEach((name) => {
             formData.append('imageNames', name);
           });
+        } else if (key === 'amenities' && Array.isArray(value)) {
+          // Handle amenities array - append each item
+          value.forEach((amenity) => {
+            formData.append('amenities', amenity);
+          });
+        } else if (Array.isArray(value)) {
+          // Handle other arrays
+          value.forEach((item) => {
+            formData.append(key, item);
+          });
+        } else if (typeof value === 'object' && value !== null && !(value instanceof File)) {
+          // Handle objects - stringify them
+          formData.append(key, JSON.stringify(value));
+        } else if (typeof value === 'boolean') {
+          // Handle booleans - convert to string
+          formData.append(key, value.toString());
         } else {
-          formData.append(key, listingData[key]);
+          // Handle primitives (string, number)
+          formData.append(key, value);
         }
       });
 
-      const response = await Axios.post('/listing/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Don't set Content-Type header - let axios set it automatically with boundary
+      const response = await Axios.post('/listing/create', formData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

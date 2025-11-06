@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Listing = require('../models/listing.model');
 const Favorite = require('../models/favorite.model')
-const { errorHandler } = require('../utils/error');
+const errorHandler = require('../utils/error');
 const jwt = require('jsonwebtoken');
 
 // Helper function to get user ID from token

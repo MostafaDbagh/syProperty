@@ -18,7 +18,14 @@ export default function Properties2() {
     limit: 12, // Only get 12 properties for home page
     sort: 'newest' // Get newest properties
   });
-  const listings = searchResponse?.data || [];
+  // API returns array directly, not wrapped in data property
+  const listings = (() => {
+    // Handle both array response and wrapped response
+    if (Array.isArray(searchResponse)) {
+      return searchResponse;
+    }
+    return searchResponse?.data || [];
+  })();
 
   // Function to get image source
   const getImageSource = (property) => {

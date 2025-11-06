@@ -174,8 +174,10 @@ export default function AddProperty() {
     if (!formData.size || isNaN(formData.size) || parseInt(formData.size) <= 0) {
       newErrors.size = "Valid size is required";
     }
-    if (formData.yearBuilt && (isNaN(formData.yearBuilt) || parseInt(formData.yearBuilt) < 1800 || parseInt(formData.yearBuilt) > new Date().getFullYear() + 5)) {
-      newErrors.yearBuilt = "Valid year is required";
+    // Year built validation - allow up to 5 years in the future
+    const currentYear = new Date().getFullYear();
+    if (formData.yearBuilt && (isNaN(formData.yearBuilt) || parseInt(formData.yearBuilt) < 1800 || parseInt(formData.yearBuilt) > currentYear + 5)) {
+      newErrors.yearBuilt = `Valid year is required (between 1800 and ${currentYear + 5})`;
     }
     
     // User/Agent validation
@@ -184,36 +186,65 @@ export default function AddProperty() {
     if (!formData.propertyId) newErrors.propertyId = "Property ID is required";
 
     setErrors(newErrors);
+    
+    // Log validation errors immediately
+    if (Object.keys(newErrors).length > 0) {
+      console.log("❌ Validation errors found:", newErrors);
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      setToast({ type: "error", message: "Please fix the errors in the form" });
-      // Scroll to first error
-      const firstError = Object.keys(errors)[0];
-      const element = document.querySelector(`[name="${firstError}"]`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        element.focus();
-      }
+    console.log("🔄 handleSubmit called!");
+    console.log("Event:", e);
+    logger.debug("🔄 Form submitted - Starting validation");
+    
+    const isValid = validateForm();
+    logger.debug("✅ Form validation result:", isValid);
+    logger.debug("📋 Form errors:", errors);
+    logger.debug("📋 Form data:", formData);
+    
+    if (!isValid) {
+      // Wait for state update and then show first error
+      setTimeout(() => {
+        const firstError = Object.keys(errors)[0];
+        if (firstError) {
+          const errorMessage = errors[firstError];
+          setToast({ type: "error", message: errorMessage || "Please fix the errors in the form" });
+          const element = document.querySelector(`[name="${firstError}"]`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.focus();
+          }
+        } else {
+          setToast({ type: "error", message: "Please fix the errors in the form. Check console for details." });
+        }
+      }, 10);
       return;
     }
 
     // Check if user is logged in
     if (!user) {
+      logger.error("❌ User not logged in");
       setToast({ type: "error", message: "Please login to add property" });
       setTimeout(() => router.push("/login"), 2000);
       return;
     }
+    
+    logger.debug("✅ User authenticated:", user?.email);
 
     setIsSubmitting(true);
+    
+    logger.debug("📤 Preparing to make API call...");
     
     try {
       const submitData = {
         ...formData,
+        // Map state to city for backend compatibility (backend requires city field)
+        city: formData.state || formData.city || "Aleppo",
         propertyPrice: parseFloat(formData.propertyPrice),
         bedrooms: parseInt(formData.bedrooms),
         bathrooms: parseInt(formData.bathrooms),
@@ -232,9 +263,13 @@ export default function AddProperty() {
         imageNames: images.map(img => img.name)
       };
 
-      logger.debug("Submitting property data:", submitData);
+      logger.debug("📤 Submitting property data:", submitData);
+      logger.debug("📤 Images count:", images.length);
+      logger.debug("📤 createListingMutation:", createListingMutation);
       
+      console.log("🚀 Making API call now...");
       const result = await createListingMutation.mutateAsync(submitData);
+      console.log("✅ API call successful:", result);
       
       logger.debug("Property created successfully:", result);
       
@@ -276,17 +311,24 @@ export default function AddProperty() {
       
     } catch (error) {
       logger.error("Error creating property:", error);
+      console.error("Full error object:", error);
+      console.error("Error response:", error?.response);
+      console.error("Error response data:", error?.response?.data);
       
       let errorMessage = "Failed to create property";
       
       // Handle different error types
       if (error?.response?.data?.message) {
         errorMessage = error.response.data.message;
+      } else if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
       } else if (error?.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
       }
+      
+      console.error("Final error message:", errorMessage);
       
       // Check for insufficient points error
       if (errorMessage.includes("Insufficient points") || errorMessage.includes("points")) {
@@ -426,10 +468,9 @@ export default function AddProperty() {
                   <input
                     type="text"
                     name="country"
-                    className="form-control"
+                    className={`form-control ${styles.disabledInput}`}
                     value="Syria"
                     disabled
-                    className={styles.disabledInput}
                   />
                   {errors.country && <span className="text-danger">{errors.country}</span>}
                 </fieldset>
@@ -687,6 +728,11 @@ export default function AddProperty() {
               type="submit"
               className="tf-btn bg-color-primary pd-13"
               disabled={isSubmitting}
+              onClick={(e) => {
+                console.log("🔘 Button clicked!");
+                // Directly call handleSubmit to ensure API call happens
+                handleSubmit(e);
+              }}
             >
               {isSubmitting ? "Creating Property..." : "Add Property"}
             </button>
@@ -697,7 +743,7 @@ export default function AddProperty() {
               onClick={() => {
                 // Save as draft functionality
                 logger.debug("Save as draft:", formData);
-                toast.success("Draft saved!");
+                setToast({ type: "success", message: "Draft saved!" });
               }}
             >
               Save & Preview
@@ -715,16 +761,6 @@ export default function AddProperty() {
           </ul>
         </div>
       </div>
-      <div className="overlay-dashboard" />
-      
-      {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 }
