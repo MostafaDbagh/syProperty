@@ -19,12 +19,24 @@ export default function PropertyDetailClient({ id }) {
   useEffect(() => {
     if (property?._id && !hasIncremented.current) {
       // Check if already visited in this session
-      const visitedProperties = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem('visitedProperties') || '[]');
-      if (!visitedProperties.includes(property._id)) {
+      try {
+        const visitedProperties = JSON.parse(
+          typeof window !== 'undefined' 
+            ? localStorage.getItem('visitedProperties') || '[]' 
+            : '[]'
+        );
+        if (!visitedProperties.includes(property._id)) {
+          incrementVisitCount.mutate(property._id);
+          // Mark as visited in localStorage
+          visitedProperties.push(property._id);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('visitedProperties', JSON.stringify(visitedProperties));
+          }
+        }
+      } catch (error) {
+        // If localStorage fails, still increment visit count
+        console.error('Error handling visit count:', error);
         incrementVisitCount.mutate(property._id);
-        // Mark as visited in localStorage
-        visitedProperties.push(property._id);
-        if (typeof window !== 'undefined') { localStorage.setItem('visitedProperties', JSON.stringify(visitedProperties)); }
       }
       hasIncremented.current = true;
     }
