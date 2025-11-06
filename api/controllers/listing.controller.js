@@ -469,9 +469,21 @@ const incrementVisitCount = async (req, res, next) => {
 
 const getMostVisitedListings = async (req, res, next) => {
   try {
-    const listings = await Listing.find({ agentId: req.params.agentId })
+    const agentId = req.params.agentId;
+    const isObjectId = mongoose.Types.ObjectId.isValid(agentId);
+    const agentIdObj = isObjectId ? new mongoose.Types.ObjectId(agentId) : agentId;
+    
+    // Match both agentId (new) and agent (legacy) fields, and exclude deleted listings
+    const listings = await Listing.find({
+      $or: [
+        { agentId: agentIdObj },
+        { agent: agentId }
+      ],
+      isDeleted: { $ne: true }
+    })
       .sort({ visitCount: -1 })
       .limit(10);
+    
     res.status(200).json(listings);
   } catch (error) {
     next(error);
