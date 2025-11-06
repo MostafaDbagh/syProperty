@@ -1,1 +1,1 @@
-web: npm start
+web: cd .next/standalone && node server.js
