@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone',
     images: {
       domains: ['res.cloudinary.com', 'picsum.photos', 'cdn.pixabay.com', 'i.pravatar.cc', 'example.com'],
       formats: ['image/avif', 'image/webp'],
@@ -9,6 +8,7 @@ const nextConfig = {
     },
     compress: true,
     poweredByHeader: false,
+    swcMinify: true,
   };
   
   export default nextConfig;
