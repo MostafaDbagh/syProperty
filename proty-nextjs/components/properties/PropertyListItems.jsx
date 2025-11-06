@@ -65,7 +65,10 @@ export default function PropertyListItems({ listings = [] }) {
         
         .property-img {
           width: 100% !important;
+          max-width: 100% !important;
           height: 100% !important;
+          max-height: 300px !important;
+          min-height: 300px !important;
           object-fit: cover !important;
           display: block !important;
         }
@@ -152,7 +155,19 @@ export default function PropertyListItems({ listings = [] }) {
             </ul>
             <div className="bot flex justify-between items-center">
               <div>
-                <h5 className="price">${property.propertyPrice?.toLocaleString() || '0'}</h5>
+                <h5 className="price">
+                  {(() => {
+                    const currencySymbols = {
+                      'USD': '$',
+                      'SYP': 'SYP',
+                      'TRY': '₺',
+                      'EUR': '€'
+                    };
+                    const currency = property?.currency || 'USD';
+                    const symbol = currencySymbols[currency] || currency;
+                    return `${symbol}${property.propertyPrice?.toLocaleString() || '0'}`;
+                  })()}
+                </h5>
                 
               </div>
               <div className="wrap-btn flex">

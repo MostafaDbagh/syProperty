@@ -139,14 +139,31 @@ export default function Properties({ listings, isLoading, isError }) {
               {listingsArray.map((listing, i) => (
                 <div key={i}>
       <div className="box-house hover-img">
-        <div className="image-wrap">
+        <div className="image-wrap" style={{
+          width: '100%',
+          maxWidth: '100%',
+          height: '280px',
+          maxHeight: '280px',
+          minHeight: '280px',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
           <Link href={`/property-detail/${listing._id}`}>
             <Image
               className="lazyload"
               alt={listing.propertyKeyword || listing.propertyType || 'Property'}
               src={getImageSource(listing)}
               width={600}
-              height={401}
+              height={280}
+              style={{
+                width: '100%',
+                maxWidth: '100%',
+                height: '100%',
+                maxHeight: '280px',
+                minHeight: '280px',
+                objectFit: 'cover',
+                display: 'block'
+              }}
               onError={(e) => {
                 e.target.src = "/images/section/box-house-2.jpg";
               }}
@@ -394,7 +411,17 @@ export default function Properties({ listings, isLoading, isError }) {
           {/* Price Section - Full Width */}
           <div className="price-section" style={{ width: '100%', textAlign: 'center', padding: '12px 0', borderTop: '1px solid #e5e7eb' }}>
             <h5 className="price" style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>
-              $ {listing?.propertyPrice?.toLocaleString()}
+              {(() => {
+                const currencySymbols = {
+                  'USD': '$',
+                  'SYP': 'SYP',
+                  'TRY': '₺',
+                  'EUR': '€'
+                };
+                const currency = listing?.currency || 'USD';
+                const symbol = currencySymbols[currency] || currency;
+                return `${symbol} ${listing?.propertyPrice?.toLocaleString() || '0'}`;
+              })()}
             </h5>
             
           </div>

@@ -9,9 +9,11 @@ import { syrianProvinces } from "@/data/provinces";
 import { amenitiesList } from "@/constants/amenities";
 import logger from "@/utils/logger";
 import styles from "./AddProperty.module.css";
+import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 
 export default function AddProperty() {
   const router = useRouter();
+  const { showSuccessModal } = useGlobalModal();
   const [user, setUser] = useState(null);
   const [toast, setToast] = useState(null);
   
@@ -20,6 +22,7 @@ export default function AddProperty() {
     propertyKeyword: "",
     propertyDesc: "",
     propertyPrice: "",
+    currency: "USD",
     status: "rent",
     rentType: "monthly",
     bedrooms: "",
@@ -36,7 +39,8 @@ export default function AddProperty() {
     agent: "",
     agentId: "",
     amenities: [],
-    propertyId: `PROP_${Date.now()}`
+    propertyId: `PROP_${Date.now()}`,
+    notes: ""
   });
 
   const [images, setImages] = useState([]);
@@ -273,10 +277,12 @@ export default function AddProperty() {
       
       logger.debug("Property created successfully:", result);
       
-      setToast({ 
-        type: "success", 
-        message: "Property created successfully! Redirecting to properties..." 
-      });
+      // Show success modal
+      showSuccessModal(
+        "Property Added Successfully!",
+        "Your property has been submitted and is pending approval. You will be redirected to your properties page.",
+        user?.email || ""
+      );
       
       // Reset form with default values
       setFormData({
@@ -284,6 +290,7 @@ export default function AddProperty() {
         propertyKeyword: "",
         propertyDesc: "",
         propertyPrice: "",
+        currency: "USD",
         status: "rent",
         rentType: "monthly",
         bedrooms: "",
@@ -300,7 +307,8 @@ export default function AddProperty() {
         agent: user?.email || "",
         agentId: user?._id || "",
         amenities: [],
-        propertyId: `PROP_${Date.now()}`
+        propertyId: `PROP_${Date.now()}`,
+        notes: ""
       });
       setImages([]);
       setImagePreview([]);
@@ -531,16 +539,17 @@ export default function AddProperty() {
                 </fieldset>
                 
                 <fieldset className="box-fieldset mb-30">
-                  <label htmlFor="rentType">
-                    Unit Price:<span>*</span>
+                  <label htmlFor="currency">
+                    Currency:<span>*</span>
                   </label>
                   <DropdownSelect
-                    name="rentType"
-                    options={["monthly", "weekly", "daily", "yearly"]}
-                    selectedValue={formData.rentType}
-                    onChange={(value) => handleDropdownChange('rentType', value)}
+                    name="currency"
+                    options={["USD", "SYP", "TRY", "EUR"]}
+                    selectedValue={formData.currency}
+                    onChange={(value) => handleDropdownChange('currency', value)}
                     addtionalParentClass=""
                   />
+                  {errors.currency && <span className="text-danger">{errors.currency}</span>}
                 </fieldset>
               </div>
             </div>
@@ -556,7 +565,7 @@ export default function AddProperty() {
                 </label>
                 <DropdownSelect
                   name="propertyType"
-                  options={["Apartment", "Villa", "Studio", "Office", "House"]}
+                  options={["Apartment", "Villa", "Holiday Home", "Office", "House", "Land", "Commercial"]}
                   selectedValue={formData.propertyType}
                   onChange={(value) => handleDropdownChange('propertyType', value)}
                   addtionalParentClass=""
@@ -577,6 +586,22 @@ export default function AddProperty() {
                 />
                 {errors.status && <span className="text-danger">{errors.status}</span>}
               </fieldset>
+              
+              {formData.status === "rent" && (
+                <fieldset className="box-fieldset">
+                  <label htmlFor="rentType">
+                    Rent Period:<span>*</span>
+                  </label>
+                  <DropdownSelect
+                    name="rentType"
+                    options={["monthly", "three-month", "six-month", "one-year"]}
+                    selectedValue={formData.rentType}
+                    onChange={(value) => handleDropdownChange('rentType', value)}
+                    addtionalParentClass=""
+                  />
+                  {errors.rentType && <span className="text-danger">{errors.rentType}</span>}
+                </fieldset>
+              )}
               
               <fieldset className="box-fieldset">
                 <label htmlFor="propertyId">
@@ -696,6 +721,21 @@ export default function AddProperty() {
                 </label>
               </fieldset>
             </div>
+            
+            <fieldset className="box-fieldset" style={{ gridColumn: '1 / -1' }}>
+              <label htmlFor="notes">
+                Notes:
+              </label>
+              <textarea
+                name="notes"
+                id="notes"
+                className="form-control"
+                rows="4"
+                placeholder="Any additional notes about the property..."
+                value={formData.notes}
+                onChange={handleInputChange}
+              />
+            </fieldset>
           </div>
 
           {/* Amenities Section */}

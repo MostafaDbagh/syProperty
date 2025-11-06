@@ -67,7 +67,10 @@ export default function PropertyGridItems({ listings = [] }) {
         
         .property-img {
           width: 100% !important;
+          max-width: 100% !important;
           height: 100% !important;
+          max-height: 280px !important;
+          min-height: 280px !important;
           object-fit: cover !important;
           display: block !important;
           border-radius: 8px !important;
@@ -330,7 +333,17 @@ export default function PropertyGridItems({ listings = [] }) {
             {/* Price Section - Full Width */}
             <div className="price-section">
               <h5 className="price">
-                $ {property.propertyPrice?.toLocaleString() || '0'}
+                {(() => {
+                  const currencySymbols = {
+                    'USD': '$',
+                    'SYP': 'SYP',
+                    'TRY': '₺',
+                    'EUR': '€'
+                  };
+                  const currency = property?.currency || 'USD';
+                  const symbol = currencySymbols[currency] || currency;
+                  return `${symbol} ${property.propertyPrice?.toLocaleString() || '0'}`;
+                })()}
               </h5>
               
             </div>

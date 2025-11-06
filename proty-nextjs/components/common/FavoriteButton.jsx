@@ -13,7 +13,7 @@ export default function FavoriteButton({
   initialIsFavorited = false,
   showLabel = true,
   className = '',
-  iconClassName = 'icon-save',
+  iconClassName = 'icon-heart-1',
   onToggle = null // Callback for when favorite status changes
 }) {
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited);

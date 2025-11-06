@@ -72,6 +72,13 @@ export default function Slider3({ property }) {
                       data-fancybox="gallery"
                       onClick={open}
                       className="image-wrap d-block"
+                      style={{
+                        maxHeight: '520px',
+                        minWidth: '970px',
+                        overflow: 'hidden',
+                        display: 'block',
+                        margin: '0 auto'
+                      }}
                     >
                       <Image
                         ref={ref}
@@ -80,6 +87,13 @@ export default function Slider3({ property }) {
                         src={elm.src}
                         width={840}
                         height={473}
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                          maxHeight: '520px',
+                          minWidth: '970px',
+                          objectFit: 'contain'
+                        }}
                       />
                     </a>
                   )}

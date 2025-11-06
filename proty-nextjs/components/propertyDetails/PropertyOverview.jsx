@@ -4,8 +4,9 @@ import { getStatusBadge } from "@/utlis/propertyHelpers";
 import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
 import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
-import { HeartOutlineIcon, CompareIcon, PrintIcon, ShareIcon, CopyIcon, CheckIcon } from "@/components/icons";
+import { HeartOutlineIcon, CopyIcon, CheckIcon } from "@/components/icons";
 import logger from "@/utils/logger";
+import FavoriteButton from "../common/FavoriteButton";
 
 export default function PropertyOverview({ property }) {
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
@@ -43,7 +44,17 @@ export default function PropertyOverview({ property }) {
           </span>
         </div>
         <div className="price text-5 fw-6 text-color-heading">
-          ${property?.propertyPrice?.toLocaleString() || '0'}{" "}
+          {(() => {
+            const currencySymbols = {
+              'USD': '$',
+              'SYP': 'SYP',
+              'TRY': '₺',
+              'EUR': '€'
+            };
+            const currency = property?.currency || 'USD';
+            const symbol = currencySymbols[currency] || currency;
+            return `${symbol}${property?.propertyPrice?.toLocaleString() || '0'}`;
+          })()}{" "}
           <span className="h5 lh-30 fw-4 text-color-default">
             /{property?.rentType || 'month'}
           </span>
@@ -70,24 +81,12 @@ export default function PropertyOverview({ property }) {
         <div className="action">
           <ul className="list-action">
             <li>
-              <a href="#">
-                <HeartOutlineIcon />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <CompareIcon />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <PrintIcon />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <ShareIcon />
-              </a>
+              <FavoriteButton 
+                propertyId={property?._id}
+                showLabel={false}
+                className="btn-icon save hover-tooltip"
+                iconClassName="icon-heart-1"
+              />
             </li>
           </ul>
         </div>
@@ -199,6 +198,34 @@ export default function PropertyOverview({ property }) {
           </div>
         </div>
       </div>
+      {property?.notes && (
+        <div className="info-detail mt-30" style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+          <div className="wrap-box">
+            <div className="box-icon">
+              <div className="icons" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#FEF3C7',
+                color: '#F59E0B',
+                fontSize: '20px',
+                fontWeight: 'bold'
+              }}>
+                !
+              </div>
+              <div className="content">
+                <div className="text-4 text-color-default">Notes:</div>
+                <div className="text-1 text-color-heading" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                  {property.notes}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <button 
         onClick={() => setIsAskQuestionModalOpen(true)}
         className="tf-btn bg-color-primary pd-21 fw-6"

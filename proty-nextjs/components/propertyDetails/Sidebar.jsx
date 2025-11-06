@@ -16,10 +16,24 @@ export default function Sidebar({ property }) {
   const createMessageMutation = useCreateMessage();
   
   // Extract agent contact information from property
-  const agentEmail = property?.agentEmail || property?.agent || "contact@property.com";
-  const agentNumber = property?.agentNumber || "Not provided";
-  const agentWhatsapp = property?.agentWhatsapp || property?.agentNumber;
-  const agentName = property?.agentId?.username || "Property Agent";
+  const agentEmail = property?.agentEmail || 
+                     property?.agentId?.email || 
+                     (typeof property?.agent === 'string' && property?.agent.includes('@') ? property?.agent : null) ||
+                     property?.agent?.email ||
+                     "contact@property.com";
+  const agentNumber = property?.agentNumber || 
+                      property?.agentId?.phone || 
+                      property?.agent?.phone ||
+                      "Not provided";
+  const agentWhatsapp = property?.agentWhatsapp || 
+                        property?.agentNumber || 
+                        property?.agentId?.phone ||
+                        property?.agent?.phone;
+  const agentName = property?.agentId?.username || 
+                    property?.agentId?.fullName ||
+                    property?.agentId?.email ||
+                    (typeof property?.agent === 'string' ? property?.agent : property?.agent?.username || property?.agent?.email) ||
+                    "Property Agent";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

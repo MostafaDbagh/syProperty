@@ -72,6 +72,7 @@ const createListing = async (req, res, next) => {
       propertyKeyword,
       propertyDesc,
       propertyPrice,
+      currency,
       status,
       rentType,
       bedrooms,
@@ -97,7 +98,8 @@ const createListing = async (req, res, next) => {
       garageSize,
       approvalStatus,
       isSold,
-      isDeleted
+      isDeleted,
+      notes
     } = req.body;
 
     // Validate required fields
@@ -151,9 +153,14 @@ const createListing = async (req, res, next) => {
       return next(errorHandler(400, 'Status must be either "sale" or "rent"'));
     }
 
+    // Validate currency
+    if (currency && !['USD', 'SYP', 'TRY', 'EUR'].includes(currency)) {
+      return next(errorHandler(400, 'Currency must be "USD", "SYP", "TRY", or "EUR"'));
+    }
+    
     // Validate rentType if status is rent
-    if (status === 'rent' && rentType && !['monthly', 'yearly', 'weekly'].includes(rentType)) {
-      return next(errorHandler(400, 'RentType must be "monthly", "yearly", or "weekly"'));
+    if (status === 'rent' && rentType && !['monthly', 'three-month', 'six-month', 'one-year', 'yearly', 'weekly'].includes(rentType)) {
+      return next(errorHandler(400, 'RentType must be "monthly", "three-month", "six-month", "one-year", "yearly", or "weekly"'));
     }
 
     // Map state to city (backend schema requires 'city')
@@ -166,6 +173,7 @@ const createListing = async (req, res, next) => {
       propertyKeyword: String(propertyKeyword),
       propertyDesc: String(propertyDesc),
       propertyPrice: toNumber(propertyPrice),
+      currency: currency ? String(currency) : 'USD',
       status: String(status),
       rentType: status === 'rent' ? (rentType || 'monthly') : undefined,
       bedrooms: toNumber(bedrooms),
@@ -190,6 +198,7 @@ const createListing = async (req, res, next) => {
       approvalStatus: approvalStatus || 'pending',
       isSold: toBoolean(isSold, false),
       isDeleted: toBoolean(isDeleted, false),
+      notes: notes ? String(notes) : undefined,
       images: Array.isArray(images) ? images : [],
       imageNames: toArray(imageNames)
     };

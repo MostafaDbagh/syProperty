@@ -19,6 +19,14 @@ export default function ContactAgentModal({
 
   const createMessageMutation = useCreateMessage();
 
+  // Extract agent email from property or agent prop
+  const agentEmail = agent?.email || 
+                     property?.agentEmail || 
+                     property?.agentId?.email || 
+                     (typeof property?.agent === 'string' && property?.agent.includes('@') ? property?.agent : null) ||
+                     property?.agent?.email ||
+                     "contact@property.com";
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -82,7 +90,7 @@ export default function ContactAgentModal({
             <div className={styles.agentContact}>
               <i className={`icon-mail ${styles.agentIcon}`} />
               <span className={styles.agentEmail}>
-                {agent?.email || 'sarah@realtor.com'}
+                {agentEmail}
               </span>
             </div>
           </div>

@@ -7,12 +7,18 @@ const listingSchema = new mongoose.Schema(
     propertyDesc: { type: String, required: true },
     description: { type: String }, // Alternative field name
     propertyPrice: { type: Number, required: true },
+    currency: { 
+      type: String, 
+      enum: ['USD', 'SYP', 'TRY', 'EUR'],
+      default: 'USD',
+      required: true 
+    },
     status: { type: String, required: true, enum: ['sale', 'rent'] },   
     rentType: {
       type: String,
-      enum: ['monthly', 'yearly', 'weekly'],
+      enum: ['monthly', 'three-month', 'six-month', 'one-year', 'yearly', 'weekly'],
       required: function () {
-        return this.type === 'rent';
+        return this.status === 'rent';
       }
     },
 //////property specification//////
@@ -47,6 +53,7 @@ const listingSchema = new mongoose.Schema(
     isDeleted: { type: Boolean, default: false },
     offer: { type: Boolean, required: false },
     visitCount: { type: Number, default: 0 },
+    notes: { type: String, required: false }, // Additional notes about the property
 
     ////media -part
     imageNames: { 

@@ -1,3 +1,62 @@
+/* Ensure all property card images have consistent dimensions */
+.box-house .image-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 280px !important;
+  max-height: 280px !important;
+  min-height: 280px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  display: block !important;
+}
+
+.box-house .image-wrap img,
+.box-house .image-wrap .property-img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 280px !important;
+  min-height: 280px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Grid view - consistent dimensions */
+.box-house.property-image-fix .image-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 280px !important;
+  max-height: 280px !important;
+  min-height: 280px !important;
+}
+
+.box-house.property-image-fix .image-wrap img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 280px !important;
+  min-height: 280px !important;
+  object-fit: cover !important;
+}
+
+/* List view - consistent dimensions */
+.box-house.property-list-image-fix .image-wrap {
+  width: 250px !important;
+  max-width: 250px !important;
+  height: 300px !important;
+  max-height: 300px !important;
+  min-height: 300px !important;
+}
+
+.box-house.property-list-image-fix .image-wrap img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 300px !important;
+  min-height: 300px !important;
+  object-fit: cover !important;
+}
+
 /* Custom CSS to fix image container sizing - More specific selectors */
 
 /* EMERGENCY FIX - Force image-wrap to have height */

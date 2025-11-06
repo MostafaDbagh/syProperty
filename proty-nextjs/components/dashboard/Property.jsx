@@ -361,7 +361,7 @@ export default function Property() {
                 </label>
 
                 <DropdownSelect
-                  options={["All", "Apartment", "Villa", "Studio", "Office", "Townhouse", "Commercial", "Land"]}
+                  options={["All", "Apartment", "Villa", "Holiday Home", "Office", "Townhouse", "Commercial", "Land"]}
                   addtionalParentClass=""
                   onChange={(value) => setPropertyTypeFilter(value)}
                 />
