@@ -19,6 +19,16 @@ const corsOptions = {
       return callback(null, true);
     }
     
+    // Allow 127.0.0.1 on any port (for development)
+    if (origin.startsWith('http://127.0.0.1:') || origin.startsWith('https://127.0.0.1:')) {
+      return callback(null, true);
+    }
+    
+    // Allow Heroku app URLs (for production)
+    if (origin.includes('.herokuapp.com')) {
+      return callback(null, true);
+    }
+    
     // Allow production frontend URL if set
     const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [];
     if (allowedOrigins.includes(origin)) {
