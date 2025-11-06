@@ -18,6 +18,8 @@ export default function PropertyDetailClient({ id }) {
   // Increment visit count when property loads (only once per page load)
   useEffect(() => {
     if (property?._id && !hasIncremented.current) {
+      const propertyId = property._id;
+      
       // Check if already visited in this session
       try {
         const visitedProperties = JSON.parse(
@@ -25,21 +27,38 @@ export default function PropertyDetailClient({ id }) {
             ? localStorage.getItem('visitedProperties') || '[]' 
             : '[]'
         );
-        if (!visitedProperties.includes(property._id)) {
-          incrementVisitCount.mutate(property._id);
+        
+        if (!visitedProperties.includes(propertyId)) {
+          // Increment visit count
+          incrementVisitCount.mutate(propertyId, {
+            onSuccess: (data) => {
+              // Successfully incremented
+            },
+            onError: (error) => {
+              // Error incrementing - log but don't block
+            }
+          });
+          
           // Mark as visited in localStorage
-          visitedProperties.push(property._id);
+          visitedProperties.push(propertyId);
           if (typeof window !== 'undefined') {
             localStorage.setItem('visitedProperties', JSON.stringify(visitedProperties));
           }
         }
       } catch (error) {
         // If localStorage fails, still increment visit count
-        incrementVisitCount.mutate(property._id);
+        incrementVisitCount.mutate(propertyId, {
+          onSuccess: (data) => {
+            // Successfully incremented
+          },
+          onError: (error) => {
+            // Error incrementing
+          }
+        });
       }
       hasIncremented.current = true;
     }
-  }, [property?._id]);
+  }, [property?._id, incrementVisitCount]);
 
   if (isLoading) {
     return (
