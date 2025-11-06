@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { useListing } from "@/apis/hooks";
+import React, { useEffect, useRef } from "react";
+import { useListing, useIncrementVisitCount } from "@/apis/hooks";
 import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import Breadcumb from "@/components/common/Breadcumb";
@@ -12,8 +12,23 @@ import LocationLoader from "@/components/common/LocationLoader";
 
 export default function PropertyDetailClient({ id }) {
   const { data: property, isLoading, isError, error } = useListing(id);
+  const incrementVisitCount = useIncrementVisitCount();
+  const hasIncremented = useRef(false);
 
-  // Removed automatic visit count increment - now only called on user actions
+  // Increment visit count when property loads (only once per page load)
+  useEffect(() => {
+    if (property?._id && !hasIncremented.current) {
+      // Check if already visited in this session
+      const visitedProperties = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem('visitedProperties') || '[]');
+      if (!visitedProperties.includes(property._id)) {
+        incrementVisitCount.mutate(property._id);
+        // Mark as visited in localStorage
+        visitedProperties.push(property._id);
+        if (typeof window !== 'undefined') { localStorage.setItem('visitedProperties', JSON.stringify(visitedProperties)); }
+      }
+      hasIncremented.current = true;
+    }
+  }, [property?._id]);
 
   if (isLoading) {
     return (
