@@ -8,7 +8,37 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-app.use(cors());
+// Configure CORS to allow requests from frontend
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost on any port (for development)
+    if (origin.startsWith('http://localhost:') || origin.startsWith('https://localhost:')) {
+      return callback(null, true);
+    }
+    
+    // Allow production frontend URL if set
+    const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [];
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // In development, allow all origins
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true, // Allow cookies and authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
+};
+
+app.use(cors(corsOptions));
 // Don't parse JSON for routes that handle file uploads
 // express.json() will interfere with multer's ability to parse multipart/form-data
 // We'll apply it only to routes that don't handle file uploads
