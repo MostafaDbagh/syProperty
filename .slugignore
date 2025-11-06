@@ -1,0 +1,79 @@
+# Heroku slugignore - files to exclude from deployment
+# This file should be in the root of the repository
+
+# Dependencies (installed fresh on Heroku)
+**/node_modules/
+node_modules/
+
+# Build artifacts (built fresh on Heroku)
+**/.next/
+.next/
+**/out/
+out/
+**/build/
+build/
+**/dist/
+dist/
+
+# Development files
+**/.env.local
+**/.env.development
+**/.env.test
+.env.local
+.env.development
+.env.test
+*.log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+**/coverage/
+coverage/
+.nyc_output/
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.jsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+**/.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (keep only README)
+*.md
+!README.md
+!**/README.md
+docs/
+
+# Misc
+.cache/
+.temp/
+tmp/
+temp/
+**/.cache/
+**/.temp/
+
+# Large unnecessary files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+

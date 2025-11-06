@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+**/node_modules/
+api/node_modules/
+proty-nextjs/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -63,6 +66,8 @@ jspm_packages/
 
 # next.js build output
 .next
+**/.next/
+proty-nextjs/.next/
 
 # nuxt.js build output
 .nuxt
