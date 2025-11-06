@@ -111,7 +111,9 @@ const filterListings = async (req, res, next) => {
     next();
   } catch (err) {
     logger.error('Listing middleware error:', err);
-    res.status(500).json({ error: 'Server Error' });
+    logger.error('Error stack:', err.stack);
+    // Pass error to error handling middleware
+    next(err);
   }
 };
 

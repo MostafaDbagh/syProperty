@@ -64,6 +64,7 @@ app.use('/api/listing', (req, res, next) => {
     return next();
   }
   // For all other listing routes, parse JSON
+  // Note: GET requests don't need JSON parsing, but it's safe to apply
   express.json()(req, res, next);
 });
 
