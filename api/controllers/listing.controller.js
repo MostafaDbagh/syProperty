@@ -11,6 +11,7 @@
  */
 
 const Listing = require('../models/listing.model.js');
+const User = require('../models/user.model.js');
 const errorHandler = require('../utils/error.js');
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
@@ -334,13 +335,40 @@ const updateListing = async (req, res, next) => {
     next(error);
   }
 };
-
 const getListingById = async (req, res, next) => {
   try {
-    const listing = await Listing.findById(req.params.id);
+    const listing = await Listing.findById(req.params.id).lean();
     if (!listing) {
       return next(errorHandler(404, 'Listing not found!'));
     }
+    
+    // If agentId exists, fetch agent data (agents are Users with role='agent')
+    if (listing.agentId) {
+      try {
+        const userAgent = await User.findById(listing.agentId)
+          .select('username email phone avatar location description role')
+          .lean();
+        
+        if (userAgent && userAgent.role === 'agent') {
+          // Transform User to match agent format with avatar/image URL
+          listing.agentId = {
+            _id: userAgent._id,
+            username: userAgent.username,
+            fullName: userAgent.username || userAgent.email,
+            email: userAgent.email,
+            phone: userAgent.phone || '',
+            avatar: userAgent.avatar || null, // Include agent image/avatar
+            image: userAgent.avatar || null, // Also include as 'image' for compatibility
+            imageUrl: userAgent.avatar || null, // Also include as 'imageUrl' for compatibility
+            location: userAgent.location || '',
+            description: userAgent.description || ''
+          };
+        }
+      } catch (populateError) {
+        logger.warn('Error populating agentId:', populateError);
+      }
+    }
+    
     res.status(200).json(listing);
   } catch (error) {
     next(error);

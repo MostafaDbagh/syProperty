@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 export default function Cta() {
   return (
-    <section className="section-CTA">
+    <section className="section-CTA" style={{marginTop:'64px'}}>
       <div className="tf-container">
         <div className="row">
           <div className="col-12">

@@ -34,6 +34,15 @@ export default function Sidebar({ property }) {
                     property?.agentId?.email ||
                     (typeof property?.agent === 'string' ? property?.agent : property?.agent?.username || property?.agent?.email) ||
                     "Property Agent";
+  
+  // Get agent avatar - check all possible image fields, fallback to default if no image
+  const agentAvatar = property?.agentId?.avatar || 
+                      property?.agentId?.image ||
+                      property?.agentId?.imageUrl ||
+                      property?.agent?.avatar ||
+                      property?.agent?.image ||
+                      property?.agent?.imageUrl ||
+                      "/images/avatar/seller.jpg";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -80,9 +89,18 @@ export default function Sidebar({ property }) {
             <div className="avartar">
               <Image
                 alt={agentName}
-                src="/images/avatar/seller.jpg"
+                src={agentAvatar}
                 width={200}
                 height={200}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '50%'
+                }}
+                onError={(e) => {
+                  e.target.src = "/images/avatar/seller.jpg";
+                }}
               />
             </div>
             <div className="content">
