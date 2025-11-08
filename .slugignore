@@ -6,8 +6,6 @@
 node_modules/
 
 # Build artifacts (built fresh on Heroku)
-**/.next/
-.next/
 **/out/
 out/
 **/build/

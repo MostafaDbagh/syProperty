@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "heroku-postbuild": "npm run build && npm prune --production && rm -rf node_modules",
+    "heroku-postbuild": "npm run build && npm prune --production && mkdir -p .next/standalone/.next && cp -R .next/static .next/standalone/.next/ && cp -R public .next/standalone/ && rm -rf node_modules",
     "deploy": "npm run build && npm run start"
   },
   "dependencies": {
