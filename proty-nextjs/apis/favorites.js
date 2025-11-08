@@ -1,5 +1,5 @@
 import Axios from '../axios';
-import logger from '../utils/logger';
+import logger from '../utlis/logger';
 
 // Favorite API functions
 export const favoriteAPI = {

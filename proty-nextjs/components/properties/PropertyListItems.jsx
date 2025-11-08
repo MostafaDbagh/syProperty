@@ -5,7 +5,7 @@ import React from "react";
 import FavoriteButton from "../common/FavoriteButton";
 import { usePropertyActions } from "@/hooks/usePropertyActions";
 import "./PropertyImageFix.css";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function PropertyListItems({ listings = [] }) {
   const { handleDetailsClick, handleQuickViewClick } = usePropertyActions();

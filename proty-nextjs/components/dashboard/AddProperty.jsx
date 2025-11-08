@@ -5,9 +5,9 @@ import DropdownSelect from "../common/DropdownSelect";
 import { useCreateListing } from "@/apis/hooks";
 import Toast from "../common/Toast";
 import { useRouter } from "next/navigation";
-import { syrianProvinces } from "@/data/provinces";
+import { syrianProvinces } from "@/constants/provinces";
 import { amenitiesList } from "@/constants/amenities";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 import styles from "./AddProperty.module.css";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 

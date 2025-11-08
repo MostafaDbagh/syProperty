@@ -2,7 +2,7 @@
 import React, { useEffect, useCallback, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { footerData } from "@/data/footerLinks";
+import { footerData } from "@/constants/footerLinks";
 import AppleStoreIcon from "@/components/icons/AppleStoreIcon";
 import GooglePlayIcon from "@/components/icons/GooglePlayIcon";
 import styles from "./Footer1.module.css";

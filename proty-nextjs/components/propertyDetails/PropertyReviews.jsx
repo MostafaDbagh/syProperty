@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useReviewsByProperty, useCreateReview } from "@/apis/hooks";
 import { useQueryClient } from "@tanstack/react-query";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 import styles from "./PropertyReviews.module.css";
 
 export default function PropertyReviews({ propertyId }) {

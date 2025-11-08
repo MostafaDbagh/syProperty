@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { favoriteAPI } from '@/apis/favorites';
-import logger from '@/utils/logger';
+import logger from '@/utlis/logger';
 
 const FavoritesContext = createContext();
 

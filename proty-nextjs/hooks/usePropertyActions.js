@@ -1,7 +1,7 @@
 import { useIncrementVisitCount } from "@/apis/hooks";
 import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export const usePropertyActions = () => {
   const incrementVisitCount = useIncrementVisitCount();

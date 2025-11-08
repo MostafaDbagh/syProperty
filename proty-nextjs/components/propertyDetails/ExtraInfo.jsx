@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { formatPrice, formatStatus } from "@/utlis/propertyHelpers";
 import { CopyIcon, CheckIcon } from "@/components/icons";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function ExtraInfo({ property }) {
   const [copiedId, setCopiedId] = useState(null);

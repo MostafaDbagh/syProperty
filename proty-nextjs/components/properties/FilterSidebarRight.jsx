@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import DropdownSelect from "../common/DropdownSelect";
 import Slider from "rc-slider";
-import { provinceOptions } from "@/data/provinces";
+import { provinceOptions } from "@/constants/provinces";
 
 export default function FilterSidebarRight() {
   const [priceRange, setPriceRange] = useState([100, 700]);

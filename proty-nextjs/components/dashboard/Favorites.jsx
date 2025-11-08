@@ -8,7 +8,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
 import { useFavorites } from "@/components/contexts/FavoritesContext";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 import styles from "./Favorites.module.css";
 
 export default function Favorites() {

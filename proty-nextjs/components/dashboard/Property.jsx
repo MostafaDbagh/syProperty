@@ -10,7 +10,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
 import { EyeIcon } from "../icons/EyeIcon";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 import styles from "./Property.module.css";
 
 export default function Property() {

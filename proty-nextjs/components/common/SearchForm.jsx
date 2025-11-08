@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
 import DropdownTagSelect from "./DropdownTagSelect";
 import Slider from "rc-slider";
-import { provinceOptions } from "@/data/provinces";
+import { provinceOptions } from "@/constants/provinces";
 import { amenitiesList } from "@/constants/amenities";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function SearchForm({
   parentClass = "wd-search-form",

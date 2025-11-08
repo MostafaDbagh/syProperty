@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import logger from '@/utils/logger';
+import logger from '@/utlis/logger';
 
 const useRouteProtection = (requiredRole = null) => {
   const router = useRouter();

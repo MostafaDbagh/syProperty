@@ -5,8 +5,8 @@ import { userAPI } from "@/apis";
 import Toast from "../common/Toast";
 import LocationLoader from "../common/LocationLoader";
 import DropdownSelect from "../common/DropdownSelect";
-import { syrianProvinces } from "@/data/provinces";
-import logger from "@/utils/logger";
+import { syrianProvinces } from "@/constants/provinces";
+import logger from "@/utlis/logger";
 import styles from "./Profile.module.css";
 
 export default function Profile() {

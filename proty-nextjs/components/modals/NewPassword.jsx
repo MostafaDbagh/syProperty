@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import styles from "./NewPassword.module.css";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function NewPassword({ isOpen, onClose, onSubmit }) {
   const [formData, setFormData] = useState({

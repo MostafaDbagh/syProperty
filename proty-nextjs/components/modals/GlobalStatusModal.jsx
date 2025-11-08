@@ -2,7 +2,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function GlobalStatusModal({ 
   isOpen, 

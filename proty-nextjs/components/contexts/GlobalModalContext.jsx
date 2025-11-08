@@ -5,7 +5,7 @@ import Register from '../modals/Register';
 import Login from '../modals/Login';
 import ForgotPasswordFlow from '../modals/ForgotPasswordFlow';
 import OTPVerification from '../modals/OTPVerification';
-import logger from '@/utils/logger';
+import logger from '@/utlis/logger';
 
 const GlobalModalContext = createContext();
 

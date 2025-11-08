@@ -6,7 +6,7 @@ import NewPassword from "./NewPassword";
 import PasswordResetSuccess from "./PasswordResetSuccess";
 import PasswordResetError from "./PasswordResetError";
 import { authAPI } from "@/apis/auth";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 
 export default function ForgotPasswordFlow({ isOpen, onClose, onSuccess }) {
   const [currentStep, setCurrentStep] = useState(1); // 1: Email, 2: OTP, 3: New Password, 4: Success, 5: Error

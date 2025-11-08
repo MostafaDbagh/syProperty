@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { favoriteAPI } from '@/apis/favorites';
 import { useFavorites } from '@/components/contexts/FavoritesContext';
 import { useGlobalModal } from '@/components/contexts/GlobalModalContext';
-import logger from '@/utils/logger';
+import logger from '@/utlis/logger';
 import Toast from './Toast';
 
 export default function FavoriteButton({ 

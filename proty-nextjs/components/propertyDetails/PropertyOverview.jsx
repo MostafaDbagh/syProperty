@@ -5,7 +5,7 @@ import MoreAboutPropertyModal from "../modals/MoreAboutPropertyModal";
 import ContactAgentModal from "../modals/ContactAgentModal";
 import styles from "./PropertyOverview.module.css";
 import { HeartOutlineIcon, CopyIcon, CheckIcon } from "@/components/icons";
-import logger from "@/utils/logger";
+import logger from "@/utlis/logger";
 import FavoriteButton from "../common/FavoriteButton";
 
 export default function PropertyOverview({ property }) {

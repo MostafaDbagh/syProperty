@@ -1,5 +1,5 @@
 "use client";
-import { homes, otherPages, propertyLinks } from "@/data/menu";
+import { homes, otherPages, propertyLinks } from "@/constants/menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
