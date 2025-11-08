@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Listings from "./Listings";
 import Link from "next/link";
 import Image from "next/image";
-import { properties4 } from "@/data/properties";
 import { useAgent } from "@/apis/hooks";
 import LocationLoader from "../common/LocationLoader";
 import styles from "./AgentDetails.module.css";

@@ -1,4 +1,3 @@
-import { careerData } from "@/data/jobs";
 import React from "react";
 
 export default function Jobs() {

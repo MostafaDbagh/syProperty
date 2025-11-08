@@ -4,7 +4,6 @@ import Link from "next/link";
 import Slider from "rc-slider";
 import React, { useState } from "react";
 import DropdownSelect from "../common/DropdownSelect";
-import { properties4 } from "@/data/properties";
 
 export default function Sidebar() {
   const [priceRange, setPriceRange] = useState([100, 700]);

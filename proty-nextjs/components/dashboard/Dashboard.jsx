@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import LineChart from "./Chart";
 import Link from "next/link";
 import Image from "next/image";
-import { properties5 } from "@/data/properties";
 import { useMessagesByAgent, useReviewsByAgent, useMostVisitedListings, useDashboardStats, useDashboardAnalytics, useDashboardNotifications } from "@/apis/hooks";
 import LocationLoader from "@/components/common/LocationLoader";
 import logger from "@/utils/logger";
