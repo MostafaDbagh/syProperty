@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import FavoriteButton from "@/components/common/FavoriteButton";
@@ -7,6 +7,49 @@ import { useListingsByAgent } from "@/apis/hooks";
 import { usePropertyActions } from "@/hooks/usePropertyActions";
 import LocationLoader from "../common/LocationLoader";
 import styles from "./Listings.module.css";
+
+const extractListings = (payload) => {
+  if (!payload) return [];
+
+  if (Array.isArray(payload)) return payload;
+
+  if (Array.isArray(payload.data)) return payload.data;
+
+  if (payload.data && Array.isArray(payload.data.listings)) {
+    return payload.data.listings;
+  }
+
+  if (Array.isArray(payload.listings)) return payload.listings;
+
+  if (Array.isArray(payload.results)) return payload.results;
+
+  if (payload.data && Array.isArray(payload.data.results)) {
+    return payload.data.results;
+  }
+
+  return [];
+};
+
+const extractPagination = (payload) => {
+  if (!payload) return null;
+
+  if (
+    payload.pagination &&
+    typeof payload.pagination === "object"
+  ) {
+    return payload.pagination;
+  }
+
+  if (
+    payload.data &&
+    payload.data.pagination &&
+    typeof payload.data.pagination === "object"
+  ) {
+    return payload.data.pagination;
+  }
+
+  return null;
+};
 
 export default function Listings({ agentId }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,12 +77,57 @@ export default function Listings({ agentId }) {
     {
       page: currentPage,
       limit: itemsPerPage,
-      status: statusFilter
+      status: statusFilter,
     }
   );
 
-  const listings = listingsData?.data || [];
-  const pagination = listingsData?.pagination || {};
+  const serverListings = extractListings(listingsData);
+  const rawPagination = extractPagination(listingsData);
+  const hasServerPagination = !!rawPagination;
+
+  const paginationLimit = hasServerPagination
+    ? rawPagination?.limit ?? itemsPerPage
+    : itemsPerPage;
+
+  const totalListings = hasServerPagination
+    ? rawPagination?.totalListings 
+      ?? rawPagination?.totalItems 
+      ?? rawPagination?.total 
+      ?? serverListings.length
+    : serverListings.length;
+
+  const computedTotalPages = Math.max(
+    1,
+    Math.ceil(totalListings / (paginationLimit || itemsPerPage))
+  );
+
+  const totalPages = hasServerPagination
+    ? rawPagination?.totalPages ?? computedTotalPages
+    : computedTotalPages;
+
+  const activePage = hasServerPagination
+    ? rawPagination?.currentPage ?? rawPagination?.page ?? currentPage
+    : Math.min(currentPage, totalPages);
+
+  useEffect(() => {
+    if (!hasServerPagination && currentPage !== activePage) {
+      setCurrentPage(activePage);
+    }
+  }, [hasServerPagination, activePage, currentPage]);
+
+  const listings = hasServerPagination
+    ? serverListings
+    : serverListings.slice(
+        (activePage - 1) * paginationLimit,
+        activePage * paginationLimit
+      );
+
+  const pagination = {
+    currentPage: activePage,
+    totalPages,
+    limit: paginationLimit,
+    totalListings,
+  };
 
   // Handle filter change
   const handleFilterChange = (filter) => {

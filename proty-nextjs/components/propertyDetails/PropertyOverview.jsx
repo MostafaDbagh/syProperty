@@ -67,13 +67,16 @@ export default function PropertyOverview({ property }) {
             {property?.address || 'Property Location'}
           </p>
           <ul className="meta-list flex">
-            <li className="text-1 flex">
+            <li className="text-1 flex items-center gap-10">
+              <i className="icon-Bed-2" />
               <span>{property?.bedrooms || '0'}</span>Bed
             </li>
-            <li className="text-1 flex">
+            <li className="text-1 flex items-center gap-10">
+              <i className="icon-Bathtub" />
               <span>{property?.bathrooms || '0'}</span>Bath
             </li>
-            <li className="text-1 flex">
+            <li className="text-1 flex items-center gap-10">
+              <i className="icon-Ruler" />
               <span>{property?.size || '0'}</span>Sqft
             </li>
           </ul>

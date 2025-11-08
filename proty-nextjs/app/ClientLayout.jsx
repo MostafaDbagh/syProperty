@@ -6,6 +6,8 @@ import { queryClient } from "@/lib/react-query";
 import ReduxProvider from "@/store/ReduxProvider";
 import { GlobalModalProvider } from "@/components/contexts/GlobalModalContext";
 import { FavoritesProvider } from "@/components/contexts/FavoritesContext";
+import { useIdleLogout } from "@/hooks/useIdleLogout";
+import { useAuthState } from "@/store/hooks/useAuth";
 
 import "../public/main.scss";
 import "../public/css/components.css";
@@ -16,6 +18,17 @@ import "rc-slider/assets/index.css";
 import { usePathname } from "next/navigation";
 import BackToTop from "@/components/common/BackToTop";
 import MobileMenu from "@/components/headers/MobileMenu";
+
+const IdleLogoutHandler = () => {
+  const { isAuthenticated, logout } = useAuthState();
+
+  useIdleLogout({
+    isAuthenticated,
+    onIdle: logout,
+  });
+
+  return null;
+};
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -76,6 +89,7 @@ export default function ClientLayout({ children }) {
       <GlobalModalProvider>
         <FavoritesProvider>
           <QueryClientProvider client={queryClient}>
+            <IdleLogoutHandler />
             {children}
             <MobileMenu />
             <BackToTop />
@@ -85,3 +99,4 @@ export default function ClientLayout({ children }) {
     </ReduxProvider>
   );
 }
+
