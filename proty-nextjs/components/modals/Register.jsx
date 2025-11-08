@@ -177,6 +177,10 @@ export default function Register({ isOpen, onClose }) {
     }, 300);
   };
 
+  const handlePolicyLinkClick = useCallback(() => {
+    closeModal();
+  }, [closeModal]);
+
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -360,11 +364,19 @@ export default function Register({ isOpen, onClose }) {
                   />
                   <span className={styles.checkboxText}>
                     I agree to the{" "}
-                    <Link href="/terms-and-conditions" className={styles.termsLink}>
+                    <Link
+                      href="/terms-and-conditions"
+                      className={styles.termsLink}
+                      onClick={handlePolicyLinkClick}
+                    >
                       Terms and Conditions
                     </Link>{" "}
                     and{" "}
-                    <Link href="/privacy-policy" className={styles.termsLink}>
+                    <Link
+                      href="/privacy-policy"
+                      className={styles.termsLink}
+                      onClick={handlePolicyLinkClick}
+                    >
                       Privacy Policy
                     </Link>
                   </span>
