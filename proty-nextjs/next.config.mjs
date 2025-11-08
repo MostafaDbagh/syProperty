@@ -8,6 +8,7 @@ const nextConfig = {
     },
     compress: true,
     poweredByHeader: false,
+    output: 'standalone',
   };
   
   export default nextConfig;
