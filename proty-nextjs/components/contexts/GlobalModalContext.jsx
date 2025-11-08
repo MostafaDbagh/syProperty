@@ -1,7 +1,8 @@
 "use client";
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import GlobalStatusModal from '../modals/GlobalStatusModal';
 import Register from '../modals/Register';
+import { usePathname } from 'next/navigation';
 import Login from '../modals/Login';
 import ForgotPasswordFlow from '../modals/ForgotPasswordFlow';
 import OTPVerification from '../modals/OTPVerification';
@@ -18,6 +19,7 @@ export const useGlobalModal = () => {
 };
 
 export const GlobalModalProvider = ({ children }) => {
+  const pathname = usePathname();
   const [modalState, setModalState] = useState({
     isOpen: false,
     type: 'success',
@@ -128,6 +130,19 @@ export const GlobalModalProvider = ({ children }) => {
     });
   };
 
+  const hideAllModals = () => {
+    setModalState(prev => ({ ...prev, isOpen: false }));
+    setRegisterModalState({ isOpen: false });
+    setLoginModalState({ isOpen: false });
+    setForgotPasswordModalState({ isOpen: false });
+    setOtpModalState({
+      isOpen: false,
+      userData: null,
+      email: '',
+      type: 'signup'
+    });
+  };
+
   // Unified modal show function
   const showModal = (modalType) => {
     switch (modalType) {
@@ -170,7 +185,8 @@ export const GlobalModalProvider = ({ children }) => {
     showOTPModal,
     closeOTPModal,
     otpModalState,
-    showModal // Add the unified showModal function
+    showModal,
+    hideAllModals
   };
 
   return (

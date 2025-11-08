@@ -188,12 +188,12 @@ export default function Login({ isOpen, onClose }) {
             {isLoading ? (
               <>
                 <span className={styles.spinner} />
-                Signing In...
+                Login
               </>
             ) : (
               <>
                 <i className="icon-login" />
-                Sign In
+                Login
               </>
             )}
           </button>
@@ -201,6 +201,7 @@ export default function Login({ isOpen, onClose }) {
           <div className={styles.signUpLink}>
             Don't have an account?{" "}
             <a
+            style={{fontSize:'18px'}}
               href="#"
               onClick={handleSwitchToRegister}
             >

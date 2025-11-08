@@ -1,12 +1,14 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { UserIcon, EmailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/icons";
 import { authAPI } from "@/apis/auth";
 import { useGlobalModal } from "@/components/contexts/GlobalModalContext";
 import styles from "./Register.module.css";
 
 export default function Register({ isOpen, onClose }) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -22,7 +24,7 @@ export default function Register({ isOpen, onClose }) {
   const [error, setError] = useState('');
 
   // Use GlobalModal context for other modals
-  const { showLoginModal, showOTPModal } = useGlobalModal();
+  const { showLoginModal, showOTPModal, hideAllModals } = useGlobalModal();
 
   // Function to completely reset form data (call this after successful registration)
   const resetFormData = useCallback(() => {
@@ -177,9 +179,12 @@ export default function Register({ isOpen, onClose }) {
     }, 300);
   };
 
-  const handlePolicyLinkClick = useCallback(() => {
+  const handlePolicyLinkClick = useCallback((event, href) => {
+    event.preventDefault();
+    event.stopPropagation();
     closeModal();
-  }, [closeModal]);
+    router.push(href);
+  }, [closeModal, hideAllModals, router]);
 
 
   const handleOverlayClick = (e) => {
@@ -367,7 +372,7 @@ export default function Register({ isOpen, onClose }) {
                     <Link
                       href="/terms-and-conditions"
                       className={styles.termsLink}
-                      onClick={handlePolicyLinkClick}
+                      onClick={(event) => handlePolicyLinkClick(event, "/terms-and-conditions")}
                     >
                       Terms and Conditions
                     </Link>{" "}
@@ -375,7 +380,7 @@ export default function Register({ isOpen, onClose }) {
                     <Link
                       href="/privacy-policy"
                       className={styles.termsLink}
-                      onClick={handlePolicyLinkClick}
+                      onClick={(event) => handlePolicyLinkClick(event, "/privacy-policy")}
                     >
                       Privacy Policy
                     </Link>
