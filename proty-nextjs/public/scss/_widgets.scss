@@ -2822,7 +2822,7 @@
     &::after {
       content: "";
       position: absolute;
-      background-image: url(../images/section/cta-1.png);
+      background-image: none;
       width: 100%;
       height: 100%;
       top: 0;
@@ -2839,7 +2839,7 @@
   &.style-2 {
     margin-top: 0;
     .content {
-      background-image: url(../images/section/section-appraisal.jpg);
+      background-image: none;
       &::after {
         display: none;
       }
@@ -2856,7 +2856,7 @@
         max-width: 591px;
       }
       &::after {
-        background-image: url(../images/section/cta-2.png);
+        background-image: none;
         bottom: 0;
         top: unset;
         background-size: cover;
@@ -3490,7 +3490,7 @@
     font-size: 510px;
     line-height: 538px;
     font-weight: 900;
-    background-image: url(../images/page-title/bg-text.jpg);
+    background-image: none;
     background-repeat: repeat;
     background-size: 200%;
     background-clip: text;
