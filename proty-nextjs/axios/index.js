@@ -1,8 +1,20 @@
 import axios from 'axios'
 const localhost = 'http://localhost:5500/api'
 const heroku = 'https://proty-api-mostafa-56627d8ca9aa.herokuapp.com/api'
+
+const getBaseURL = () => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return localhost;
+    }
+  }
+
+  return process.env.NEXT_PUBLIC_API_URL || heroku;
+};
+
 export const Axios = axios.create({
-  baseURL: heroku, // Use Heroku for production
+  baseURL: heroku,
   timeout: 30000, // Request timeout in milliseconds (increased to 30 seconds)
   headers: {
     'Content-Type': 'application/json',

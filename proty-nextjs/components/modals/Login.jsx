@@ -201,7 +201,7 @@ export default function Login({ isOpen, onClose }) {
           <div className={styles.signUpLink}>
             Don't have an account?{" "}
             <a
-            style={{fontSize:'18px'}}
+            style={{fontSize:'16px'}}
               href="#"
               onClick={handleSwitchToRegister}
             >
