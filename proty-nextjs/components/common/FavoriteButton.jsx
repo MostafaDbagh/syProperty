@@ -131,10 +131,12 @@ export default function FavoriteButton({
   return (
     <>
       <button
+        style={{ background: 'transparent' }}
         onClick={handleToggleFavorite}
         disabled={isLoading || isCheckingAuth}
         className={`${className || "btn-icon save hover-tooltip"} favorite-button`}
         title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        
       >
         <svg
           className={`${iconClassName} favorite-icon ${isFavorited ? 'favorite-icon-favorited' : ''}`}

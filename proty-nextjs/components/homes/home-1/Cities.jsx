@@ -148,6 +148,7 @@ export default function Cities() {
           transition: all 0.3s ease;
           position: relative;
           cursor: pointer;
+          
         }
         
         .city-card:hover {
@@ -156,12 +157,12 @@ export default function Cities() {
         }
         
         .city-card .image-wrap {
-          height: 100%;
+          height: 100% !important;
           position: relative;
         }
         
         .city-image {
-          object-fit: cover !important;
+          object-fit: contain !important;
           width: 100% !important;
           height: 100% !important;
         }
@@ -172,13 +173,14 @@ export default function Cities() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
-          opacity: 0.8;
+          pointer-events: none;
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 70%, rgba(0, 0, 0, 0.45) 100%);
+          opacity: 0.6;
           transition: opacity 0.3s ease;
         }
         
         .city-card:hover .city-overlay {
-          opacity: 0.9;
+          opacity: 0.7;
         }
         
         .city-card:hover .city-image {
@@ -339,7 +341,7 @@ export default function Cities() {
                   onClick={(e) => handleCityClick(e, location.city)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <div className="image-wrap position-relative overflow-hidden rounded-3">
+                  <div className="image-wrap position-relative overflow-hidden rounded-3 ariirirriri" style={{height:'100% !important'}}>
                     <Image
                       className="city-image"
                       alt={location.alt}

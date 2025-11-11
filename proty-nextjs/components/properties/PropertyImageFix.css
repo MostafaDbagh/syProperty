@@ -301,3 +301,57 @@
   font-weight: bold !important;
   margin-top: auto !important;
 }
+
+/* Disable hover overlay and image scaling for property cards */
+.box-house .image-wrap::before,
+.box-house .image-wrap::after {
+  display: none !important;
+  content: none !important;
+}
+
+.box-house:hover .image-wrap img,
+.box-house:hover .img-style img {
+  transform: none !important;
+}
+
+.box-house .image-wrap::before,
+.box-house .image-wrap::after {
+  display: none !important;
+  opacity: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.box-house:hover .image-wrap::before,
+.box-house:hover .image-wrap::after {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.box-house:hover .image-wrap img,
+.box-house:hover .img-style img {
+  transform: none !important;
+  filter: none !important;
+}
+
+.box-house .image-wrap > a::after {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  background: none !important;
+  bottom: auto !important;
+}
+
+.box-house:hover .image-wrap > a::after {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.box-house .image-wrap img {
+  transition: transform 0.3s ease !important;
+}
+
+.box-house:hover .image-wrap img {
+  transform: scale(1.05) !important;
+}

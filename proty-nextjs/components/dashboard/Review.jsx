@@ -259,12 +259,7 @@ export default function Review() {
                   <li key={review._id} className="mess-item">
                     <div className="user-box">
                       <div className="avatar">
-                        <Image
-                          alt={getReviewerName(review)}
-                          src={getAvatar(review)}
-                          width={51}
-                          height={51}
-                        />
+                    
                       </div>
                       <div className="content justify-content-start">
                         <div className="name fw-6">{getReviewerName(review)}</div>

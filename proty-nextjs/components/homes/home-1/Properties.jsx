@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
+import '@/components/properties/PropertyImageFix.css';
 import SplitTextAnimation from "@/components/common/SplitTextAnimation";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import { usePropertyActions } from "@/hooks/usePropertyActions";
@@ -138,7 +139,7 @@ export default function Properties({ listings, isLoading, isError }) {
             <div className="tf-layout-mobile-md md-col-2 lg-col-3 gap-15">
               {listingsArray.map((listing, i) => (
                 <div key={i}>
-      <div className="box-house hover-img">
+      <div className="box-house airrry">
         <div className="image-wrap" style={{
           width: '100%',
           maxWidth: '100%',
@@ -187,10 +188,18 @@ export default function Properties({ listings, isLoading, isError }) {
             </li>
           </ul>
 
-          <div className="list-btn flex gap-8">
+          <div
+            style={{
+              position: 'absolute',
+              right: '16px',
+              bottom: '16px',
+              zIndex: 6,
+              display: 'flex',
+            }}
+          >
             <FavoriteButton 
               propertyId={listing._id}
-              showLabel={true}
+              showLabel={false}
             />
           </div>
         </div>

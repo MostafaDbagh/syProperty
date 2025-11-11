@@ -188,11 +188,12 @@ export default function Properties2() {
                               className="lazyload property-image-cover"
                               alt={property.propertyKeyword || property.propertyType || "Property"}
                               src={imageSrc || "/images/section/box-house-2.jpg"}
-                              width={370}
-                              height={260}
+                              fill
+                              sizes="(max-width: 768px) 100vw, 370px"
                               onError={(e) => {
-                                e.target.src = "/images/section/box-house-2.jpg";
+                                e.currentTarget.src = "/images/section/box-house-2.jpg";
                               }}
+                              style={{ objectFit: "cover" }}
                             />
                           </Link>
                           
