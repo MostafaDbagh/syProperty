@@ -58,8 +58,10 @@
 
 .favorite-icon {
   color: inherit;
-  font-size: 18px;
-  transition: color 0.3s ease;
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  transition: color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
 }
 
 .favorite-icon-favorited {
