@@ -1,34 +1,28 @@
 "use client";
-import Slider from "rc-slider";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import DropdownSelect from "../common/DropdownSelect";
 import DropdownTagSelect from "../common/DropdownTagSelect";
 import { amenitiesList } from "@/constants/amenities";
 
 export default function FilterModal({ onSearchChange, searchParams = {} }) {
-  const [priceRange, setPriceRange] = useState([100, 700]);
-  const [sizeRange, setSizeRange] = useState([200, 820]);
-  
-  // Initialize ranges from search parameters
-  useEffect(() => {
-    if (searchParams.priceMin !== undefined || searchParams.priceMax !== undefined) {
-      setPriceRange([
-        searchParams.priceMin || 100,
-        searchParams.priceMax || 700
-      ]);
-    }
-    if (searchParams.sizeMin !== undefined || searchParams.sizeMax !== undefined) {
-      setSizeRange([
-        searchParams.sizeMin || 200,
-        searchParams.sizeMax || 820
-      ]);
-    }
-  }, [searchParams.priceMin, searchParams.priceMax, searchParams.sizeMin, searchParams.sizeMax]);
-  
   const handleChange = (key, value) => {
     if (onSearchChange) {
       onSearchChange({ [key]: value });
     }
+  };
+
+  const handleNumericInputChange = (key, value) => {
+    if (value === '') {
+      handleChange(key, '');
+      return;
+    }
+
+    const parsed = Number(value);
+    if (Number.isNaN(parsed)) {
+      return;
+    }
+
+    handleChange(key, Math.max(0, parsed));
   };
 
   // Check if property type should hide beds, baths, and furnished (show by default)
@@ -43,6 +37,76 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
   return (
     <>
       <style jsx>{`
+        .range-inputs {
+          display: flex !important;
+          gap: 16px !important;
+          align-items: flex-end !important;
+          flex-wrap: wrap !important;
+        }
+
+        .widget-price.full-width {
+          width: 100% !important;
+        }
+
+        .widget-price.full-width .range-inputs {
+          width: 100% !important;
+          background: #f8f9fa;
+          border-radius: 16px;
+          padding: 18px;
+          border: 1px solid rgba(125, 138, 156, 0.22);
+          position: relative;
+        }
+
+        .widget-price.full-width .range-input-group {
+          flex: 1 !important;
+        }
+
+        .widget-price.full-width .range-input {
+          width: 100% !important;
+        }
+
+        .box-title-price {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 12px !important;
+        }
+
+        .range-input-group {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 6px !important;
+        }
+
+        .range-input {
+          width: 160px !important;
+          height: 48px !important;
+          border-radius: 12px !important;
+          border: 2px solid #e8e8e8 !important;
+          padding: 0 16px !important;
+          font-size: 14px !important;
+          color: #333 !important;
+          background-color: #fff !important;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05) !important;
+          transition: all 0.3s ease !important;
+          outline: none !important;
+        }
+
+        .range-input:focus {
+          border-color: #ff6b35 !important;
+          box-shadow: 0 4px 16px rgba(255, 107, 53, 0.12) !important;
+        }
+
+        .range-input::-webkit-outer-spin-button,
+        .range-input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        .range-input {
+          -moz-appearance: textfield;
+        }
+
         /* Property ID Input Styling */
         .property-id-input {
           width: 100% !important;
@@ -149,6 +213,22 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 data-bs-dismiss="modal"
               />
             </div>
+            <div className="group-input mb-30">
+              <div className="box-input">
+                <label className="mb-2" htmlFor="propertyId">
+                  Property ID
+                </label>
+                <input
+                  type="text"
+                  id="propertyId"
+                  className="form-control property-id-input"
+                  placeholder="Enter Property ID"
+                  value={searchParams.propertyId || ""}
+                  onChange={(e) => handleChange("propertyId", e.target.value)}
+                />
+              </div>
+            </div>
+            
             {/* Property Type - First Input */}
             <div className="group-input mb-30">
               <div className="box-input">
@@ -169,21 +249,7 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
     
 
             {/* Property ID Input Field */}
-            <div className="group-input mb-30">
-              <div className="box-input">
-                <label className="mb-2" htmlFor="propertyId">
-                  Property ID
-                </label>
-                <input
-                  type="text"
-                  id="propertyId"
-                  className="form-control property-id-input"
-                  placeholder="Enter Property ID"
-                  value={searchParams.propertyId || ""}
-                  onChange={(e) => handleChange("propertyId", e.target.value)}
-                />
-              </div>
-            </div>
+      
             <div className="group-input mb-30">
               <div className="box-input">
                 <label className="mb-2" htmlFor="citiesSelect">
@@ -211,57 +277,28 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
                 </div>
               </div>
             </div>
-            <div className="group-price">
-              <div className="widget-price">
-                <div className="box-title-price">
-                  <span className="title-price">Price</span>
-                  <div className="caption-price">
-                    <span>from</span>{" "}
-                    <span className="value fw-6" id="slider-range-value1">
-                      ${priceRange[0].toLocaleString()}
-                    </span>{" "}
-                    <span>to</span>
-                    <span className="value fw-6" id="slider-range-value2">
-                      {" "}
-                      ${priceRange[1].toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-                <Slider
-                  range
-                  max={1000}
-                  min={0}
-                  value={priceRange}
+            <div className="group-input mb-30">
+              <div className="box-input">
+                <label className="mb-2" htmlFor="modalFurnishedSelect">
+                  Furnishing
+                </label>
+                <DropdownSelect
+                  id="modalFurnishedSelect"
+                  options={["Any", "Furnished", "Unfurnished"]}
+                  addtionalParentClass=""
+                  selectedValue={
+                    searchParams.furnished === true
+                      ? "Furnished"
+                      : searchParams.furnished === false
+                      ? "Unfurnished"
+                      : "Any"
+                  }
                   onChange={(value) => {
-                    setPriceRange(value);
-                    handleChange("priceMin", value[0]);
-                    handleChange("priceMax", value[1]);
-                  }}
-                />
-              </div>
-              <div className="widget-price">
-                <div className="box-title-price">
-                  <span className="title-price">Size</span>
-                  <div className="caption-price">
-                    <span>from</span>{" "}
-                    <span className="value fw-6" id="slider-range-value01">
-                      {sizeRange[0]}
-                    </span>{" "}
-                    <span>to</span>{" "}
-                    <span className="value fw-6" id="slider-range-value02">
-                      {sizeRange[1]}
-                    </span>
-                  </div>
-                </div>
-                <Slider
-                  range
-                  max={1000}
-                  min={0}
-                  value={sizeRange}
-                  onChange={(value) => {
-                    setSizeRange(value);
-                    handleChange("sizeMin", value[0]);
-                    handleChange("sizeMax", value[1]);
+                    let furnishedValue;
+                    if (value === "Furnished") furnishedValue = true;
+                    else if (value === "Unfurnished") furnishedValue = false;
+                    else furnishedValue = undefined;
+                    handleChange("furnished", furnishedValue);
                   }}
                 />
               </div>
@@ -282,15 +319,99 @@ export default function FilterModal({ onSearchChange, searchParams = {} }) {
               <div className="box-select">
                 <DropdownTagSelect
                   id="bedsSelect"
-                  label="Beds"
+                  label="Rooms"
                   options={["Any", 'studio', "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
                   addtionalParentClass=""
                   value={searchParams.bedrooms || ""}
                   onChange={(value) => handleChange("bedrooms", value)}
                 />
               </div>
+              
               </div>
             )}
+            <div className="group-input mb-30">
+              <div className="widget-price full-width">
+                <div className="box-title-price">
+                  <span className="title-price">Price</span>
+                  <div className="range-inputs">
+                    <div className="range-input-group">
+                      <span className="input-label">From</span>
+                      <input
+                        id="filterPriceMin"
+                        type="number"
+                        className="range-input"
+                        placeholder="Min price"
+                        value={searchParams.priceMin ?? ''}
+                        onChange={(e) => handleNumericInputChange('priceMin', e.target.value)}
+                      />
+                    </div>
+                    <div className="range-input-group">
+                      <span className="input-label">To</span>
+                      <input
+                        id="filterPriceMax"
+                        type="number"
+                        className="range-input"
+                        placeholder="Max price"
+                        value={searchParams.priceMax ?? ''}
+                        onChange={(e) => handleNumericInputChange('priceMax', e.target.value)}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="range-reset"
+                      onClick={() => {
+                        handleChange('priceMin', '');
+                        handleChange('priceMax', '');
+                      }}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="group-input mb-30">
+              <div className="widget-price full-width">
+                <div className="box-title-price">
+                  <span className="title-price">Size (sqft)</span>
+                  <div className="range-inputs">
+                    <div className="range-input-group">
+                      <span className="input-label">From</span>
+                      <input
+                        id="filterSizeMin"
+                        type="number"
+                        className="range-input"
+                        placeholder="Min size"
+                        value={searchParams.sizeMin ?? ''}
+                        onChange={(e) => handleNumericInputChange('sizeMin', e.target.value)}
+                      />
+                    </div>
+                    <div className="range-input-group">
+                      <span className="input-label">To</span>
+                      <input
+                        id="filterSizeMax"
+                        type="number"
+                        className="range-input"
+                        placeholder="Max size"
+                        value={searchParams.sizeMax ?? ''}
+                        onChange={(e) => handleNumericInputChange('sizeMax', e.target.value)}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="range-reset"
+                      onClick={() => {
+                        handleChange('sizeMin', '');
+                        handleChange('sizeMax', '');
+                      }}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
             <div className="group-checkbox">
               <div className="title text-4 fw-6">Amenities:</div>
               <div className="group-amenities">

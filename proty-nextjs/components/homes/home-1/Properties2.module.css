@@ -1,7 +1,8 @@
 /* Holiday Homes Card - Clean Layout */
 .propertyCard {
   display: flex;
-  width: 480px;
+  padding: 12px;
+  width: 500px;
   min-height: 400px;
   background: white;
   border-radius: 12px;
@@ -110,7 +111,7 @@
 /* Right Content Section */
 .contentSection {
   flex-shrink: 0;
-  padding: 20px 16px;
+  padding: 0 18px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

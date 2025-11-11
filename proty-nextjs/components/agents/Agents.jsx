@@ -609,13 +609,13 @@ export default function Agents() {
               <div className="tf-grid-layout-2">
                 {sortedAgents.map((agent) => (
                   <div key={agent._id} className="agent-item hover-img">
-                    <div className="image-wrap">
+                    <div className="image-wrap" style={{height:'360px'}}>
                       <Link href={`/agents-details/${agent._id}`}>
                         <Image
                           className="lazyload property-img"
                           alt={agent.fullName || "Agent"}
                           width={435}
-                          height={250}
+                          height={450}
                           src={agent.avatar || "/images/avatar/agent-1.jpg"}
                         />
                       </Link>

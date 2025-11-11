@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import DropdownSelect from "./DropdownSelect";
 import DropdownTagSelect from "./DropdownTagSelect";
-import Slider from "rc-slider";
 import { provinceOptions } from "@/constants/provinces";
 import { amenitiesList } from "@/constants/amenities";
 import logger from "@/utlis/logger";
@@ -65,6 +64,20 @@ export default function SearchForm({
     handleChange("amenities", Array.from(newAmenities));
   };
 
+  const handleNumericInputChange = (key, value) => {
+    if (value === "") {
+      handleChange(key, "");
+      return;
+    }
+
+    const parsedValue = Number(value);
+    if (Number.isNaN(parsedValue)) {
+      return;
+    }
+
+    handleChange(key, Math.max(0, parsedValue));
+  };
+
   // Check if property type should hide beds, baths, and furnished (show by default)
   const shouldHideResidentialOptions = () => {
     const propertyType = searchParams.propertyType || "";
@@ -116,6 +129,91 @@ export default function SearchForm({
           box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15) !important;
         }
         
+        .range-inputs {
+          width: 100% !important;
+          display: flex !important;
+          gap: 12px !important;
+          align-items: flex-end !important;
+          flex-wrap: wrap !important;
+          background: #f8f9fa;
+          border-radius: 16px;
+          padding: 18px;
+          border: 1px solid rgba(125, 138, 156, 0.22);
+          position: relative;
+        }
+
+        .range-input-group {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 4px !important;
+          flex: 1 !important;
+        }
+
+        .range-input-group .input-label {
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: #333;
+        }
+
+        .range-input {
+          width: 190px !important;
+          height: 52px !important;
+          border-radius: 14px !important;
+          border: 1px solid #cfd5dd !important;
+          padding: 0 18px !important;
+          font-size: 15px !important;
+          color: #222 !important;
+          background-color: rgba(255, 255, 255, 0.96) !important;
+          box-shadow: 0 10px 30px rgba(125, 138, 156, 0.12) !important;
+          transition: all 0.28s ease !important;
+          outline: none !important;
+        }
+
+        .range-input:focus {
+          border-color: #728096 !important;
+          box-shadow: 0 16px 32px rgba(125, 138, 156, 0.18) !important;
+          transform: translateY(-1px);
+        }
+
+        .range-reset {
+          position: absolute;
+          right: 18px;
+          top: 18px;
+          padding: 10px 18px;
+          border-radius: 12px;
+          border: none;
+          background: linear-gradient(135deg, #8f9bb2 0%, #5f6c83 100%);
+          color: white;
+          font-weight: 600;
+          font-size: 13px;
+          letter-spacing: 0.05em;
+          cursor: pointer;
+          box-shadow: 0 12px 24px rgba(95, 108, 131, 0.25);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .range-reset:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 16px 28px rgba(95, 108, 131, 0.3);
+        }
+
+        .range-reset:active {
+          transform: translateY(0);
+          box-shadow: 0 10px 20px rgba(95, 108, 131, 0.25);
+        }
+
+        .range-input::-webkit-outer-spin-button,
+        .range-input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        .range-input {
+          -moz-appearance: textfield;
+        }
+
         /* Enhanced City Dropdown Styling for style-3 */
         .wd-search-form.style-3 .city-dropdown .nice-select {
           background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
@@ -288,26 +386,28 @@ export default function SearchForm({
         </div>
         
         {/* Property Type - First Input */}
-        <div className="group-input mb-30 form-row-flex">
-          <div className="box-input form-row-item" style={{ maxWidth: '50%', flex: '0 0 50%' }}>
-            <label className="mb-2 form-label" htmlFor="propertyTypeSelect">
-              Property Type
+        <div className="group-input mb-30 col-4">
+        <div className="box-input form-row-item">
+            <label className="mb-2 form-label" htmlFor="propertyId">
+              Property ID
             </label>
-            <DropdownSelect
-              id="propertyTypeSelect"
-              options={["Any", "Apartment", "Commercial", "Land", "Holiday Home", "Villa/farms", "Office"]}
-              addtionalParentClass=""
-              selectedValue={searchParams.propertyType || "Any"}
-              onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
+            <input
+              type="text"
+              id="propertyId"
+              className="form-control form-input-enhanced"
+              placeholder="Enter Property ID"
+              value={searchParams.propertyId || ""}
+              onChange={(e) => handleChange("propertyId", e.target.value)}
             />
           </div>
+   
         </div>
         
                 {/* Syria Cities and Property ID Row */}
         <div className="group-input mb-30 form-row-flex">
           <div className="box-input form-row-item">
             <label className="mb-2 form-label" htmlFor="syriaCitiesSelect">
-              Syria Cities
+               City
             </label>
             <div className="city-dropdown">
               <DropdownSelect
@@ -330,17 +430,16 @@ export default function SearchForm({
               />
             </div>
           </div>
-          <div className="box-input form-row-item">
-            <label className="mb-2 form-label" htmlFor="propertyId">
-              Property ID
+          <div className="box-input form-row-item" style={{ maxWidth: '50%', flex: '0 0 50%' }}>
+            <label className="mb-2 form-label" htmlFor="propertyTypeSelect">
+              Property Type
             </label>
-            <input
-              type="text"
-              id="propertyId"
-              className="form-control form-input-enhanced"
-              placeholder="Enter Property ID"
-              value={searchParams.propertyId || ""}
-              onChange={(e) => handleChange("propertyId", e.target.value)}
+            <DropdownSelect
+              id="propertyTypeSelect"
+              options={["Any", "Apartment", "Commercial", "Land", "Holiday Home", "Villa/farms", "Office"]}
+              addtionalParentClass=""
+              selectedValue={searchParams.propertyType || "Any"}
+              onChange={(value) => handleChange("propertyType", value === "Any" ? "" : value)}
             />
           </div>
         </div>
@@ -376,76 +475,13 @@ export default function SearchForm({
       )}
       
       
-      <div className="group-price">
-        <div className="widget-price">
-          <label className="mb-2 title-price" htmlFor="priceRange">
-            Price range 
-          </label>
-          <div className="box-title-price">
-            <div className="caption-price">
-              <span>from</span>{" "}
-              <span className="value fw-6" id="slider-range-value1">
-                ${(searchParams.priceMin ?? 0).toLocaleString()}
-              </span>{" "}
-              <span>to</span>{" "}
-              <span className="value fw-6" id="slider-range-value2">
-                ${(searchParams.priceMax ?? 1000000).toLocaleString()}
-              </span>
-            </div>
-          </div>
-          <Slider
-            id="priceRange"
-            range
-            min={3000}
-            max={1000000}
-            value={[
-              searchParams.priceMin ? +searchParams.priceMin : 0,
-              searchParams.priceMax ? +searchParams.priceMax : 1000000,
-            ]}
-            onChange={([min, max]) => {
-              handleChange("priceMin", min);
-              handleChange("priceMax", max);
-            }}
-          />
-        </div>
-        <div className="widget-price">
-          <label className="mb-2 title-price" htmlFor="sizeRange">
-            Size range
-          </label>
-          <div className="box-title-price">
-            <div className="caption-price">
-              <span>from</span>{" "}
-              <span className="value fw-6" id="slider-range-value01">
-                {searchParams.sizeMin ?? 0}
-              </span>{" "}
-              <span>to</span>{" "}
-              <span className="value fw-6" id="slider-range-value02">
-                {searchParams.sizeMax ?? 10000}
-              </span>
-            </div>
-          </div>
-          <Slider
-            id="sizeRange"
-            range
-            min={0}
-            max={10000}
-            value={[
-              searchParams.sizeMin ? +searchParams.sizeMin : 0,
-              searchParams.sizeMax ? +searchParams.sizeMax : 0,
-            ]}
-            onChange={([min, max]) => {
-              handleChange("sizeMin", min);
-              handleChange("sizeMax", max);
-            }}
-          />
-        </div>
-      </div>
+
       {shouldShowResidentialOptions && (
         <div className="group-select">
           <div className="box-select">
           <DropdownTagSelect
             id="bedsSelect"
-            label="Beds"
+            label="Rooms"
             options={["Any", 'studio', "1", "2", "3", "4", "5", "6"]}
             addtionalParentClass=""
             value={searchParams.bedrooms || ""}
@@ -490,6 +526,91 @@ export default function SearchForm({
 </div>
         </div>
       )}
+
+      <div className="group-price mb-30">
+        <div className="widget-price">
+          <label className="mb-2 title-price" htmlFor="priceRange">
+            Price range 
+          </label>
+          <div className="box-title-price">
+            <div className="range-inputs">
+              <div className="range-input-group">
+                <span className="input-label">From</span>
+                <input
+                  id="priceMin"
+                  type="number"
+                  className="range-input"
+                  placeholder="Min price"
+                  value={searchParams.priceMin ?? ""}
+                  onChange={(e) => handleNumericInputChange("priceMin", e.target.value)}
+                />
+              </div>
+              <div className="range-input-group">
+                <span className="input-label">To</span>
+                <input
+                  id="priceMax"
+                  type="number"
+                  className="range-input"
+                  placeholder="Max price"
+                  value={searchParams.priceMax ?? ""}
+                  onChange={(e) => handleNumericInputChange("priceMax", e.target.value)}
+                />
+              </div>
+              <button
+                type="button"
+                className="range-reset"
+                onClick={() => {
+                  handleChange("priceMin", "");
+                  handleChange("priceMax", "");
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="widget-price">
+          <label className="mb-2 title-price" htmlFor="sizeRange">
+            Size range
+          </label>
+          <div className="box-title-price">
+            <div className="range-inputs">
+              <div className="range-input-group">
+                <span className="input-label">From</span>
+                <input
+                  id="sizeMin"
+                  type="number"
+                  className="range-input"
+                  placeholder="Min size (sqft)"
+                  value={searchParams.sizeMin ?? ""}
+                  onChange={(e) => handleNumericInputChange("sizeMin", e.target.value)}
+                />
+              </div>
+              <div className="range-input-group">
+                <span className="input-label">To</span>
+                <input
+                  id="sizeMax"
+                  type="number"
+                  className="range-input"
+                  placeholder="Max size (sqft)"
+                  value={searchParams.sizeMax ?? ""}
+                  onChange={(e) => handleNumericInputChange("sizeMax", e.target.value)}
+                />
+              </div>
+              <button
+                type="button"
+                className="range-reset"
+                onClick={() => {
+                  handleChange("sizeMin", "");
+                  handleChange("sizeMax", "");
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="group-checkbox">
         <div className="title text-4 fw-6 mb-2">Amenities:</div>
         <div className="group-amenities">
@@ -511,7 +632,7 @@ export default function SearchForm({
           ))}
         </div>
       </div>
-      </div>
+    </div>
     </>
   );
 }
