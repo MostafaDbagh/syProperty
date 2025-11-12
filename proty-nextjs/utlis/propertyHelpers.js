@@ -105,6 +105,6 @@ export const getPropertyImage = (property, fallback = '/images/section/property-
   }
   
   // Return fallback if imageUrl is empty or invalid
-  return imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '' ? imageUrl : fallback;
+  return imageUrl && imageUrl.trim() !== '' ? imageUrl : fallback;
 };
 

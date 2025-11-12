@@ -75,13 +75,20 @@ export default function PropertyReviews({ propertyId }) {
     }
   };
 
-  const renderStars = useCallback((rating) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <i 
-        key={index} 
-        className={`icon-star ${index < rating ? 'filled' : ''}`}
-      />
-    ));
+  const renderStars = useCallback((ratingValue) => {
+    const normalizedRating = Math.max(0, Math.min(5, Number(ratingValue) || 0));
+
+    return Array.from({ length: 5 }, (_, index) => {
+      const isFilled = index < normalizedRating;
+
+      return (
+        <i
+          key={index}
+          className={`icon-star ${styles.starIcon} ${isFilled ? styles.starFilled : styles.starEmpty}`}
+          aria-hidden="true"
+        />
+      );
+    });
   }, []);
 
   const formatDate = useCallback((dateString) => {
@@ -90,6 +97,33 @@ export default function PropertyReviews({ propertyId }) {
       month: 'long',
       day: 'numeric'
     });
+  }, []);
+
+  const getReviewerAvatar = useCallback((review) => {
+    const fallbackAvatar = '/images/default-avatar.svg';
+    const potentialSources = [
+      review?.avatarUrl,
+      review?.avatar,
+      review?.userAvatar,
+      review?.userId?.avatar,
+    ];
+
+    const validSource = potentialSources.find((src) => {
+      if (typeof src !== 'string') {
+        return false;
+      }
+      const trimmed = src.trim();
+      if (!trimmed) {
+        return false;
+      }
+      return !/i.pravatar.cc/i.test(trimmed);
+    });
+
+    if (validSource) {
+      return validSource;
+    }
+
+    return fallbackAvatar;
   }, []);
 
   if (isLoading) {
@@ -124,10 +158,20 @@ export default function PropertyReviews({ propertyId }) {
                         <div className={styles.imageWrap}>
                           <Image
                             alt="Reviewer avatar"
-                            src="/images/avatar/avatar-1.jpg"
+                            src={getReviewerAvatar(review)}
                             width={60}
                             height={60}
+                            sizes="60px"
                             className={styles.reviewerImage}
+                            onError={(event) => {
+                              const img = event.currentTarget;
+                              if (img.dataset.fallbackApplied === 'true') {
+                                return;
+                              }
+                              img.dataset.fallbackApplied = 'true';
+                              img.onerror = null;
+                              img.src = '/images/default-avatar.svg';
+                            }}
                           />
                         </div>
                         <div className={styles.reviewContent}>

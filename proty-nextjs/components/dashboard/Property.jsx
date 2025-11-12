@@ -134,14 +134,14 @@ export default function Property() {
     setConfirmationModal({
       isOpen: true,
       title: 'Delete Property',
-      message: 'Are you sure you want to delete this property? This action cannot be undone. The property will be removed from your listings but will remain in the system for record keeping.',
+      message: 'This property will be permanently removed. This action cannot be undone.',
       confirmText: 'Delete Property',
       confirmColor: '#dc3545',
       onConfirm: async () => {
         setConfirmationModal(prev => ({ ...prev, loading: true }));
         try {
-          await listingAPI.updateListing(listing._id, { isDeleted: true });
-          refetch(); // Refresh the listings
+          await listingAPI.deleteListing(listing._id);
+          await refetch(); // Refresh the listings
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           showToast('Property deleted successfully!', 'success');
         } catch (error) {
@@ -149,7 +149,7 @@ export default function Property() {
           setConfirmationModal({ isOpen: false, title: '', message: '', confirmText: 'Confirm', confirmColor: '#dc3545', onConfirm: null, loading: false });
           
           // Show more specific error message
-          const errorMessage = error?.message || error?.error || 'Failed to delete property. Please try again.';
+          const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || error?.error || 'Failed to delete property. Please try again.';
           showToast(errorMessage, 'error');
         }
       },

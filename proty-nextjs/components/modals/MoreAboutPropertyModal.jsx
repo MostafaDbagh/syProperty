@@ -51,7 +51,8 @@ export default function MoreAboutPropertyModal({
         onClose();
       }, 2000);
     } catch (error) {
-      setSubmitMessage(`Failed to send message: ${error.message || 'Unknown error'}`);
+      const apiMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || error?.toString() || 'Unknown error';
+      setSubmitMessage(`Failed to send message: ${apiMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -320,20 +321,27 @@ export default function MoreAboutPropertyModal({
           </div>
 
           {/* Submit Message */}
-          {submitMessage && (
-            <div className={`alert ${submitMessage.includes('successfully') ? 'alert-success' : 'alert-danger'} mb-3`} style={{
-              padding: '12px 16px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              marginBottom: '20px',
-              backgroundColor: submitMessage.includes('successfully') ? '#fef7f1' : '#fee2e2',
-              color: submitMessage.includes('successfully') ? '#f1913d' : '#991b1b',
-              border: `1px solid ${submitMessage.includes('successfully') ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
-            }}>
-              {submitMessage}
-            </div>
-          )}
+          {submitMessage && (() => {
+            const isSuccess = submitMessage.toLowerCase().includes('success');
+            return (
+              <div
+                className={`alert ${isSuccess ? 'alert-success' : 'alert-danger'} mb-3`}
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  marginBottom: '20px',
+                  textAlign: 'center',
+                  backgroundColor: isSuccess ? '#fef7f1' : '#fee2e2',
+                  color: isSuccess ? '#f1913d' : '#991b1b',
+                  border: `1px solid ${isSuccess ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
+                }}
+              >
+                {submitMessage}
+              </div>
+            );
+          })()}
 
           {/* Submit Button */}
           <button

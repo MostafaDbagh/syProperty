@@ -60,7 +60,10 @@ export default function Sidebar({ property }) {
     try {
       await createMessageMutation.mutateAsync({
         propertyId: property._id,
-        agentId: property.agent || property.agentId,
+        agentId:
+          (typeof property.agentId === 'object' && property.agentId?._id) ? property.agentId._id :
+          (typeof property.agent === 'object' && property.agent?._id) ? property.agent._id :
+          property.agentId || property.agent,
         senderName: formData.senderName,
         senderEmail: 'user@example.com', // Default email since we don't have email field
         subject: `Contact Agent - ${property.propertyKeyword}`,
@@ -71,7 +74,8 @@ export default function Sidebar({ property }) {
       setSubmitMessage('Message sent successfully!');
       setFormData({ senderName: '', message: '' });
     } catch (error) {
-      setSubmitMessage(`Failed to send message: ${error.message || 'Unknown error'}`);
+      const apiMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || error?.toString() || 'Unknown error';
+      setSubmitMessage(`Failed to send message: ${apiMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -135,20 +139,27 @@ export default function Sidebar({ property }) {
           </div>
           
           {/* Submit Message */}
-          {submitMessage && (
-            <div className={`alert ${submitMessage.includes('successfully') ? 'alert-success' : 'alert-danger'} mb-3`} style={{
-              padding: '12px 16px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
-              marginBottom: '20px',
-              backgroundColor: submitMessage.includes('successfully') ? '#fef7f1' : '#fee2e2',
-              color: submitMessage.includes('successfully') ? '#f1913d' : '#991b1b',
-              border: `1px solid ${submitMessage.includes('successfully') ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
-            }}>
-              {submitMessage}
-            </div>
-          )}
+          {submitMessage && (() => {
+            const isSuccess = submitMessage.toLowerCase().includes('success');
+            return (
+              <div
+                className={`alert ${isSuccess ? 'alert-success' : 'alert-danger'} mb-3`}
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  marginBottom: '20px',
+                  textAlign: 'center',
+                  backgroundColor: isSuccess ? '#fef7f1' : '#fee2e2',
+                  color: isSuccess ? '#f1913d' : '#991b1b',
+                  border: `1px solid ${isSuccess ? 'rgba(241, 145, 61, 0.15)' : '#fecaca'}`
+                }}
+              >
+                {submitMessage}
+              </div>
+            );
+          })()}
           
           <fieldset className="mb-12">
             <input
@@ -188,45 +199,7 @@ export default function Sidebar({ property }) {
           </button>
         </form>
         
-        {/* More About This Property Button */}
-        <div className="sidebar-ads mb-30">
 
-          
-          <div className="image-wrap">
-            <Image
-              className="lazyload"
-              data-src="/images/blog/ads.jpg"
-              alt="Property detail icon"
-              src="/images/blog/ads.jpg"
-              width={400}
-              height={470}
-            />
-          </div>
-          <div className="logo relative z-5">
-            <Image
-              alt="Property detail icon"
-              src="/images/logo/logo-2@2x.png"
-              width={272}
-              height={85}
-            />
-          </div>
-          <div className="box-ads relative z-5">
-            <div className="content">
-              <h4 className="title">
-                <a href="#">We can help you find a local real estate agent</a>
-              </h4>
-              <div className="text-addres">
-                <p>
-                  Connect with a trusted agent who knows the market inside out -
-                  whether you're buying or selling.
-                </p>
-              </div>
-            </div>
-            <a href="#" className="tf-btn fw-6 bg-color-primary fw-6 w-full">
-              Connect with an agent
-            </a>
-          </div>
-        </div>
       </div>
 
       {/* Modals */}

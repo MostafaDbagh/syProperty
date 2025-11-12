@@ -347,11 +347,3 @@
   opacity: 0 !important;
   visibility: hidden !important;
 }
-
-.box-house .image-wrap img {
-  transition: transform 0.3s ease !important;
-}
-
-.box-house:hover .image-wrap img {
-  transform: scale(1.05) !important;
-}

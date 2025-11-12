@@ -300,24 +300,7 @@ export default function Project1() {
                     height={85}
                   />
                 </div>
-                <div className="box-ads relative z-5">
-                  <div className="content">
-                    <h4 className="title">
-                      <a href="#">
-                        We can help you find a local real estate agent
-                      </a>
-                    </h4>
-                    <div className="text-addres">
-                      <p>
-                        Connect with a trusted agent who knows the market inside
-                        out - whether you’re buying or selling.
-                      </p>
-                    </div>
-                  </div>
-                  <a href="#" className="tf-btn fw-6 bg-color-primary w-full">
-                    Connect with an agent
-                  </a>
-                </div>
+      
               </div>
             </div>
           </div>

@@ -5,6 +5,16 @@ const mongoose = require('mongoose');
 const errorHandler = require('../utils/error.js');
 const logger = require('../utils/logger');
 
+const normalizeIdentifier = (value) => {
+  if (!value) return value;
+  if (typeof value === 'string') return value;
+  if (value instanceof mongoose.Types.ObjectId) return value.toString();
+  if (typeof value === 'object' && value._id) {
+    return value._id.toString();
+  }
+  return value;
+};
+
 // Get messages for a specific agent with filtering and pagination
 const getMessagesByAgent = async (req, res, next) => {
   try {
@@ -275,7 +285,7 @@ const archiveMessage = async (req, res, next) => {
 // Create a new message (for contact forms)
 const createMessage = async (req, res, next) => {
   try {
-    const {
+    let {
       propertyId,
       agentId,
       senderName,
@@ -285,6 +295,9 @@ const createMessage = async (req, res, next) => {
       message,
       messageType = 'inquiry'
     } = req.body;
+
+    propertyId = normalizeIdentifier(propertyId);
+    agentId = normalizeIdentifier(agentId);
 
     // Validation
     if (!propertyId || !agentId || !senderName || !senderEmail || !subject || !message) {

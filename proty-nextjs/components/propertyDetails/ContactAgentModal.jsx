@@ -25,9 +25,14 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
     e.preventDefault();
 
     // Prepare message data
+    const agentId =
+      (typeof property?.agentId === 'object' && property.agentId?._id) ? property.agentId._id :
+      (typeof property?.agent === 'object' && property.agent?._id) ? property.agent._id :
+      property?.agentId || property?.agent;
+
     const messageData = {
       propertyId: property._id,
-      agentId: property.agent || property.agentId,
+      agentId,
       senderName: formData.name,
       senderEmail: formData.email,
       subject: `Ask a Question - ${property.propertyKeyword}`,
@@ -58,6 +63,9 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
       setFormData({ name: "", email: "", message: "" });
     }
   }, [isOpen]);
+
+
+  const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || (typeof error === 'string' ? error : null);
 
   if (!isOpen) return null;
 
@@ -128,7 +136,7 @@ export default function ContactAgentModal({ isOpen, onClose, property }) {
 
           {isError && (
             <div className={styles.errorMessage}>
-              {error?.message || "Failed to send message. Please try again."}
+              {errorMessage ? `Failed to send message: ${errorMessage}` : "Failed to send message. Please try again."}
             </div>
           )}
 

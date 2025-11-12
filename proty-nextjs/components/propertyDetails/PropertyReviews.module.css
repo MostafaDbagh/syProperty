@@ -55,6 +55,18 @@
   display: flex;
   gap: 2px;
 }
+
+.starIcon {
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+}
+.starFilled {
+  color: #fa913d;
+}
+.starEmpty {
+  color: #d1d5db;
+}
 .reviewText {
   font-size: 14px;
   line-height: 1.6;

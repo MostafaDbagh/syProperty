@@ -14,7 +14,7 @@ const getBaseURL = () => {
 };
 
 export const Axios = axios.create({
-  baseURL: heroku,
+  baseURL: getBaseURL(),
   timeout: 30000, // Request timeout in milliseconds (increased to 30 seconds)
   headers: {
     'Content-Type': 'application/json',

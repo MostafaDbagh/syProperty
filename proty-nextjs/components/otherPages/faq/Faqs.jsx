@@ -372,24 +372,7 @@ export default function Faqs() {
                     src="/images/logo/logo-2@2x.png"
                   />
                 </div>
-                <div className="box-ads relative z-5">
-                  <div className="content">
-                    <h4 className="title">
-                      <Link href={`/property-detail`}>
-                        We can help you find a local real estate agent
-                      </Link>
-                    </h4>
-                    <div className="text-addres">
-                      <p>
-                        Connect with a trusted agent who knows the market inside
-                        out - whether you’re buying or selling.
-                      </p>
-                    </div>
-                  </div>
-                  <a href="#" className="tf-btn fw-6 bg-color-primary w-full">
-                    Connect with an agent
-                  </a>
-                </div>
+    
               </div>
             </div>
           </div>

@@ -196,7 +196,7 @@ export default function AddProperty() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     logger.debug("🔄 Form submitted - Starting validation");
     
     const isValid = validateForm();
@@ -529,12 +529,13 @@ export default function AddProperty() {
                   <label htmlFor="currency">
                     Currency:<span>*</span>
                   </label>
-                  <DropdownSelect
+                  <input
+                    type="text"
                     name="currency"
-                    options={["USD", "SYP", "TRY", "EUR"]}
-                    selectedValue={formData.currency}
-                    onChange={(value) => handleDropdownChange('currency', value)}
-                    addtionalParentClass=""
+                    className={`form-control ${styles.disabledInput}`}
+                    value="USD"
+                    disabled
+                    readOnly
                   />
                   {errors.currency && <span className="text-danger">{errors.currency}</span>}
                 </fieldset>
