@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
+const { sendOtpEmail } = require('../utils/email');
 
 const signup = async (req, res, next) => {
   const { username, email, password, role } = req.body;
@@ -163,10 +164,6 @@ const sendOTP = async (req, res, next) => {
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // In a real application, you would send this OTP via email/SMS
-    // For now, we'll just log it and return success
-    logger.info(`${type.toUpperCase()} OTP for ${email}: ${otp}`);
-    
     // Store OTP in memory (in production, use Redis or database)
     if (!global.otpStore) {
       global.otpStore = new Map();
@@ -178,13 +175,31 @@ const sendOTP = async (req, res, next) => {
       attempts: 0
     });
 
+    try {
+      await sendOtpEmail({
+        to: email,
+        otp,
+        type,
+      });
+    } catch (emailError) {
+      logger.error('Failed to send OTP email', emailError);
+      global.otpStore.delete(`${email}_${type}`);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send OTP email. Please try again later.',
+        error: 'EMAIL_SEND_FAILED',
+        ...(process.env.NODE_ENV !== 'production'
+          ? { details: emailError.message }
+          : {})
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: `OTP sent successfully for ${type === 'signup' ? 'email verification' : 'password reset'}`,
       email: email,
       type: type,
-      // For testing purposes, include OTP in response
-      otp: otp
+      ...(process.env.NODE_ENV !== 'production' ? { otp } : {})
     });
   } catch (error) {
     next(error);
