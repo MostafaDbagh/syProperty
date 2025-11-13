@@ -8,30 +8,67 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+// Define allowed origins for production environments
+const defaultAllowedOrigins = [
+  'https://aqaar-gate-fe.vercel.app',
+  'https://aqaargate.com',
+  'https://www.aqaargate.com',
+];
+
+const envAllowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_2,
+  process.env.FRONTEND_URLS,
+  process.env.DASHBOARD_URL,
+].filter(Boolean);
+
+const normalizedEnvOrigins = envAllowedOrigins
+  .flatMap((value) => value.split(','))
+  .map((origin) => origin.trim())
+  .filter((origin) => origin.length > 0);
+
+const allowedOriginsSet = new Set([
+  ...defaultAllowedOrigins,
+  ...normalizedEnvOrigins,
+]);
+
 // Configure CORS to allow requests from frontend
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.endsWith('/')
+      ? origin.slice(0, -1)
+      : origin;
     
     // Allow localhost on any port (for development)
-    if (origin.startsWith('http://localhost:') || origin.startsWith('https://localhost:')) {
+    if (
+      normalizedOrigin.startsWith('http://localhost:') ||
+      normalizedOrigin.startsWith('https://localhost:')
+    ) {
       return callback(null, true);
     }
     
     // Allow 127.0.0.1 on any port (for development)
-    if (origin.startsWith('http://127.0.0.1:') || origin.startsWith('https://127.0.0.1:')) {
+    if (
+      normalizedOrigin.startsWith('http://127.0.0.1:') ||
+      normalizedOrigin.startsWith('https://127.0.0.1:')
+    ) {
       return callback(null, true);
     }
     
     // Allow Heroku app URLs (for production)
-    if (origin.includes('.herokuapp.com')) {
+    if (normalizedOrigin.includes('.herokuapp.com')) {
       return callback(null, true);
     }
     
     // Allow production frontend URL if set
-    const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [];
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOriginsSet.has(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    if (normalizedOrigin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
     
